@@ -48,11 +48,10 @@ export default {
                 url: "/author/cms/chapter/getChapterDraftListByAuthodId",
                 method: 'get',
                 data: {
-                    bookId: this.form.bookName
+                    bookId: this.bookId
                 }
             }).then(res => {
-                let { isExist } = res.data.data;
-                this.isExist = isExist ? 2 : 1;
+                
             })
         },
         changeDraft(draftId){
@@ -62,6 +61,7 @@ export default {
     },
     created() {
         this.bookId = this.$route.params.id * 1;
+        this.getChapterDraftListByAuthodId();
     }
 }
 </script>

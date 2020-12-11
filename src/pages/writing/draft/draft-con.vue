@@ -1,12 +1,12 @@
 <template>
     <div class="draftCon">
         <div class="draftCon-title">
-            <el-select v-model="chapterDraft.volumeId" placeholder="请选择作者分类" style='width: 215px;'>
-                <el-option :label="item.title" :value="item.volumeId" v-for='item in appVolumeList'></el-option>
+            <el-select v-model="chapterDraft.volumeId" placeholder="请选择作者分类" style="width: 215px;">
+                <el-option :label="item.title" :value="item.volumeId" v-for="item in appVolumeList"></el-option>
             </el-select>
             <div class="draftCon-title__btns">
                 <el-button>删除</el-button>
-                <el-button>保存</el-button>
+                <el-button @click="saveOrPublishChapter(true)">保存</el-button>
                 <el-button type="primary">发布</el-button>
             </div>
         </div>
@@ -15,20 +15,25 @@
             type="textarea"
             :rows="2"
             placeholder="在此输入章节号和章节名。例如：“第十章 我和秋天有个约定”"
-            v-model="chapterDraft.chapterName">
-        </el-input>
+            v-model="chapterDraft.chapterName"
+        ></el-input>
         <div class="quillCon">
-            <quill-editor v-model="chapterDraft.content" :options="editorOption" class="quill-editor"></quill-editor>
-            <span class='textNum'>{{chapterDraft.content.length}}/2000</span>
+            <quill-editor
+                v-model="chapterDraft.content"
+                :options="editorOption"
+                @change="onEditorChange($event)"
+                ref="myQuillEditor"
+            ></quill-editor>
+            <span class="textNum">{{TiLength}}/2000</span>
         </div>
         <div class="remark">
             <el-input
                 type="textarea"
                 :rows="2"
                 placeholder="在此输入作者的话"
-                v-model="chapterDraft.remark">
-            </el-input>
-            <span class='textNum'>{{chapterDraft.remark.length}}/500</span>
+                v-model="chapterDraft.remark"
+            ></el-input>
+            <span class="textNum">{{chapterDraft.remark.length}}/500</span>
         </div>
     </div>
 </template>
@@ -37,7 +42,8 @@ export default {
     name: "draftCon",
     data() {
         return {
-            appVolumeList:[],
+            appVolumeList: [],
+            TiLength: 0,
             editorOption: {
                 modules: {
                     toolbar: [
@@ -85,17 +91,33 @@ export default {
         draftId(value) {
             this.getChapterDraftById(value)
         },
-        'chapterDraft.content'(value,oldValue){
-            let innerText = document.querySelector('.ql-editor').innerText.replace(/\s/g,'');
-            console.log(innerText)
-            console.log(oldValue)
-            if(innerText>=20){
-                this.chapterDraft.content = oldValue;
+        'chapterDraft.remark'(value, oldValue) {
+            if(value.length>=20){
+                this.chapterDraft.remark = value.substr(0,20);
             }
         }
 
     },
     methods: {
+        onEditorChange(event) {
+            event.quill.deleteText(2000, 1);
+            if (this.chapterDraft.content === 0) {
+                this.TiLength = 0
+            }else {
+                this.TiLength = event.quill.getLength() - 1
+            }
+        },
+        saveOrPublishChapter(isSave) {
+            this.$ajax({
+                url: "/author/cms/chapter/saveOrPublishChapter",
+                method: 'post',
+                data: {
+                    draftId
+                }
+            }).then(res => {
+                // this.chapterDraft = res.data.data.chapterDraft;
+            })
+        },
         getChapterDraftById(draftId) {
             this.$ajax({
                 url: "/author/cms/chapter/getChapterDraftById",
@@ -112,7 +134,7 @@ export default {
                 url: "/author/cms/volume/getAppVolumeListByBookId",
                 method: 'get',
                 data: {
-                    bookId 
+                    bookId
                 }
             }).then(res => {
                 this.appVolumeList = res.data.data.appVolumeList;
@@ -122,35 +144,39 @@ export default {
 
 
     },
+    mounted() {
+        this.TiLength = this.$refs.myQuillEditor.quill.getLength() - 1
+    },
     created() {
         this.getAppVolumeListByBookId(this.bookId)
     }
-    }
+}
 </script>
 
 <style lang="scss" scoped>
 .draftCon {
-    &-title{
+    &-title {
         display: flex;
         margin-bottom: 20px;
         justify-content: space-between;
-        &__btns{
+        &__btns {
             display: inline-block;
         }
     }
-    .quillCon,.remark{
+    .quillCon,
+    .remark {
         position: relative;
-        .textNum{
+        .textNum {
             position: absolute;
             bottom: 10px;
-            right:40px;
+            right: 40px;
             font-size: 18px;
             font-weight: 400;
-            color: #D8D8D0;
+            color: #d8d8d0;
             line-height: 25px;
         }
     }
-    .quill-editor{
+    .quill-editor {
         width: 100%;
         height: 500px;
         background: #fff;

@@ -9,5 +9,13 @@ module.exports = {
         '@': resolve('src')
       }
     }
+  },
+  devServer: {
+    proxy: {
+      '/api': {
+          target: 'http://192.168.110.4',
+          changeOrigin: true,
+      },
+    }
   }
 }

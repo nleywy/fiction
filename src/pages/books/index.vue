@@ -11,10 +11,9 @@
                 type="month"
                 placeholder="选择月"
                 value-format="yyyy-MM"
-                @change="handleSelectChange"
                 >
             </el-date-picker>
-            <el-button type="primary">查看</el-button>
+            <el-button type="primary" @click="handleSelectChange">查看</el-button>
         </div>
 
         <div class="block">
@@ -26,7 +25,9 @@
                 class="block-table"
                 :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%"
+                v-loading="loading"
+                >
                 <el-table-column
                     align="center"
                     prop="bookName"
@@ -76,7 +77,8 @@ export default {
     data(){
         return {
             month: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
-            tableData: []
+            tableData: [],
+            loading: false,
         };
     },
     methods: {
@@ -84,20 +86,27 @@ export default {
          * 收入明细接口
          */
         async countIncome() {
+            this.loading = true;
+
             const res = await countIncome({
                 month: this.month
             });
 
-            console.log(res);
             if(res.code === "200") {
                 this.tableData = res.data.bookList;
             }
+
+            this.loading = false;
         },
         /**
          * 日期下拉选择
          * 
          */
         handleSelectChange() {
+            if(this.loading) {
+                return ;
+            }
+
             this.countIncome();
         }
     },

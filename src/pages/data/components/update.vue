@@ -47,6 +47,13 @@
                 </template>
             </el-calendar>
         </div>
+
+        <div class="footer">
+            <div class="footer-tips">注意事项</div>
+            <div class="footer-desc">1. 有效更新：作者单日更新2000字以上，会被记为1有效更新天数；</div>
+            <div class="footer-desc">2. 缺勤：该月份未能达成有效更新的天数；</div>
+            <div class="footer-desc">3. 日历中，红色日历代表缺勤；</div>
+        </div>
     </div>
 </template>
 <script>
@@ -296,6 +303,32 @@ export default {
                     }
                 }
                 
+            }
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding: 0px 30px;
+
+            &-tips {
+                width: 100%;
+                height: 20px;
+                margin-bottom: 10px;
+                font-size: 14px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #030303;
+                line-height: 20px;
+            }
+
+            &-desc {
+                width: 100%;
+                height: 24px;
+                font-size: 14px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #7B7B7B;
+                line-height: 24px;
             }
         }
     }

@@ -3,13 +3,20 @@ function resolve(dir) {
     return path.join(__dirname, dir)
 }
 module.exports = {
-  configureWebpack: {
-    resolve: {
-      alias: {
-        '@': resolve('src')
+  css: {
+    loaderOptions: {
+      scss: {
+        data: `@import "@/styles/index.scss";`
       }
     }
   },
+  // configureWebpack: {
+  //   resolve: {
+  //     alias: {
+  //       '@': resolve('src')
+  //     }
+  //   }
+  // },
   devServer: {
     proxy: {
       '/api': {

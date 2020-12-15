@@ -19,26 +19,33 @@ export default new Vuex.Store({
             8:'success',
             9:'danger',
         },
-        endStateStatus:{
+        endStateStatus: {
             1:'success',
             2:'warning',
         },
         leftTagsactivity:'works',
-        leftTags:[{
-            name:'作品管理',
-            id:'works',
-        },{
-            name:'数据中心',
-            id:'subscribe',
-        },{
-            name:'书籍明细',
-            id:'books',
-        }],
+        leftTags:[
+            {
+                name:'作品管理',
+                id: 'works',
+            },
+            {
+                name:'数据中心',
+                id: 'subscribe',
+            },
+            {
+                name:'书籍明细',
+                id: 'books',
+            }
+        ],
         classifyList:[]
     },
     mutations: {
         change(state,data){
             Object.assign(state,data)
+        },
+        SET_LEFT_TAGSACTIVITY(state, id) {
+            state.leftTagsactivity = id;
         }
     },
     actions: {

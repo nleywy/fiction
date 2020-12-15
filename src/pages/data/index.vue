@@ -11,7 +11,10 @@
                 <span>{{tag.value}}</span>
             </div>
         </page-book-header>
-        <router-view />
+
+        <transition name="fade-transform" mode="out-in">
+            <router-view />
+        </transition>
     </div>
 </template>
 <script>
@@ -68,7 +71,7 @@ export default {
     .data{
         width: 100%;
         height: 100%;
-        padding-bottom: 200px;
+        padding-bottom: 100px;
         background-color: #ffffff;
 
         .tag {

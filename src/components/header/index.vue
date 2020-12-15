@@ -20,7 +20,7 @@
                         >
                     </el-image>
 
-                    <el-dropdown trigger="click">
+                    <el-dropdown trigger="click" @command="handleCommand">
                         <el-avatar
                             class="avatar"
                             style="width: 44px; height: 44px;"
@@ -30,7 +30,7 @@
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>个人资料</el-dropdown-item>
                             <el-dropdown-item>工作台</el-dropdown-item>
-                            <el-dropdown-item>退出登录</el-dropdown-item>
+                            <el-dropdown-item command="exit">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
 
@@ -42,11 +42,52 @@
 </template>
 
 <script>
+import { removeToken, removeUserInfo } from "@/utils/auth";
+
 export default {
     name: "publicHeader",
     data() {
         return {
             url: "",
+        }
+    },
+    methods: {
+        /**
+         * 
+         * 点击菜单项触发的事件回调	
+         */
+        handleCommand(command) {
+            switch (command) {
+                case "exit":
+                    this.handleExit();
+                    break;
+            
+                default:
+                    break;
+            }
+        },
+
+        /**
+         * 
+         * 点击退出登录
+         */
+        handleExit() {
+            this.$confirm('此操作将退出登录状态, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                removeToken();
+                removeUserInfo();
+                this.$message({
+                    type: 'success',
+                    message: '退出登录成功'
+                });
+
+                this.$router.push("/login");
+            }).catch(() => {
+                // no thing
+            });
         }
     }
 }

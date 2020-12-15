@@ -38,7 +38,11 @@ router.beforeEach((to, from, next) => {
             next();
         }
     }else {
-        next('/login');
+        if(white.includes(to.path)) {
+            next();
+        }else {
+            next('/login');
+        }
     }
 })
 

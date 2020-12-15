@@ -15,7 +15,7 @@
                             class="cell"
                             type="text"
                             v-model="ruleForm.phone"
-                            autocomplete="on"
+                            autocomplete
                             placeholder="手机号"
                             >
                         </el-input>
@@ -25,6 +25,7 @@
                             class="cell code"
                             v-model="ruleForm.phoneCode"
                             placeholder="验证码"
+                            autocomplete
                             >
                         </el-input>
 
@@ -59,6 +60,7 @@ export default {
     data() {
         return {
             tipsCode: "发送验证码",
+            loading: false,
             numTime: 60,
             timer: null,
             ruleForm: {
@@ -102,12 +104,13 @@ export default {
 
             const res = await login(this.ruleForm);
 
-            console.log(res);
             if(res.code === "200") {
                 const token = res.data.userInfo.token;
                 setToken(token);
                 setUserInfo(res.data.userInfo);
                 this.$router.push("/works");
+            }else {
+                this.$message.warning(res.msg);
             }
 
             this.loading = false;

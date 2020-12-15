@@ -13,13 +13,21 @@ const service = axios.create({
     timeout: 15000, // request timeout
     headers: {
         'Content-Type': 'application/json;charset=UTF-8',
-        token:'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyVG9rZW4iLCJpc3MiOiJ4eW5vdmVsIiwidXNlcklkIjoiNzE2MDc5NDYzMjI4ODYifQ.RQf2BiXHe14NpOLQ236q0GRma1VD0Hhefj7agm68rls'
+        token: '',
     },
-})
+});
+
+const black = [ "/author/cms/login/phone" ];
 
 // request interceptor
 service.interceptors.request.use(
-    config => config,
+    config => {
+        if(!black.includes(config.url)) {
+            config["headers"].token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyVG9rZW4iLCJpc3MiOiJ4eW5vdmVsIiwidXNlcklkIjoiNzE2MDgwMTIwNDYyNzAifQ.d6qJAP9uOowqroiKfOm_zd30BgkYPAG7qniYqf1R16A";
+        }
+
+        return config;
+    },
     error => {
         // Do something with request error
         console.log(error) // for debug

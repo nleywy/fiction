@@ -42,7 +42,7 @@ export default {
         },
         getMap(){
             this.$ajax({
-                url: "/author/common/enum/getMap",
+                url: "/author/cms/enum/getMap",
                 method: 'get'
             }).then(res => {
                 let {enums} = res.data.data;
@@ -77,7 +77,7 @@ export default {
     created() {
         this.getBookClassifyListByParams();
         this.getMap();
-        
+        this.$store.dispatch("enums/enumGetMap");
     }
 }
 </script>

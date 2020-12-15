@@ -17,13 +17,23 @@ const router = new Router({
           path: '/data',
           component: () => import('@/pages/data/index.vue'),
           name: 'dataCenter',
-        //   redirect:'subscribe',
+          redirect: '/data/subscribe',
           children: [
             {
               path: '/data/subscribe',
-              component: () => import('@/pages/data/subscribe'),
-              name:'subscribe'
-            }
+              component: () => import('@/pages/data/components/subscribe'),
+              name: 'subscribe'
+            },
+            {
+              path: '/data/vote',
+              component: () => import('@/pages/data/components/vote'),
+              name: 'vote'
+            },
+            {
+              path: '/data/update',
+              component: () => import('@/pages/data/components/update'),
+              name: 'update'
+            },
           ]
         },
         {

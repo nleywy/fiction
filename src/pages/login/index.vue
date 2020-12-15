@@ -10,20 +10,20 @@
                 <div class="phone">手机号</div>
 
                 <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0px" class="ruleForm">
-                    <el-form-item prop="phoneCode">
+                    <el-form-item prop="phone">
                         <el-input
                             class="cell"
-                            type="password"
-                            v-model="ruleForm.phoneCode"
-                            autocomplete="off"
+                            type="text"
+                            v-model="ruleForm.phone"
+                            autocomplete="on"
                             placeholder="手机号"
                             >
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="code">
+                    <el-form-item prop="phoneCode">
                         <el-input
                             class="cell code"
-                            v-model="ruleForm.code"
+                            v-model="ruleForm.phoneCode"
                             placeholder="验证码"
                             >
                         </el-input>
@@ -32,7 +32,7 @@
                         <el-button plain class="plain" disabled v-else><span class="b">{{ numTime }}</span>s后重新获取</el-button>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')" class="submit">手机号一键登录</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm')" class="submit" :loading="loading">手机号一键登录</el-button>
                     </el-form-item>
 
                     <div class="link">登录即代表同意<a href="http://" target="_blank" rel="noopener noreferrer">《用户服务协议》《隐私政策》《作
@@ -47,6 +47,9 @@
 </template>
 
 <script>
+import { login } from "@/api/authorCms";
+import { mobileValidator } from "@/utils/rules";
+import { setToken, setUserInfo } from "@/utils/auth";
 
 export default {
     name: "login",
@@ -59,17 +62,55 @@ export default {
             numTime: 60,
             timer: null,
             ruleForm: {
+                phone: "",
                 phoneCode: "",
-                code: "",
             },
             rules: {
-
+                phone: [
+                    { validator: mobileValidator, trigger: 'blur' },
+                    { required: true, message: '手机号码不能为空', trigger: 'blur' },
+                ],
             }
         }
     },
     methods: {
-        submitForm() {
+        /**
+         * 
+         * 登录前置验证
+         */
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.login();
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
 
+        /**
+         * 
+         * 登录接口
+         */
+        async login() {
+            if(this.loading) {
+                return ;
+            }
+
+            this.loading = true;
+
+            const res = await login(this.ruleForm);
+
+            console.log(res);
+            if(res.code === "200") {
+                const token = res.data.userInfo.token;
+                setToken(token);
+                setUserInfo(res.data.userInfo);
+                this.$router.push("/works");
+            }
+
+            this.loading = false;
         },
 
         /**

@@ -21,6 +21,10 @@ const router = new Router({
     ]
 });
 
+/**
+ * 
+ * 动态添加一下布局路由
+ */
 router.addRoutes(layoutRouters);
 
-export default router
+export default router;

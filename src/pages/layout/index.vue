@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-header />
+        <public-header />
         
         <section class="app">
             <div class='tags'>
@@ -24,7 +24,7 @@
 export default {
     name: "layout",
     components: {
-        "v-header": () => import("@/components/header"),
+        "public-header": () => import("@/components/header"),
     },
     data() {
         return {

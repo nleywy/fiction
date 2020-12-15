@@ -11,30 +11,32 @@
                 <span class="title">作者中心</span>
             </div>
 
-            <div class="right">
-                <el-image
-                    class="logo"
-                    style="width: 32px; height: 20px;margin-right: 50px;"
-                    :src="url"
-                    >
-                </el-image>
-
-                <el-dropdown trigger="click">
-                    <el-avatar
-                        class="avatar"
-                        style="width: 44px; height: 44px;"
+            <slot name="right">
+                <div class="right">
+                    <el-image
+                        class="logo"
+                        style="width: 32px; height: 20px;margin-right: 50px;"
                         :src="url"
                         >
-                    </el-avatar>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>个人资料</el-dropdown-item>
-                        <el-dropdown-item>工作台</el-dropdown-item>
-                        <el-dropdown-item>退出登录</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+                    </el-image>
 
-                <span class="title"></span>
-            </div>
+                    <el-dropdown trigger="click">
+                        <el-avatar
+                            class="avatar"
+                            style="width: 44px; height: 44px;"
+                            :src="url"
+                            >
+                        </el-avatar>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>个人资料</el-dropdown-item>
+                            <el-dropdown-item>工作台</el-dropdown-item>
+                            <el-dropdown-item>退出登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+
+                    <span class="title"></span>
+                </div>
+            </slot>
         </section>
     </header>
 </template>

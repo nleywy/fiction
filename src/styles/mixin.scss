@@ -1,0 +1,21 @@
+@mixin mixin-clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+/**
+  *
+  * 垂直居中
+  */
+@mixin mixin-verticalCenter {
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 0px;
+        height: 100%;
+        vertical-align: middle;
+    }
+}

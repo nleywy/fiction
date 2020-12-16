@@ -1,64 +1,51 @@
 import Vue from "vue";
 import Router from "vue-router";
-Vue.use(Router);
-import works from '../pages/works/index.vue'
-const router = new Router({
-    routes: [
-        { 
-            path: '/',
-            redirect:'works'
-        },
-        {
-          path: '/works',
-          component: works,
-          name: 'works',
-        },
-        {
-          path: '/data',
-          component: () => import('@/pages/data/index.vue'),
-          name: 'dataCenter',
-        //   redirect:'subscribe',
-          children: [
-            {
-              path: '/data/subscribe',
-              component: () => import('@/pages/data/subscribe'),
-              name:'subscribe'
-            }
-          ]
-        },
-        {
-          path: '/books',
-          component: () => import('@/pages/books/index.vue'),
-          name: 'books'
-        },
-        {
-          path: '/createWork/:id',
-          component: () => import('@/pages/works/create.vue'),
-          name: 'createWork'
-        },
-        {
-          path: '/createWorkSuccess/:id',
-          component: () => import('@/pages/works/createWorkSuccess.vue'),
-          name: 'createWorkSuccessWork'
-        },
-        {
-          path: '/writing/:bookId',
-          component: () => import('@/pages/writing/index.vue'),
-          name: 'writing',
-          children: [
-            {
-              path: '/writing/draft/:bookId',
-              component: () => import('@/pages/writing/draft/index'),
-              name:'draft'
-            },
-            {
-              path: '/writing/volume/:bookId',
-              component: () => import('@/pages/writing/volume/index'),
-              name:'volume'
-            },
-          ]
-        }
+import layoutRouters from "./modules/layout";
+import { getToken } from "@/utils/auth";
 
+Vue.use(Router);
+
+/**
+ * 
+ * 路由抽离出来，防止后面路由过多
+ */
+const router = new Router({
+    // mode: "hash",
+    mode: "hash",
+    routes: [
+        {
+            path: '/',
+            redirect: 'works'
+        },
+        {
+            path: '/login',
+            component: () => import('@/pages/login/index.vue'),
+        },
     ]
+});
+
+/**
+ * 
+ * 动态添加一下布局路由
+ */
+router.addRoutes(layoutRouters);
+
+const white = ['/login']
+
+router.beforeEach((to, from, next) => {
+    if (getToken()) {
+        if(white.includes(to.path)) {
+            next(from.fullPath);
+        }else {
+            next();
+        }
+    }else {
+        if(white.includes(to.path)) {
+            next();
+        }else {
+            next('/login');
+        }
+    }
 })
-export default router
+
+export default router;

@@ -42,17 +42,22 @@ const router = new Router({
           name: 'createWorkSuccessWork'
         },
         {
-          path: '/writing',
+          path: '/writing/:bookId',
           component: () => import('@/pages/writing/index.vue'),
           name: 'writing',
           children: [
             {
-              path: '/writing/draft/:id',
+              path: '/writing/draft/:bookId',
               component: () => import('@/pages/writing/draft/index'),
               name:'draft'
-            }
+            },
+            {
+              path: '/writing/volume/:bookId',
+              component: () => import('@/pages/writing/volume/index'),
+              name:'volume'
+            },
           ]
-        },
+        }
 
     ]
 })

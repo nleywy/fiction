@@ -34,7 +34,7 @@ export default {
             this.$router.push({
                 name:'draft',
                 params:{
-                    id: this.$route.id
+                    bookId: this.$route.params.id
                 }
             })
         }

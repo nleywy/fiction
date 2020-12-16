@@ -29,7 +29,9 @@ var state = {
         name:'书籍明细',
         id:'books',
     }],
-    classifyList:[]
+    classifyList:[],
+    bookInfo:{},
+
 }
 
 export default new Vuex.Store({

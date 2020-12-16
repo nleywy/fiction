@@ -18,7 +18,7 @@ function Ajax() {
         // 格式化参数
         param = Object.assign({
             method: 'get',
-            headers: {'Content-Type': 'application/json;charset=UTF-8',token:'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyVG9rZW4iLCJpc3MiOiJ4eW5vdmVsIiwidXNlcklkIjoiNjE2MDc2ODQ3NjQ0MTkifQ.4bWntzGZApaCSfaVjlXNjGO31tEkVhssrWVQQUFAZOo'},
+            headers: {'Content-Type': 'application/json;charset=UTF-8',token:'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyVG9rZW4iLCJpc3MiOiJ4eW5vdmVsIiwidXNlcklkIjoiNjE2MDgxMjA3NDE4ODcifQ.x_RBU7DmfMXCggu7A_U42I0zgozDkxVElA3JXLOrExI'},
             // withCredentials: false,
             params: (!param.method || param.method == 'get') && param.data,
             defaultErrorHandle: true,

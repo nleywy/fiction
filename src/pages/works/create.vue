@@ -10,7 +10,7 @@
 
                     <el-upload
                         class="avatar-uploader"
-                        action="https://static.mcc.miui.com/test/"
+                        action="https://www.zybuluo.com/lichen0310/note/1760702/"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload">
@@ -47,7 +47,7 @@
                             :key="index"
                             v-for="(tag,index) in form.tagList"
                             closable
-                            :disable-transitions="false"
+                            :disable-transitions="false" 
                             @close="deleteTag(form.tagList,index)"
                         >
                             {{tag.name}}
@@ -101,7 +101,7 @@ export default {
                 startStation:'1',
                 blurryImgUrl: '',
                 tagList: [],
-                firstClassify:1,
+                firstClassify:9,
                 delivery: false,
                 type: [],
                 resource: '',
@@ -175,6 +175,9 @@ export default {
                 }
             }).then(res => {
                 if(isCreate){
+                    this.$store.commit('change',{
+                        bookInfo: res.data.data.appBook
+                    })
                     this.$router.push({
                         name:'createWorkSuccess',
                         params:{
@@ -245,6 +248,9 @@ export default {
             }).then(res => {
                 this.form = res.data.data.appBook;
                 this.bookState = this.form.bookState;
+                this.$store.commit('change',{
+                    bookInfo: res.data.data.appBook
+                })
                 if(this.bookState == 1){
                     this.$message({
                         message: '资料审核中，请在审核完成后修改',

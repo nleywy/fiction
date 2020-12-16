@@ -1,36 +1,29 @@
 <template>
     <div class="draft">
         <div class="draft-left">
-            <div class="draft-left__item activity" @click='changeDraft(1)'>
-                <div class="name">无章节名</div>
-                <div class="des">0字</div>
-            </div>
-            <div class="draft-left__item">
-                <div class="name">无章节名</div>
+            <div :class="['draft-left__item',draftId == draft.draftId?'activity':'']" @click='changeDraft(draft.draftId)' v-for='draft in draftListaft'>
+                <div class="name">{{draft.chapterName}}</div>
                 <div class="des">
-                    <i class="el-icon-time"></i>
-                    11-14 10:22 10字
+                    <i class="el-icon-time" v-if='draft.createTim'></i>
+                    {{draft.createTime}} {{draft.wordCount}}字
                 </div>
             </div>
-            <div class="draft-left__item">
-                <div class="name">无章节名</div>
-                <div class="des">0字</div>
-            </div>
         </div>
-        <div class="draft-con">
-            <draftCon :draftId='draftId' :bookId='bookId'></draftCon>
+        <div class="draft-con" v-if='draftId'>
+            <draftCon :draftId='draftId' :bookId='bookId' @changeDraftList="getChapterDraftListByBookId"></draftCon>
         </div>
     </div>
 </template>
 <script>
 import draftCon from './draft-con'
+import Bus from '@/tools/bus.js'
 export default {
     name: "draft",
     data() {
         return {
             bookId: 0,
-            chapterDraft:{},
-            draftId:-100
+            draftListaft:[],
+            draftId:0,
         };
     },
     props: {
@@ -43,15 +36,20 @@ export default {
 
     },
     methods: {
-        getChapterDraftListByAuthodId() {
+        getChapterDraftListByBookId() {
             this.$ajax({
-                url: "/author/cms/chapter/getChapterDraftListByAuthodId",
+                url: "/author/cms/chapter/getChapterDraftListByBookId",
                 method: 'get',
                 data: {
                     bookId: this.bookId
                 }
             }).then(res => {
-                
+                this.draftListaft = res.data.data.draftListaft;
+                if(this.draftListaft.length == 0){
+                    Bus.$emit('add')
+                }else{
+                    this.draftId = this.draftListaft[0].draftId;
+                }
             })
         },
         changeDraft(draftId){
@@ -60,8 +58,16 @@ export default {
 
     },
     created() {
-        this.bookId = this.$route.params.id * 1;
-        this.getChapterDraftListByAuthodId();
+        this.bookId = this.$route.params.bookId * 1;
+        this.getChapterDraftListByBookId();
+        Bus.$on("add",val=>{
+            this.draftListaft.unshift({
+                chapterName: "无字节名",
+                wordCount: 0,
+                draftId: -100
+            })
+            this.draftId = -100;
+        })
     }
 }
 </script>
@@ -74,6 +80,7 @@ export default {
         padding: 10px 0;
         width: 245px;
         height: 802px;
+        overflow: auto;
         margin-right: 20px;
         &__item {
             padding: 20px;

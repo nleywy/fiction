@@ -95,7 +95,6 @@ export default {
     created() {
         this.getBookClassifyListByParams();
         this.getMap();
-        this.$store.dispatch("enums/enumGetMap");
     },
 }
 </script>

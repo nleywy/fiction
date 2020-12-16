@@ -8,10 +8,19 @@ export const login = params => {
     return request({
         url: "/author/cms/login/phone",
         method: 'post',
-        data: {
-            phone:"18888888888",
-            phoneCode:"3062"
-        },
+        data: params,
+    });
+}
+
+/**
+ * 
+ * 发送短信
+ */
+export const getPhoneCode = params => {
+    return request({
+        url: "/author/cms/login/getPhoneCode",
+        method: 'post',
+        data: params,
     });
 }
 

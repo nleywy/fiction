@@ -48,7 +48,8 @@
 </template>
 
 <script>
-import { login } from "@/api/authorCms";
+import { mapGetters, mapActions } from "vuex";
+import { login, getPhoneCode } from "@/api/authorCms";
 import { mobileValidator } from "@/utils/rules";
 import { setToken, setUserInfo } from "@/utils/auth";
 
@@ -75,7 +76,20 @@ export default {
             }
         }
     },
+    computed: {
+        /**
+         * 
+         * 获取到指定 vuex 模块getters的方法
+         */
+        ...mapGetters("enums", [ 'enumsGetMap' ]),
+    },
     methods: {
+        /**
+         * 
+         * 获取到指定 vuex 模块actions的方法
+         */
+        ...mapActions("enums", [ "enumGetMap" ]),
+
         /**
          * 
          * 登录前置验证
@@ -108,6 +122,7 @@ export default {
                 const token = res.data.userInfo.token;
                 setToken(token);
                 setUserInfo(res.data.userInfo);
+                this.enumGetMap(); // 拿取全局枚举
                 this.$router.push("/works");
             }else {
                 this.$message.warning(res.msg);
@@ -118,9 +133,30 @@ export default {
 
         /**
          * 
+         * 请求验证码接口
+         */
+        async getPhoneCode() {
+            const res = await getPhoneCode({
+                phone: this.ruleForm.phone,
+                // smsType: this.enumsGetMap("smsTypeEnum")[0].value
+                smsType: "1",
+            });
+
+            console.log(res);
+            if(res.code === "200") {
+                // 请求成功
+            }
+
+            // 请求失败
+        },
+
+        /**
+         * 
          * 获取验证码
          */
         getCode() {
+            this.getPhoneCode();
+            --this.numTime;
             this.timeout();
             // 请求验证码接口
         },

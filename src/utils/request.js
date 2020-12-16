@@ -1,29 +1,29 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 // import store from '@/store'
-// import { getToken } from '@/utils/auth'
-const VUE_APP_API_HOST = process.env.VUE_APP_API_HOST;
+import { getToken } from '@/utils/auth'
+const baseURL = process.env.NODE_ENV === 'production' ? "http://192.168.110.4/api" : process.env.VUE_APP_API_HOST;
 
 //全局发送post请求的默认头部content-type类型,定义类型为JSON格式，并且字符编码为utf-8
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // create an axios instance
 const service = axios.create({
     // 请求地址，不需要代理转发，后端开启跨域即可
-    baseURL: VUE_APP_API_HOST,
+    baseURL: baseURL,
     timeout: 15000, // request timeout
     headers: {
         'Content-Type': 'application/json;charset=UTF-8',
-        token: '',
     },
 });
 
-const black = [ "/author/cms/login/phone" ];
+// 不需要token
+const black = [ "/author/cms/login/phone", "/author/cms/login/getPhoneCode" ];
 
 // request interceptor
 service.interceptors.request.use(
     config => {
         if(!black.includes(config.url)) {
-            config["headers"].token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyVG9rZW4iLCJpc3MiOiJ4eW5vdmVsIiwidXNlcklkIjoiNzE2MDgwMTIwNDYyNzAifQ.d6qJAP9uOowqroiKfOm_zd30BgkYPAG7qniYqf1R16A";
+            config["headers"].token = getToken();
         }
 
         return config;

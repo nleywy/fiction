@@ -10,6 +10,8 @@ Vue.use(Router);
  * 路由抽离出来，防止后面路由过多
  */
 const router = new Router({
+    // mode: "hash",
+    mode: "hash",
     routes: [
         {
             path: '/',

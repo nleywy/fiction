@@ -1,7 +1,7 @@
 <template>
     <div class="draftCon">
         <div class="draftCon-title">
-            <el-select v-model="chapterDraft.volumeId" placeholder="请选择作者分类" style="width: 215px;">
+            <el-select v-model="chapterDraft.volumeId" placeholder="请选择分卷" style="width: 215px;">
                 <template v-for="item in appVolumeList">
                     <el-option :label="item.title" :value="item.volumeId" :key="item.volumeId"></el-option>
                 </template>
@@ -15,10 +15,12 @@
         <el-input
             style="margin-bottom: 20px;"
             type="textarea"
-            :rows="2"
+            :rows="4"
+            resize="none"
             placeholder="在此输入章节号和章节名。例如：“第十章 我和秋天有个约定”"
             v-model="chapterDraft.chapterName"
         ></el-input>
+
         <div class="quillCon">
             <quill-editor
                 v-model="chapterDraft.content"
@@ -28,13 +30,17 @@
             ></quill-editor>
             <span class="textNum">{{TiLength}}/2000</span>
         </div>
+
         <div class="remark">
             <el-input
                 type="textarea"
-                :rows="2"
+                :rows="4"
+                resize="none"
                 placeholder="在此输入作者的话"
                 v-model="chapterDraft.remark"
-            ></el-input>
+                style="margin-bottom: 20px;"
+                >
+            </el-input>
             <span class="textNum">{{chapterDraft.remark.length}}/500</span>
         </div>
 
@@ -85,8 +91,19 @@
     </div>
 </template>
 <script>
+import {
+    deleteChapterDraft,
+    saveOrPublishChapter,
+    getChapterDraftById,
+} from "@/api/chapter";
+import { getAppVolumeListByBookId } from "@/api/volume";
+
 export default {
     name: "draftCon",
+    props: {
+        draftId: [ Number, String ],
+        bookId: [ Number, String ]
+    },
     data() {
         return {
             appVolumeList: [],
@@ -97,15 +114,15 @@ export default {
             editorOption: {
                 modules: {
                     toolbar: [
-                        ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
-                        [{ header: 1 }, { header: 2 }], // 1、2 级标题
-                        [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
-                        // [{ script: "sub" }, { script: "super" }], // 上标/下标
-                        [{ indent: "-1" }, { indent: "+1" }], // 缩进
-                        // [{ size: ["small", false, "large", "huge"] }], // 字体大小
-                        // [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-                        // [{ align: [] }], // 对齐方式
-                        // ["link", "image", "video"] // 链接、图片、视频
+                        // ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
+                        // [{ header: 1 }, { header: 2 }], // 1、2 级标题
+                        // [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
+                        // // [{ script: "sub" }, { script: "super" }], // 上标/下标
+                        // [{ indent: "-1" }, { indent: "+1" }], // 缩进
+                        // // [{ size: ["small", false, "large", "huge"] }], // 字体大小
+                        // // [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
+                        // // [{ align: [] }], // 对齐方式
+                        // // ["link", "image", "video"] // 链接、图片、视频
                     ], //工具菜单栏配置
                 },
                 placeholder: '在此输入正文，不满1000字时，设定该章节为免费章节', //提示
@@ -113,17 +130,8 @@ export default {
                 theme: 'snow', //主题 snow/bubble
                 syntax: true, //语法检测
             },
-            chapterDraft: {
-
-            }
+            chapterDraft: {},
         }
-    },
-    props: {
-        draftId: Number,
-        bookId: Number
-    },
-    components: {
-
     },
     watch: {
         draftId(value) {
@@ -133,15 +141,14 @@ export default {
                 this.chapterDraft = {
                     volumeId:'',
                     ...this.$store.state.bookInfo,
-                    "publishType": null,
-                    "scheduleTime": null,
-                    "remark": "",
-                    "wordCount": null,
-                    "content": "",
+                    publishType: null,
+                    scheduleTime: null,
+                    remark: "",
+                    wordCount: null,
+                    content: "",
                     bookName:'',
                     latestChapterId:'',
                     latestChapterName:''
-
                 }
             }
         },
@@ -169,31 +176,73 @@ export default {
                 this.TiLength = event.quill.getLength() - 1
             }
         },
+
+        /**
+         * 
+         * 删除草稿
+         * @param { number } draftId 草稿id
+         */
+        async apiDeleteChapterDraft() {
+            const res = await deleteChapterDraft({ dragId: this.dragId });
+
+            if(res.code === "200") {
+                this.$message.success("删除成功");
+                return ;
+            }
+
+            this.$message.warning("删除失败");
+        },
+
+        /**
+         * 
+         * 删除草稿
+         */
         deleteChapterDraft() {
             this.$confirm('章节删除后无法恢复，是否确认删除？', '删除章节', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$ajax({
-                    url: "/author/cms/chapter/deleteChapterDraft",
-                    method: 'post',
-                    data: {
-                        dragId: this.dragId
-                    }
-                }).then(res => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
-                })
+                this.apiDeleteChapterDraft();
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
+                this.$message.info("已取消删除");
             });
         },
+
+        /**
+         * 
+         * 保存编辑发布草稿章节
+         * @description 作者保存编辑草稿，或直接发布草稿章节
+         * @param { number } draftId 草稿id 有值：编辑草稿， 无值：新增草稿
+         * @param { number } volumeId 分卷id
+         * @param { string } chapterName 章节名
+         * @param { string } content 章节内容
+         * @param { string } publishType 1-及时，2-定时 （保存不发布时，可不传）
+         * @param { date } scheduleTime 定时发布时需要传
+         * @param { string } remark
+         */
+        async apiSaveOrPublishChapter() {
+            const res = await saveOrPublishChapter({
+                ...this.chapterDraft,
+                scheduleTime: this.scheduleTime,
+                publishType: this.publishType,//1-及时，2-定时
+            });
+
+            if(res.code === "200") {
+                this.dialogFormVisible = false;
+                this.$emit('changeDraftList')
+                if(isPublish){
+                    this.$alert('发布成功', '提示', {
+                        confirmButtonText: '确定'
+                    });
+                }else{
+                    this.$alert('保存成功', '提示', {
+                        confirmButtonText: '确定'
+                    });
+                }
+            }
+        },
+
         saveOrPublishChapter(isPublish) {
             if(isPublish){
                 if(!this.publishType){
@@ -211,77 +260,59 @@ export default {
             }else{
                 delete this.chapterDraft.draftId
             }
-            this.$ajax({
-                url: "/author/cms/chapter/saveOrPublishChapter",
-                method: 'post',
-                data: {
-                    ...this.chapterDraft,
-                    scheduleTime:this.scheduleTime,
-                    publishType: this.publishType,//1-及时，2-定时
-                }
-            }).then(res => {
-                this.dialogFormVisible = false;
-                this.$emit('changeDraftList')
-                if(isPublish){
-                    this.$alert('发布成功', '提示', {
-                        confirmButtonText: '确定'
-                    });
-                }else{
-                    this.$alert('保存成功', '提示', {
-                        confirmButtonText: '确定'
-                    });
 
-                }
-            })
+            this.apiSaveOrPublishChapter();
         },
-        getChapterDraftById(draftId) {
-            this.$ajax({
-                url: "/author/cms/chapter/getChapterDraftById",
-                method: 'get',
-                data: {
-                    draftId
-                }
-            }).then(res => {
-                this.chapterDraft = res.data.data.chapterDraft;
-            })
+
+        /**
+         * 
+         * 根据id获取草稿详情
+         * @param { number } draftId 草稿id
+         */
+        async getChapterDraftById(draftId) {
+            const res = await getChapterDraftById({ draftId });
+
+            if(res.code === "200") {
+                this.chapterDraft = res.data.chapterDraft || {};
+            }
         },
-        getAppVolumeListByBookId(bookId) {
-            this.$ajax({
-                url: "/author/cms/volume/getAppVolumeListByBookId",
-                method: 'get',
-                data: {
-                    bookId
-                }
-            }).then(res => {
-                this.appVolumeList = res.data.data.appVolumeList;
-                if(this.draftId&&this.draftId != 100){
+
+        /**
+         * 
+         * 根据作品id获取卷宗列表
+         * @param { number } bookId 书籍id
+         */
+        async getAppVolumeListByBookId(bookId) {
+            const res = await getAppVolumeListByBookId({ bookId });
+            
+            if(res.code === "200") {
+                this.appVolumeList = res.data.appVolumeList;
+                if(this.draftId && this.draftId != 100){
                     this.getChapterDraftById(this.draftId)
                 }
-            })
+            }
         },
-
-
-    },
-    mounted() {
-        this.TiLength = this.$refs.myQuillEditor.quill.getLength() - 1
     },
     created() {
-        this.getAppVolumeListByBookId(this.bookId);
         if(this.draftId != 100){
             this.chapterDraft = {
-                volumeId:'',
+                volumeId: '',
                 ...this.$store.state.bookInfo,
-                "publishType": null,
-                "scheduleTime": null,
-                "remark": "",
-                "wordCount": null,
-                "content": "",
+                publishType: null,
+                scheduleTime: null,
+                remark: "",
+                wordCount: null,
+                content: "",
                 bookName:'',
                 latestChapterId:'',
                 latestChapterName:'',
             }
         }
-    }
+    },
+    mounted() {
+        this.TiLength = this.$refs.myQuillEditor.quill.getLength() - 1
+        this.getAppVolumeListByBookId(this.bookId);
+    },
 }
 </script>
 
@@ -301,6 +332,8 @@ export default {
     .quillCon,
     .remark {
         position: relative;
+        // margin-bottom: 20px;
+
         .textNum {
             position: absolute;
             bottom: 10px;

@@ -7,6 +7,22 @@ export default {
 
     state: {
         enums: enums,
+        bookStateStatus: {
+            0:'warning',
+            1:'success',
+            2:'warning',
+            3:'success',
+            4:'success',
+            5:'success',
+            6:'success',
+            7:'success',
+            8:'success',
+            9:'danger',
+        },
+        endStateStatus: {
+            1:'success',
+            2:'warning',
+        },
     },
 
     mutations: {

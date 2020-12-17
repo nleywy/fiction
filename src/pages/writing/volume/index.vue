@@ -1,17 +1,21 @@
 <template>
     <div class="volume">
         <div class="volume-left">
-            <div :class="['volume-left__item',volumeId == volume.volumeId?'activity':'']" @click='changeVolume(volume.volumeId)' v-for='volume in appVolumeList'>
-                <div class="name">{{volume.title}}</div>
-                <div class="des">
-                    共{{volume.sortNum}}章
+            <template v-for='volume in appVolumeList'>
+                <div :class="['volume-left__item',volumeId == volume.volumeId?'activity':'']" @click='changeVolume(volume.volumeId)' :key="volume.volumeId">
+                    <div class="name">{{volume.title}}</div>
+                    <div class="des">
+                        共{{volume.sortNum}}章
+                    </div>
                 </div>
-            </div>
+            </template>
         </div>
         <div class="volume-con"></div>
     </div>
 </template>
 <script>
+import { getAppVolumeListByBookId } from "@/api/volume";
+
 export default {
     name: "volume",
     data(){
@@ -34,23 +38,23 @@ export default {
         changeVolume(){
 
         },
-        getAppVolumeList(){
-            this.$ajax({
-                url: "/author/cms/volume/getAppVolumeListByBookId",
-                method: 'get',
-                data: {
-                    bookId: this.bookId
-                }
-            }).then(res => {
-                this.appVolumeList = res.data.data.appVolumeList;
-                
-            })
 
-        }
+        /**
+         * 
+         * 根据作品id获取卷宗列表
+         * @param { number } bookId 书籍id
+         */
+        async getAppVolumeListByBookId(bookId) {
+            const res = await getAppVolumeListByBookId({ bookId: this.bookId });
+            
+            if(res.code === "200") {
+                this.appVolumeList = res.data.appVolumeList;
+            }
+        },
     },
     created(){
-        this.bookId = this.$route.params.bookId * 1;
-        this.getAppVolumeList()
+        this.bookId = this.$route.query.bookId;
+        this.getAppVolumeListByBookId()
     }
 }
 </script>

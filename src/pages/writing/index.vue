@@ -33,15 +33,6 @@ export default {
             activity: 'draft'
         };
     },
-    props: {
-        
-    },
-    components: {
-        
-    },
-    watch: {
-        
-    },
     methods: {
         addNewChapter(){
             Bus.$emit('add')

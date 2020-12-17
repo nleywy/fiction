@@ -1,13 +1,15 @@
 <template>
     <div class="draft">
         <div class="draft-left">
-            <div :class="['draft-left__item',draftId == draft.draftId?'activity':'']" @click='changeDraft(draft.draftId)' v-for='draft in draftListaft'>
-                <div class="name">{{draft.chapterName}}</div>
-                <div class="des">
-                    <i class="el-icon-time" v-if='draft.createTim'></i>
-                    {{draft.createTime}} {{draft.wordCount}}字
+            <template v-for='draft in draftListaft'>
+                <div :class="[ 'draft-left__item', draftId == draft.draftId ? 'activity' : '' ]" @click='changeDraft(draft.draftId)' :key="draft.draftId">
+                    <div class="name">{{draft.chapterName}}</div>
+                    <div class="des">
+                        <i class="el-icon-time" v-if='draft.createTim'></i>
+                        {{draft.createTime}} {{draft.wordCount}}字
+                    </div>
                 </div>
-            </div>
+            </template>
         </div>
         <div class="draft-con" v-if='draftId'>
             <draftCon :draftId='draftId' :bookId='bookId' @changeDraftList="getChapterDraftListByBookId"></draftCon>
@@ -21,6 +23,9 @@ import { getChapterDraftListByBookId } from "@/api/chapter";
 
 export default {
     name: "draft",
+    components: {
+        draftCon
+    },
     data() {
         return {
             bookId: 0,
@@ -28,25 +33,16 @@ export default {
             draftId:0,
         };
     },
-    props: {
-
-    },
-    components: {
-        draftCon
-    },
-    watch: {
-
-    },
     methods: {
         /**
          * 
          * 获取草稿箱内容列表
          */
         async getChapterDraftListByBookId() {
-            const res = await getChapterDraftListByBookId({  bookId: this.bookId })
+            const res = await getChapterDraftListByBookId({ bookId: this.bookId })
 
             if(res.code === "200") {
-                this.draftListaft = res.data.data.draftListaft;
+                this.draftListaft = res.data.draftListaft;
                 if(this.draftListaft.length == 0){
                     Bus.$emit('add')
                 }else{
@@ -57,10 +53,9 @@ export default {
         changeDraft(draftId){
             this.draftId = draftId;
         }
-
     },
     created() {
-        this.bookId = this.$route.params.bookId * 1;
+        this.bookId = this.$route.query.bookId;
         this.getChapterDraftListByBookId();
 
         Bus.$on("add",val=>{

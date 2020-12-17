@@ -51,39 +51,6 @@ export default {
             this.$store.commit("SET_LEFT_TAGSACTIVITY", id);
             this.$router.push({ name: id });
         },
-        getMap(){
-            this.$ajax({
-                url: "/author/cms/enum/getMap",
-                method: 'get'
-            }).then(res => {
-                let {enums} = res.data.data;
-                enums.bookStateObj = {};
-                enums.endStateObj = {};
-                enums.weskitEnumObj = {};
-                let {bookStateEnum,endStateEnum,weskitEnum} = enums;
-                bookStateEnum.forEach((item)=>{
-                    enums.bookStateObj[item.value] = item.text;
-                })
-                endStateEnum.forEach((item)=>{
-                    enums.endStateObj[item.value] = item.text;
-                })
-                weskitEnum.forEach((item)=>{
-                    enums.weskitEnumObj[item.value] = item.text;
-                })
-                this.$store.commit('change',enums)
-            })
-            
-        },
-        getBookClassifyListByParams(){
-            this.$ajax({
-                url: "/author/cms/classify/getBookClassifyListByParams",
-                method: 'get'
-            }).then(res => {
-                this.$store.commit('change',{
-                    classifyList:res.data.data.classifyList
-                })
-            })
-        },
         handleHookMounted() {
             const find = this.leftTags.find(item => this.$route.path.includes(item.id));
 
@@ -91,10 +58,6 @@ export default {
                 this.$store.commit("SET_LEFT_TAGSACTIVITY", find.id);
             }
         }
-    },
-    created() {
-        this.getBookClassifyListByParams();
-        this.getMap();
     },
 }
 </script>

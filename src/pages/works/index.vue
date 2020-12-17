@@ -2,7 +2,7 @@
     <div class="myworks">
         <div class="myworks__title common-title">
             <span class="myworks__title__left">我的作品</span>
-            <el-button type="primary" class="myworks__title__right" v-if='items.length>0' @click='create()'>新建作品</el-button>
+            <el-button type="primary" class="myworks__title__right" v-if='items.length>0' @click='createWorks()'>新建作品</el-button>
         </div>
         <div class="myworks__con common-con">
             <div class="items" v-if='items.length>0'>
@@ -14,8 +14,8 @@
                                 {{item.bookName}}
                             </div>
                             <div class="item__des__status">
-                                <el-button :type="bookStateStatus[item.bookState]" size='small'>{{item.bookStateTxt }}</el-button>
-                                <el-button :type="endStateStatus[item.endState]" size='small' disabled>{{item.endStateTxt}}</el-button>
+                                <el-button :type="bookStateStatus[item.bookState]" size='small'>{{ item.bookState | filtersBookState(enumsGetMap) }}</el-button>
+                                <el-button :type="endStateStatus[item.endState]" size='small' disabled>{{ item.endState | filtersEndState(enumsGetMap) }}</el-button>
                             </div>
                         </div>
                         <div class="item__des__center">
@@ -31,11 +31,11 @@
                                 收藏{{item.collectNum}}
                             </div>
                             <div class="item__des__icons">
-                                <el-button style="width:104px;margin-right:20px;" v-if='!item.bookState || item.bookState == 3 || item.bookState == 6' @click='create(item.bookId)'>作品设置</el-button>
+                                <el-button style="width:104px;margin-right:20px;" v-if='!item.bookState || item.bookState == 3 || item.bookState == 6' @click='createWorks(item.bookId)'>作品设置</el-button>
                                 <el-button style="width:104px;margin-right:20px;" v-if='item.bookState == 6' @click='signUp(item)'>申请上架</el-button>
                                 <el-button style="width:104px;margin-right:20px;" v-if='item.bookState == 3' @click='signUp(item)'>申请签约</el-button>
                                 <el-button style="width:104px;margin-right:20px;" v-if='!item.bookState || item.bookState == 6'>已发内容</el-button>
-                                <el-button type="primary">去写作</el-button>
+                                <el-button type="primary" @click="handleClickWritingBtn(item.bookId)">去写作</el-button>
                             </div>
                         </div>
                     </div>
@@ -65,13 +65,8 @@ export default {
         };
     },
     computed: {
-        ...mapState([
-            'bookStateObj',
-            'endStateObj',
-            'bookStateStatus',
-            'endStateStatus'
-        ]),
-        ...mapGetters("enums", [ "enumsGetMap" ]),
+        ...mapState("enums", [ "bookStateStatus", "endStateStatus" ]),
+        ...mapGetters("enums", [ "enumsGetMap", ]),
     },
     props: {
         
@@ -138,10 +133,6 @@ export default {
 
             if(res.code === "200") {
                 let bookList = res.data.bookList;
-                bookList.forEach((item,index)=>{
-                    item.bookStateTxt = this.bookStateObj[item.bookState];
-                    item.endStateTxt = this.endStateObj[item.endState];
-                })
                 this.items = bookList;
 
                 if(this.items === 0){
@@ -151,6 +142,26 @@ export default {
                 }
             }
         },
+
+        /**
+         * 
+         * 点击写作按钮
+         * @param {number} bookId
+         */
+        handleClickWritingBtn(bookId) {
+            this.$router.push({
+                path: "/writing/draft",
+                query: {
+                    bookId,
+                },
+            })
+        },
+
+        /**
+         * 
+         * 跳转新建/编辑作品页面
+         * @param {number} bookId
+         */
         createWorks(id){
             this.$router.push({
                 path: "/createWork/start",
@@ -160,6 +171,33 @@ export default {
             });
         },
         
+    },
+    filters: {
+        /**
+         * 
+         * 格式化发布状态
+         */
+        filtersBookState(cellValue, enumsGetMap) {
+            const bookStateEnum = enumsGetMap("bookStateEnum");
+            const find = bookStateEnum.find(item => item.value == cellValue);
+
+            if(find) {
+                return find.text;
+            }
+
+            return "- -";
+        },
+
+        filtersEndState(cellValue, enumsGetMap) {
+            const bookStateEnum = enumsGetMap("endStateEnum");
+            const find = bookStateEnum.find(item => item.value == cellValue);
+
+            if(find) {
+                return find.text;
+            }
+
+            return "- -";
+        },
     },
     created(){
         this.getAuthorBookList()

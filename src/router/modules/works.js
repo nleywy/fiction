@@ -50,12 +50,12 @@ const worksRouter = [
                 component: () => import('@/pages/writing/index.vue'),
                 children: [
                     {
-                        path: '/writing/draft/:id',
+                        path: '/writing/draft',
                         component: () => import('@/pages/writing/draft/index'),
                         name: 'draft'
                     },
                     {
-                        path: '/writing/volume/:bookId',
+                        path: '/writing/volume',
                         component: () => import('@/pages/writing/volume/index'),
                         name:'volume'
                     },

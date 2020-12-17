@@ -84,7 +84,7 @@
 
                         <el-col :span="24">
                             <div class="bookTagList">
-                                <el-scrollbar style="height: 100%;">
+                                <el-scrollbar style="height: 100%;" class="pageScrollbar">
                                     <el-tag
                                         :key="tag.tagId"
                                         v-for="tag in bookTagList"

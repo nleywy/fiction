@@ -22,13 +22,7 @@
         ></el-input>
 
         <div class="quillCon">
-            <quill-editor
-                v-model="chapterDraft.content"
-                :options="editorOption"
-                @change="onEditorChange($event)"
-                ref="myQuillEditor"
-            ></quill-editor>
-            <span class="textNum">{{TiLength}}/2000</span>
+            <editor v-model="chapterDraft.content"/>
         </div>
 
         <div class="remark">
@@ -39,9 +33,11 @@
                 placeholder="在此输入作者的话"
                 v-model="chapterDraft.remark"
                 style="margin-bottom: 20px;"
+                :maxlength="500"
+                show-word-limit
                 >
             </el-input>
-            <span class="textNum">{{chapterDraft.remark.length}}/500</span>
+            <!-- <span class="textNum">{{ chapterDraft.remark ? chapterDraft.remark.length : 0 }}/500</span> -->
         </div>
 
         <el-dialog title="确认章节信息" :visible.sync="dialogFormVisible">
@@ -97,9 +93,13 @@ import {
     getChapterDraftById,
 } from "@/api/chapter";
 import { getAppVolumeListByBookId } from "@/api/volume";
+import editor from "@/components/editor";
 
 export default {
     name: "draftCon",
+    components: {
+        editor
+    },
     props: {
         draftId: [ Number, String ],
         bookId: [ Number, String ]
@@ -109,27 +109,8 @@ export default {
             appVolumeList: [],
             dialogFormVisible: false,
             scheduleTime:'',
-            publishType: null,//1-及时，2-定时
+            publishType: null, //1-及时，2-定时
             TiLength: 0,
-            editorOption: {
-                modules: {
-                    toolbar: [
-                        // ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
-                        // [{ header: 1 }, { header: 2 }], // 1、2 级标题
-                        // [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
-                        // // [{ script: "sub" }, { script: "super" }], // 上标/下标
-                        // [{ indent: "-1" }, { indent: "+1" }], // 缩进
-                        // // [{ size: ["small", false, "large", "huge"] }], // 字体大小
-                        // // [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-                        // // [{ align: [] }], // 对齐方式
-                        // // ["link", "image", "video"] // 链接、图片、视频
-                    ], //工具菜单栏配置
-                },
-                placeholder: '在此输入正文，不满1000字时，设定该章节为免费章节', //提示
-                readyOnly: false, //是否只读
-                theme: 'snow', //主题 snow/bubble
-                syntax: true, //语法检测
-            },
             chapterDraft: {},
         }
     },
@@ -152,11 +133,6 @@ export default {
                 }
             }
         },
-        'chapterDraft.remark'(value, oldValue) {
-            if(value&&value.length>=20){
-                this.chapterDraft.remark = value.substr(0,20);
-            }
-        }
     },
     methods: {
         findTitle(volumeId){
@@ -310,7 +286,6 @@ export default {
         }
     },
     mounted() {
-        this.TiLength = this.$refs.myQuillEditor.quill.getLength() - 1
         this.getAppVolumeListByBookId(this.bookId);
     },
 }

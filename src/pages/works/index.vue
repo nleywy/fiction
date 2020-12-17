@@ -178,7 +178,10 @@ export default {
          * 格式化发布状态
          */
         filtersBookState(cellValue, enumsGetMap) {
+            // console.log(enumsGetMap)
+            // console.log(cellValue)
             const bookStateEnum = enumsGetMap("bookStateEnum");
+            // console.log(bookStateEnum)
             const find = bookStateEnum.find(item => item.value == cellValue);
 
             if(find) {

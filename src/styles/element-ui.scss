@@ -1,3 +1,5 @@
-.el-scrollbar__wrap {
-    overflow-x: auto !important;
+.pageScrollbar {
+    .el-scrollbar__wrap {
+        overflow-x: auto !important;
+    }
 }

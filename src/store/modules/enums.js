@@ -52,7 +52,7 @@ export default {
          * @param {*} state 
          */
         enumsGetMap: state => name => {
-            const { enums } = state;
+            const { enums } = state.enums;
             const keys = Object.keys(enums);
 
             if(keys.includes(name)) {

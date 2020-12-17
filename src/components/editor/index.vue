@@ -1,5 +1,6 @@
 <template>
     <Editor
+        ref="Editor"
         :api-key="apikey"
         :id="editorId"
         :init="init"
@@ -8,8 +9,6 @@
         :output-format="outputFormat"
         :placeholder="placeholder"
         v-model="editorContent"
-        @onGetContent="handleGetContent"
-        model-events="change keydown blur focus paste"
     />
 </template>
 
@@ -21,10 +20,13 @@ export default {
     components: {
         Editor
     },
-    model: {
-        prop: "content",
-        event: "getContent"
-    },
+    // model: {
+    //     prop: "content",
+    //     event: "getContent"
+    // },
+    // props: {
+    //     content: String,
+    // },
     data() {
         return {
             editorContent: "",
@@ -72,12 +74,23 @@ export default {
         },
         /**
          * 
-         * 获取内容
+         * 设置内容
          */
-        handleGetContent(event) {
-            this.$emit("getContent", event.content);
-        }
-    }
+        setContent(newVal) {
+            // setTimeout(() => {
+            //     this.$refs.Editor.editor.setContent(newVal, { format: "text" });
+            // }, 300)
+            this.editorContent = newVal;
+        },
+        // /**
+        //  * 
+        //  * 获取内容
+        //  */
+        // handleGetContent(event) {
+        //     console.log(event.content);
+        //     this.$emit("getContent", event.content);
+        // }
+    },
 }
 </script>
 

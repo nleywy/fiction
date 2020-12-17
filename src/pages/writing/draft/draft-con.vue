@@ -1,46 +1,55 @@
 <template>
     <div class="draftCon">
-        <div class="draftCon-title">
-            <el-select v-model="chapterDraft.volumeId" placeholder="请选择分卷" style="width: 215px;">
-                <template v-for="item in appVolumeList">
-                    <el-option :label="item.title" :value="item.volumeId" :key="item.volumeId"></el-option>
-                </template>
-            </el-select>
-            <div class="draftCon-title__btns">
-                <el-button @click="deleteChapterDraft">删除</el-button>
-                <el-button @click="saveOrPublishChapter(false)">保存</el-button>
-                <el-button type="primary" @click="dialogFormVisible = true">发布</el-button>
-            </div>
-        </div>
-        <el-input
-            style="margin-bottom: 20px;"
-            type="textarea"
-            :rows="4"
-            resize="none"
-            placeholder="在此输入章节号和章节名。例如：“第十章 我和秋天有个约定”"
-            v-model="chapterDraft.chapterName"
-        ></el-input>
+        <el-form ref="ruleForm" :model="chapterDraft" :rules="rules">
+            <el-form-item prop="volumeId">
+                <div class="draftCon-title">
+                    <el-select v-model="chapterDraft.volumeId" placeholder="请选择分卷" style="width: 215px;">
+                        <template v-for="item in appVolumeList">
+                            <el-option :label="item.title" :value="item.volumeId" :key="item.volumeId"></el-option>
+                        </template>
+                    </el-select>
+                    <div class="draftCon-title__btns">
+                        <el-button @click="deleteChapterDraft">删除</el-button>
+                        <el-button @click="saveOrPublishChapter(false)">保存</el-button>
+                        <el-button type="primary" @click="dialogFormVisible = true">发布</el-button>
+                    </div>
+                </div>
+            </el-form-item>
+            <el-form-item prop="chapterName">
+                <el-input
+                    type="textarea"
+                    :rows="4"
+                    resize="none"
+                    placeholder="在此输入章节号和章节名。例如：“第十章 我和秋天有个约定”"
+                    v-model="chapterDraft.chapterName"
+                ></el-input>
+            </el-form-item>
 
-        <div class="quillCon">
-            <editor v-model="chapterDraft.content"/>
-        </div>
+            <el-form-item prop="content">
+                <div class="quillCon">
+                    <editor ref="editor"/>
+                </div>
+            </el-form-item>
 
-        <div class="remark">
-            <el-input
-                type="textarea"
-                :rows="4"
-                resize="none"
-                placeholder="在此输入作者的话"
-                v-model="chapterDraft.remark"
-                style="margin-bottom: 20px;"
-                :maxlength="500"
-                show-word-limit
-                >
-            </el-input>
-            <!-- <span class="textNum">{{ chapterDraft.remark ? chapterDraft.remark.length : 0 }}/500</span> -->
-        </div>
+            <el-form-item prop="remark">
+                <div class="remark">
+                    <el-input
+                        type="textarea"
+                        :rows="4"
+                        resize="none"
+                        placeholder="在此输入作者的话"
+                        v-model="chapterDraft.remark"
+                        style="margin-bottom: 20px;"
+                        :maxlength="500"
+                        show-word-limit
+                        >
+                    </el-input>
+                    <!-- <span class="textNum">{{ chapterDraft.remark ? chapterDraft.remark.length : 0 }}/500</span> -->
+                </div>
+            </el-form-item>
+        </el-form>
 
-        <el-dialog title="确认章节信息" :visible.sync="dialogFormVisible">
+        <el-dialog title="确认章节信息" :visible.sync="dialogFormVisible" @open="handleOpen" @close="handleClose">
             <el-form>
                 <div class="dialog-info">
                     <div class="name">书籍名称</div>
@@ -56,7 +65,7 @@
                 </div>
                 <div class="dialog-info">
                     <div class="name">章节字数</div>
-                    <div class="value">{{TiLength}}字</div>
+                    <div class="value">{{ chapterDraft.content ? chapterDraft.content.length : 0}}字</div>
                 </div>
                 <div class="dialog-info">
                     <div class="name">分卷信息</div>
@@ -73,7 +82,7 @@
                             type="datetime"
                             format="yyyy-MM-dd HH:mm:ss"
                             value-format="yyyy-MM-dd HH:mm:ss"
-                            v-show='publishType == 2'
+                            v-show='publishType === "2"'
                             placeholder="选择日期时间">
                         </el-date-picker>
                     </div>
@@ -81,7 +90,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveOrPublishChapter(true)">发 布</el-button>
+                <el-button type="primary" @click="saveOrPublishChapter(true)" :loading="loading">发 布</el-button>
             </div>
         </el-dialog>
     </div>
@@ -101,7 +110,7 @@ export default {
         editor
     },
     props: {
-        draftId: [ Number, String ],
+        draftId: [ Number, String, ],
         bookId: [ Number, String ]
     },
     data() {
@@ -112,16 +121,50 @@ export default {
             publishType: null, //1-及时，2-定时
             TiLength: 0,
             chapterDraft: {},
+            loading: false,
+        }
+    },
+    computed: {
+        rules() {
+            const that = this;
+            
+            const contentValidator = (rule, value, callback) => {
+                const content = that.$refs.editor.getContent();
+                const length = content.trim().length;
+
+                if(!length) {
+                    callback(Error("请输入正文"));
+                }
+
+                if(20 <= length && length <= 20000) {
+                    callback();
+                }else {
+                    callback(Error("正文内容不少于20个汉字，不超过20000个字"));
+                }
+            }
+
+            return {
+                volumeId: [ 
+                    { required: true, message: "请选择分卷", trigger: 'blur' }
+                ],
+                chapterName: [ 
+                    { required: true, message: "请输入章节号和章节名", trigger: 'blur' }
+                ],
+                content: [ 
+                    // { required: true, message: "请输入正文", trigger: 'blur' },
+                    { validator: contentValidator, trigger: 'blur' }
+                ],
+            }
         }
     },
     watch: {
         draftId(value) {
-            if(value != -100){
+            if(value){
                 this.getChapterDraftById(value)
             }else{
                 this.chapterDraft = {
                     volumeId:'',
-                    ...this.$store.state.bookInfo,
+                    // ...this.$store.state.bookInfo,
                     publishType: null,
                     scheduleTime: null,
                     remark: "",
@@ -131,6 +174,10 @@ export default {
                     latestChapterId:'',
                     latestChapterName:''
                 }
+
+                this.$nextTick().then(() => {
+                    this.$refs.editor.setContent(this.chapterDraft.content);
+                });
             }
         },
     },
@@ -144,14 +191,6 @@ export default {
                 }
             }
         },
-        onEditorChange(event) {
-            event.quill.deleteText(2000, 1);
-            if (this.chapterDraft.content === 0) {
-                this.TiLength = 0
-            }else {
-                this.TiLength = event.quill.getLength() - 1
-            }
-        },
 
         /**
          * 
@@ -159,9 +198,10 @@ export default {
          * @param { number } draftId 草稿id
          */
         async apiDeleteChapterDraft() {
-            const res = await deleteChapterDraft({ dragId: this.dragId });
+            const res = await deleteChapterDraft({ draftId: this.draftId });
 
             if(res.code === "200") {
+                this.$emit("changeDraftList");
                 this.$message.success("删除成功");
                 return ;
             }
@@ -197,12 +237,24 @@ export default {
          * @param { date } scheduleTime 定时发布时需要传
          * @param { string } remark
          */
-        async apiSaveOrPublishChapter() {
-            const res = await saveOrPublishChapter({
+        async apiSaveOrPublishChapter(isPublish) {
+            let params = {
                 ...this.chapterDraft,
-                scheduleTime: this.scheduleTime,
-                publishType: this.publishType,//1-及时，2-定时
-            });
+                content: this.$refs.editor.getContent(),
+            };
+
+            if(this.draftId) {
+                params.draftId = this.draftId;
+            }
+
+            if(this.publishType) {
+                params.publishType = this.publishType;
+                params.scheduleTime = this.scheduleTime;
+            }
+
+            this.loading = true;
+
+            const res = await saveOrPublishChapter(params);
 
             if(res.code === "200") {
                 this.dialogFormVisible = false;
@@ -217,27 +269,36 @@ export default {
                     });
                 }
             }
+
+            this.loading = false;
         },
 
         saveOrPublishChapter(isPublish) {
-            if(isPublish){
-                if(!this.publishType){
-                    this.$alert('请选择发布类型！', '错误', {
-                        confirmButtonText: '确定'
-                    });
-                    return
-                }
-                if(this.publishType == 2 && !this.scheduleTime){
-                    this.$alert('请选择发布时间！', '错误', {
-                        confirmButtonText: '确定'
-                    });
-                    return
-                }
-            }else{
-                delete this.chapterDraft.draftId
-            }
+            this.$refs["ruleForm"].validate((valid) => {
+                if (valid) {
+                    if(isPublish){
+                        if(!this.publishType){
+                            this.$alert('请选择发布类型！', '错误', {
+                                confirmButtonText: '确定'
+                            });
+                            return
+                        }
+                        if(this.publishType == 2 && !this.scheduleTime){
+                            this.$alert('请选择发布时间！', '错误', {
+                                confirmButtonText: '确定'
+                            });
+                            return
+                        }
+                    }else{
+                        delete this.chapterDraft.draftId
+                    }
 
-            this.apiSaveOrPublishChapter();
+                    this.apiSaveOrPublishChapter(isPublish);
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
         },
 
         /**
@@ -250,6 +311,7 @@ export default {
 
             if(res.code === "200") {
                 this.chapterDraft = res.data.chapterDraft || {};
+                this.$refs.editor.setContent(res.data.chapterDraft.content);
             }
         },
 
@@ -268,22 +330,30 @@ export default {
                 }
             }
         },
+
+        handleOpen() {
+            this.publishType = "1";
+        },
+
+        handleClose() {
+            this.publishType = null;
+        }
     },
     created() {
-        if(this.draftId != 100){
-            this.chapterDraft = {
-                volumeId: '',
-                ...this.$store.state.bookInfo,
-                publishType: null,
-                scheduleTime: null,
-                remark: "",
-                wordCount: null,
-                content: "",
-                bookName:'',
-                latestChapterId:'',
-                latestChapterName:'',
-            }
-        }
+        // if(this.draftId != 100){
+        //     this.chapterDraft = {
+        //         volumeId: '',
+        //         ...this.$store.state.bookInfo,
+        //         publishType: null,
+        //         scheduleTime: null,
+        //         remark: "",
+        //         wordCount: null,
+        //         content: "",
+        //         bookName:'',
+        //         latestChapterId:'',
+        //         latestChapterName:'',
+        //     }
+        // }
     },
     mounted() {
         this.getAppVolumeListByBookId(this.bookId);
@@ -298,7 +368,7 @@ export default {
     flex-direction: column;
     &-title {
         display: flex;
-        margin-bottom: 20px;
+        // margin-bottom: 20px;
         justify-content: space-between;
         &__btns {
             display: inline-block;

@@ -1,8 +1,8 @@
 <template>
     <div class="draft">
         <div class="draft-left">
-            <template v-for='draft in draftListaft'>
-                <div :class="[ 'draft-left__item', draftId == draft.draftId ? 'activity' : '' ]" @click='changeDraft(draft.draftId)' :key="draft.draftId">
+            <template v-for='(draft, index) in draftListaft'>
+                <div :class="[ 'draft-left__item', active == index ? 'activity' : '' ]" @click='changeDraft(draft.draftId, index)' :key="index">
                     <div class="name">{{draft.chapterName}}</div>
                     <div class="des">
                         <i class="el-icon-time" v-if='draft.createTim'></i>
@@ -11,7 +11,8 @@
                 </div>
             </template>
         </div>
-        <div class="draft-con" v-if='draftId'>
+        <!-- <div class="draft-con" v-if='draftId'> -->
+        <div class="draft-con">
             <draftCon :draftId='draftId' :bookId='bookId' @changeDraftList="getChapterDraftListByBookId"></draftCon>
         </div>
     </div>
@@ -30,7 +31,8 @@ export default {
         return {
             bookId: 0,
             draftListaft:[],
-            draftId:0,
+            draftId: 0,
+            active: 0,
         };
     },
     methods: {
@@ -50,21 +52,22 @@ export default {
                 }
             }
         },
-        changeDraft(draftId){
-            this.draftId = draftId;
+        changeDraft(draftId, index){
+            this.active = index;
+            this.draftId = draftId ? draftId : (this.draftId === null ? 0 : null);
         }
     },
     created() {
         this.bookId = this.$route.query.bookId;
         this.getChapterDraftListByBookId();
-
-        Bus.$on("add",val=>{
+        Bus.$on("add",val => {
             this.draftListaft.unshift({
-                chapterName: "无字节名",
+                chapterName: "无字节名" ,
                 wordCount: 0,
-                draftId: -100
+                draftId: null,
             })
-            this.draftId = -100;
+            this.draftId = null;
+            this.active = 0;
         })
     }
 }
@@ -81,8 +84,11 @@ export default {
         overflow: auto;
         margin-right: 20px;
         &__item {
+            cursor: pointer;
             padding: 20px;
             color: #7b7b7b;
+
+            &:hover,
             &.activity {
                 color: #3399fe;
                 background: rgba(2, 103, 229, 0.05);

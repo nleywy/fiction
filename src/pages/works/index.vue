@@ -2,7 +2,7 @@
     <div class="myworks">
         <div class="myworks__title common-title">
             <span class="myworks__title__left">我的作品</span>
-            <el-button type="primary" class="myworks__title__right" v-if='items.length>0' @click='createWorks()'>新建作品</el-button>
+            <el-button type="primary" class="myworks__title__right" v-if='items.length > 0' @click='createWorks()'>新建作品</el-button>
         </div>
         <div class="myworks__con common-con">
             <div class="items" v-if='items.length>0'>
@@ -61,7 +61,7 @@ export default {
     name: "myworks",
     data(){
         return {
-            items:[]
+            items: []
         };
     },
     computed: {
@@ -132,6 +132,7 @@ export default {
             });
 
             if(res.code === "200") {
+                console.log(res);
                 let bookList = res.data.bookList;
                 this.items = bookList;
 

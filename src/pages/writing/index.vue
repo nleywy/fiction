@@ -5,7 +5,7 @@
                 <span :key="index" :class="[ 'chapterDraftList__title__text', item.id == activity? 'activity' : '' ]" @click="changeRouter(item.id)">{{item.name}}</span>
             </template>
             <div class="chapterDraftList__btns">
-                <el-button type="primary">新建分卷</el-button>
+                <el-button type="primary" @click="addNewVolume">新建分卷</el-button>
                 <el-button type="primary" @click="addNewChapter">新建章节</el-button>
             </div>
         </div>
@@ -20,31 +20,47 @@ export default {
     name: "chapterDraftList",
     data(){
         return {
-            title:[{
-                name:'已发章节',
-                id:'works',
-            },{
-                name:'草稿箱',
-                id:'draft',
-            },{
-                name:'分卷管理',
-                id:'volume',
-            }],
-            activity: 'draft'
+            title:[
+                {
+                    name:'已发章节',
+                    id: 'works',
+                },
+                {
+                    name:'草稿箱',
+                    id:'draft',
+                },
+                {
+                    name:'分卷管理',
+                    id:'volume',
+                }
+            ],
+            activity: 'draft',
+            bookId: "",
         };
     },
     methods: {
-        addNewChapter(){
-            Bus.$emit('add')
+        addNewVolume() {
+            Bus.$emit('addVolume');
+            
+            this.changeRouter("volume");
         },
+        addNewChapter(){
+            this.changeRouter("draft");
+            Bus.$emit('add');
+        },
+
         changeRouter(id){
             this.activity = id;
-            this.$router.push({
-                name: id,
-                params:{
-                    bookId: this.bookId
-                }
-            })
+
+            if(this.$route.name !== id) {
+                this.$router.push({
+                    name: id,
+                    query: {
+                        bookId: this.bookId
+                    }
+                });
+            }
+    
         },
 
         /**
@@ -63,10 +79,12 @@ export default {
         }
     },
     created(){
-        this.bookId = this.$route.params.bookId * 1;
+        this.bookId = this.$route.query.bookId;
         this.activity = this.$route.name;
 
-        this.getAppBookDetailById();
+        this.$nextTick().then(() => {
+            this.getAppBookDetailById();
+        });
     }
 }
 </script>

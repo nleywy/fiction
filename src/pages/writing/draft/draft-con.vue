@@ -2,7 +2,9 @@
     <div class="draftCon">
         <div class="draftCon-title">
             <el-select v-model="chapterDraft.volumeId" placeholder="请选择作者分类" style="width: 215px;">
-                <el-option :label="item.title" :value="item.volumeId" v-for="item in appVolumeList"></el-option>
+                <template v-for="item in appVolumeList">
+                    <el-option :label="item.title" :value="item.volumeId" :key="item.volumeId"></el-option>
+                </template>
             </el-select>
             <div class="draftCon-title__btns">
                 <el-button @click="deleteChapterDraft">删除</el-button>
@@ -276,8 +278,7 @@ export default {
                 "content": "",
                 bookName:'',
                 latestChapterId:'',
-                latestChapterName:''
-
+                latestChapterName:'',
             }
         }
     }

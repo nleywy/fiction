@@ -14,7 +14,7 @@
                                 {{item.bookName}}
                             </div>
                             <div class="item__des__status">
-                                <el-button :type="bookStateStatus[item.bookState]" size='small'>{{item.bookStateTxt}}</el-button>
+                                <el-button :type="bookStateStatus[item.bookState]" size='small'>{{item.bookStateTxt }}</el-button>
                                 <el-button :type="endStateStatus[item.endState]" size='small' disabled>{{item.endStateTxt}}</el-button>
                             </div>
                         </div>
@@ -48,13 +48,14 @@
                 <i class="bgc"></i>
                 <span class="text1">您目前还没有作品</span>
                 <span class="text2">快去创作您的第一部作品吧</span>
-                <el-button type="primary" class="myworks__title__right" @click='create()'>新建作品</el-button>
+                <el-button type="primary" class="myworks__title__right" @click='createWorks()'>新建作品</el-button>
             </div>
         </div>
     </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
+import { applyShelfOrSign, getAuthorBookList } from "@/api/book";
 
 export default {
     name: "myworks",
@@ -63,12 +64,15 @@ export default {
             items:[]
         };
     },
-    computed: mapState([
-        'bookStateObj',
-        'endStateObj',
-        'bookStateStatus',
-        'endStateStatus'
-    ]),
+    computed: {
+        ...mapState([
+            'bookStateObj',
+            'endStateObj',
+            'bookStateStatus',
+            'endStateStatus'
+        ]),
+        ...mapGetters("enums", [ "enumsGetMap" ]),
+    },
     props: {
         
     },
@@ -79,67 +83,81 @@ export default {
         
     },
     methods: {
+        /**
+         * 
+         * 申请上架或申请签约
+         * @param { number } bookId
+         * @param { number } bookState
+         */
+        async applyShelfOrSign(params) {
+            const res = await applyShelfOrSign({
+                bookId: params.bookId,
+                bookState: params.bookState
+            });
+
+            if(res.code === "200") {
+                this.$message.success("申请成功")
+                return ;
+            }
+
+            this.$message.warning("申请失败")
+        },
+
         signUp(item){
             let title = '签约申请';
             let con = '是否确认申请签约本书？';
+
             if(item.bookState == 6){
                 title = '上架申请';
                 con = '是否确认申请上架本书？';
             }
+
             this.$confirm(con, title, {
                 confimButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$ajax({
-                    url: "/author/cms/book/applyShelfOrSign",
-                    method: 'post',
-                    data: {
-                        bookId:item.bookId,
-                        bookState: item.bookState
-                    }
-                }).then(res => {
-                    this.$message({
-                        type: 'success',
-                        message: '申请成功!'
-                    });
-                })
+                this.applyShelfOrSign({ ...item });
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消申请'
-                })
+                // catch
+                this.$message.info("已取消申请")
             })
         },
-        getAuthorBookList(){
-            this.$ajax({
-                url: "/author/cms/book/getAuthorBookList",
-                method: 'get',
-                data: {
-                    pageNo:1,
-                    pageSize:100,
-                }
-            }).then(res => {
-                let {bookList} = res.data.data;
+
+        /**
+         * 
+         * 作品列表接口
+         * @param { number } pageNo
+         * @param { number } pageSize
+         */
+        async getAuthorBookList() {
+            const res = await getAuthorBookList({
+                pageNo: 1,
+                pageSize: 100,
+            });
+
+            if(res.code === "200") {
+                let bookList = res.data.bookList;
                 bookList.forEach((item,index)=>{
                     item.bookStateTxt = this.bookStateObj[item.bookState];
                     item.endStateTxt = this.endStateObj[item.endState];
                 })
                 this.items = bookList;
+
                 if(this.items === 0){
-                    this.recommentShow = false
+                    this.recommentShow = false;
                 }else{
                     this.recommentList = res.data.data;
                 }
-            })
+            }
         },
-        create(id){
+        createWorks(id){
             this.$router.push({
-                name:'createWork',
+                path: "/createWork/start",
                 params:{
                     id: id || -100
-                }
-            })
+                },
+            });
         },
         
     },

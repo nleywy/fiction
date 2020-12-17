@@ -14,27 +14,32 @@ const worksRouter = [
         ]
     },
     {
-        path: '/createWork/:id',
+        path: '/createWork',
         component: layout,
         name: 'createWork',
         children: [
             {
-                path: '',
+                path: 'start',
+                name: "createWorkStart",
                 component: () => import('@/pages/works/create.vue'),
             },
-        ]
-    },
-    {
-        path: '/createWorkSuccess/:id',
-        component: layout,
-        name: 'createWorkSuccessWork',
-        children: [
             {
-                path: '',
+                path: 'success',
                 component: () => import('@/pages/works/createWorkSuccess.vue'),
             },
         ]
     },
+    // {
+    //     path: '/createWorkSuccess/:id',
+    //     component: layout,
+    //     name: 'createWorkSuccessWork',
+    //     children: [
+    //         {
+    //             path: '',
+    //             component: () => import('@/pages/works/createWorkSuccess.vue'),
+    //         },
+    //     ]
+    // },
     {
         path: '/writing',
         component: layout,
@@ -50,9 +55,9 @@ const worksRouter = [
                         name: 'draft'
                     },
                     {
-                      path: '/writing/volume/:bookId',
-                      component: () => import('@/pages/writing/volume/index'),
-                      name:'volume'
+                        path: '/writing/volume/:bookId',
+                        component: () => import('@/pages/writing/volume/index'),
+                        name:'volume'
                     },
                 ]
             },

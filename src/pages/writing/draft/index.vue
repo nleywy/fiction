@@ -15,8 +15,10 @@
     </div>
 </template>
 <script>
-import draftCon from './draft-con'
+import draftCon from './draft-con';
 import Bus from '@/tools/bus.js'
+import { getChapterDraftListByBookId } from "@/api/chapter";
+
 export default {
     name: "draft",
     data() {
@@ -36,21 +38,21 @@ export default {
 
     },
     methods: {
-        getChapterDraftListByBookId() {
-            this.$ajax({
-                url: "/author/cms/chapter/getChapterDraftListByBookId",
-                method: 'get',
-                data: {
-                    bookId: this.bookId
-                }
-            }).then(res => {
+        /**
+         * 
+         * 获取草稿箱内容列表
+         */
+        async getChapterDraftListByBookId() {
+            const res = await getChapterDraftListByBookId({  bookId: this.bookId })
+
+            if(res.code === "200") {
                 this.draftListaft = res.data.data.draftListaft;
                 if(this.draftListaft.length == 0){
                     Bus.$emit('add')
                 }else{
                     this.draftId = this.draftListaft[0].draftId;
                 }
-            })
+            }
         },
         changeDraft(draftId){
             this.draftId = draftId;
@@ -60,6 +62,7 @@ export default {
     created() {
         this.bookId = this.$route.params.bookId * 1;
         this.getChapterDraftListByBookId();
+
         Bus.$on("add",val=>{
             this.draftListaft.unshift({
                 chapterName: "无字节名",

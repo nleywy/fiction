@@ -1,10 +1,12 @@
-import { enumGetMap } from "@/api/authorCms";
+import { enumGetMap } from "@/api/enums";
+import { setEnums, getEnums } from "@/utils/auth";
+const enums = getEnums();
 
-const user = {
+export default {
     namespaced: true,
 
     state: {
-        enums: {},
+        enums: enums,
     },
 
     mutations: {
@@ -22,6 +24,7 @@ const user = {
             const res = await enumGetMap();
 
             if(res.code === "200") {
+                setEnums(res.data)
                 commit('SET_ENUMS', res.data.enums);
             }
         }
@@ -44,5 +47,3 @@ const user = {
         },
     }
 };
-
-export default user;

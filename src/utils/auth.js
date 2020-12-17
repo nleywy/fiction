@@ -3,6 +3,7 @@
 
 const TokenKey = 'Admin-Token';
 const UserInfoKey = 'Admin-UserInfo';
+const EnumsKey = 'Admin-Enum'
 
 export function getToken() {
     return sessionStorage.getItem(TokenKey);
@@ -23,9 +24,28 @@ export function getUserInfo() {
 
     return {};
 }
+
 export function setUserInfo(userInfo) {
     return sessionStorage.setItem(UserInfoKey, JSON.stringify(userInfo));
 }
 export function removeUserInfo() {
     return sessionStorage.removeItem(UserInfoKey);
+}
+
+export function getEnums() {
+    const enums = sessionStorage.getItem(EnumsKey);
+
+    if(enums !== null) {
+        return JSON.parse(enums);
+    }
+
+    return {};
+}
+
+export function setEnums(Enums) {
+    return sessionStorage.setItem(EnumsKey, JSON.stringify(Enums))
+}
+
+export function removeEnums() {
+    return sessionStorage.removeItem(EnumsKey)
 }

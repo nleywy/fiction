@@ -1,8 +1,9 @@
 <template>
     <div class="chapterDraftList">
         <div class="chapterDraftList__title">
-            <span :class="['chapterDraftList__title__text',item.id == activity?'activity':'']" v-for='item in title' @click="changeRouter(item.id)">{{item.name}}</span>
-            
+            <template v-for='(item, index) in title'>
+                <span :key="index" :class="[ 'chapterDraftList__title__text', item.id == activity? 'activity' : '' ]" @click="changeRouter(item.id)">{{item.name}}</span>
+            </template>
             <div class="chapterDraftList__btns">
                 <el-button type="primary">新建分卷</el-button>
                 <el-button type="primary" @click="addNewChapter">新建章节</el-button>
@@ -12,8 +13,9 @@
     </div>
 </template>
 <script>
-import Bus from '@/tools/bus.js'
-import commentsVue from '../../../../pro/headline/news-content-ui/src/pages/videoDetail/components/comments.vue';
+import Bus from '@/tools/bus.js';
+import { getAppBookDetailById } from "@/api/book";
+
 export default {
     name: "chapterDraftList",
     data(){
@@ -47,27 +49,33 @@ export default {
         changeRouter(id){
             this.activity = id;
             this.$router.push({
-                name:id,
+                name: id,
                 params:{
-                    bookId:this.bookId
+                    bookId: this.bookId
                 }
             })
+        },
+
+        /**
+         * 
+         * 根据书籍id获取作品信息
+         * @param { number } bookId
+         */
+        async getAppBookDetailById() {
+            const res = await getAppBookDetailById({ bookId: this.bookId });
+
+            if(res.code === "200") {
+                this.$store.commit('change',{
+                    bookInfo: res.data.appBook
+                })
+            }
         }
     },
     created(){
         this.bookId = this.$route.params.bookId * 1;
-        this.$ajax({
-            url: "/author/cms/book/getAppBookDetailById",
-            method: 'get',
-            data: {
-                bookId:this.bookId
-            }
-        }).then(res => {
-            this.$store.commit('change',{
-                bookInfo: res.data.data.appBook
-            })
-        })
         this.activity = this.$route.name;
+
+        this.getAppBookDetailById();
     }
 }
 </script>

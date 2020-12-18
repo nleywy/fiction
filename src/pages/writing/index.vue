@@ -23,7 +23,7 @@ export default {
             title:[
                 {
                     name:'已发章节',
-                    id: 'works',
+                    id: 'published',
                 },
                 {
                     name:'草稿箱',

@@ -56,3 +56,18 @@ export const deleteAppVolume = params => {
         data: params,
     });
 }
+
+// /**
+//  * 
+//  * 根据作品id获取卷宗列表
+//  * @param { number } bookId 卷宗id
+//  * @param { number } pageNo
+//  * @param { number } pageSize
+//  */
+// export const getAppVolumeListByBookId = params => {
+//     return request({
+//         url: "/author/cms/volume/getAppVolumeListByBookId",
+//         method: 'get',
+//         params,
+//     });
+// }

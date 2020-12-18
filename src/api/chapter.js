@@ -60,3 +60,18 @@ export const getChapterDraftById = params => {
         params,
     });
 }
+
+/**
+ * 
+ * 根据卷宗id获取章节列表
+ * @param { number } volumeId 卷宗id
+ * @param { number } pageNo
+ * @param { number } pageSize
+ */
+export const getAppChapterListByVolumeId = params => {
+    return request({
+        url: "/author/cms/chapter/getAppChapterListByVolumeId",
+        method: 'get',
+        params,
+    });
+}

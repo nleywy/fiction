@@ -59,6 +59,11 @@ const worksRouter = [
                         component: () => import('@/pages/writing/volume/index'),
                         name:'volume'
                     },
+                    {
+                        path: '/writing/published',
+                        component: () => import('@/pages/writing/published/index'),
+                        name: 'published'
+                    }
                 ]
             },
         ]

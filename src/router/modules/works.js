@@ -5,11 +5,49 @@ const worksRouter = [
     {
         path: '/works',
         component: layout,
+        redirect: '/works/management',
+        meta: {
+            title: "作品管理",
+        },
+        name: 'works',
         children: [
             {
-                path: '',
+                path: 'management',
                 component: works,
-                name: 'works'
+            },
+            {
+                path: '/writing',
+                component: () => import('@/pages/writing/index.vue'),
+                name: 'writing',
+                children: [
+                    {
+                        path: 'draft',
+                        component: () => import('@/pages/writing/draft/index'),
+                        name: 'draft',
+                        meta: {
+                            hideLeftMenu: true,
+                            title: "草稿箱",
+                        },
+                    },
+                    {
+                        path: 'volume',
+                        component: () => import('@/pages/writing/volume/index'),
+                        name:'volume',
+                        meta: {
+                            hideLeftMenu: true,
+                            title: "分卷管理",
+                        },
+                    },
+                    {
+                        path: 'published',
+                        component: () => import('@/pages/writing/published/index'),
+                        name: 'published',
+                        meta: {
+                            hideLeftMenu: true,
+                            title: "已发章节",
+                        },
+                    }
+                ]
             },
         ]
     },
@@ -29,57 +67,7 @@ const worksRouter = [
             },
         ]
     },
-    // {
-    //     path: '/createWorkSuccess/:id',
-    //     component: layout,
-    //     name: 'createWorkSuccessWork',
-    //     children: [
-    //         {
-    //             path: '',
-    //             component: () => import('@/pages/works/createWorkSuccess.vue'),
-    //         },
-    //     ]
-    // },
-    {
-        path: '/writing',
-        component: layout,
-        name: 'writing',
-        meta: {
-            hideLeftMenu: true,
-        },
-        children: [
-            {
-                path: '',
-                component: () => import('@/pages/writing/index.vue'),
-                children: [
-                    {
-                        path: '/writing/draft',
-                        component: () => import('@/pages/writing/draft/index'),
-                        name: 'draft',
-                        meta: {
-                            hideLeftMenu: true,
-                        },
-                    },
-                    {
-                        path: '/writing/volume',
-                        component: () => import('@/pages/writing/volume/index'),
-                        name:'volume',
-                        meta: {
-                            hideLeftMenu: true,
-                        },
-                    },
-                    {
-                        path: '/writing/published',
-                        component: () => import('@/pages/writing/published/index'),
-                        name: 'published',
-                        meta: {
-                            hideLeftMenu: true,
-                        },
-                    }
-                ]
-            },
-        ]
-    },
+
 ]
 
 export default worksRouter;

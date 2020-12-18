@@ -14,9 +14,9 @@
         </div>
         <div class="volume-con">
             <div class="btns">
-                <el-button plain v-if="activeData.sortNum != 0 && activeData.sortNum != 1" @click="handleDel">删除分卷</el-button>
+                <el-button plain class="btn" size="small" v-if="activeData.sortNum != 0 && activeData.sortNum != 1" @click="handleDel">删除分卷</el-button>
                 <!-- <el-button v-if="activeData.sortNum > 1" type="primary" @click="handleUpdate">修改</el-button> -->
-                <el-button v-if="activeData.sortNum != 0" type="primary" @click="handleSubmit">保存</el-button>
+                <el-button size="small" class="btn" v-if="activeData.sortNum != 0" type="primary" @click="handleSubmit">保存</el-button>
             </div>
 
             <el-form label-width="210px">
@@ -42,7 +42,7 @@
                         {{ activeData.notes }}
                     </template>
                     <template v-else>
-                        <el-input type="textarea" v-model="activeData.notes" :maxlength="50" show-word-limit :rows="4" resize="none"></el-input>
+                        <el-input type="textarea" v-model="activeData.notes" :maxlength="50" show-word-limit :rows="6" resize="none"></el-input>
                     </template>
                 </el-form-item>
             </el-form>
@@ -159,7 +159,6 @@ export default {
         async addOrUpdateAppVolume() {
             const res = await addOrUpdateAppVolume({ ...this.activeData, sortNum: this.sortNum });
             
-            console.log(res);
             if(res.code === "200") {
                 this.getAppVolumeListByBookId();
                 this.$message.success("保存分卷成功");
@@ -187,7 +186,7 @@ export default {
 
         handleSubmit() {
             if(parseInt(this.sortNum) < 2) {
-                this.$message.warning("分卷序号必须填入大于2的正整数");
+                this.$message.warning("分卷序号必须填入大于等于2的正整数");
                 return ;
             }
 
@@ -245,7 +244,7 @@ export default {
     .volume-left {
         display: inline-block;
         width: 245px;
-        height: 700px;
+        height: 650px;
         margin-right: 20px;
         padding: 10px 0;
         vertical-align: top;
@@ -262,14 +261,14 @@ export default {
                 background: rgba(2, 103, 229, 0.05);
             }
             .name {
-                font-size: 18px;
+                font-size: 14px;
                 font-weight: 400;
                 line-height: 25px;
                 margin-bottom: 10px;
             }
             .des {
                 font-weight: 400;
-                font-size: 14px;
+                font-size: 12px;
                 line-height: 20px;
                 vertical-align: middle;
                 .el-icon-time {
@@ -279,10 +278,11 @@ export default {
             }
         }
     }
+
     .volume-con {
         display: inline-block;
         width: 935px;
-        height: 700px;
+        height: 650px;
         padding-top: 100px;
         background-color: #fff;
         vertical-align: top;
@@ -292,21 +292,24 @@ export default {
             position: absolute;
             top: 30px;
             right: 30px;
+
+            .btn {
+                width: 88px;
+                font-size: 14px;
+                margin-left: 20px;
+            }
         }
 
         & /deep/ .el-form-item__label {
-            // width: 210px;
-            // height: 28px;
-            font-size: 20px;
+            font-size: 14px;
             font-family: PingFangSC-Regular, PingFang SC;
             font-weight: 400;
             color: #7B7B7B;
-            // line-height: 28px;
         }
 
         & /deep/ .el-form-item__content {
             width: calc(100% - 270px);
-            font-size: 18px;
+            font-size: 14px;
             font-family: PingFangSC-Regular, PingFang SC;
             font-weight: 400;
             color: #030303;

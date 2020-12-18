@@ -386,6 +386,7 @@ export default {
             .btn {
                 width: 88px;
                 font-size: 14px;
+                margin-left: 20px;
             }
         }
     }

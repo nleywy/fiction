@@ -88,7 +88,6 @@ export default {
             dialogFormVisible: false,
             scheduleTime:'',
             publishType: null, //1-及时，2-定时
-            TiLength: 0,
             chapterDraft: {},
             loading: false,
             isUpdate: false,
@@ -269,6 +268,7 @@ export default {
             .btn {
                 width: 88px;
                 font-size: 14px;
+                margin-left: 20px;
             }
         }
     }

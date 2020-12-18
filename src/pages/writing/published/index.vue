@@ -117,11 +117,12 @@ export default {
                 const appVolumeList = res.data.appVolumeList.map(item => {
                     item._key = item.createTime + "_" + item.volumeId;
                     item._label = item.title;
-                    item._isLeaf = item.chapterCount <= 0;
+                    // item._isLeaf = item.chapterCount <= 0;
+                    item._isLeaf = false;
                     return item;
                 });
 
-                const defaultKeys = appVolumeList.find(item => !item._isLeaf);
+                const defaultKeys = appVolumeList.find(item => !item._isLeaf && item.chapterCount > 0);
 
                 this.defaultKeys = defaultKeys ? [ defaultKeys._key ] : [];
 
@@ -160,7 +161,12 @@ export default {
             if(!data._isLeaf) {
                 return ;
             }
-            
+
+            if(data.chapterCount <= 0) {
+                this.$message.warning("")
+                return ;
+            }
+
             this.getAuthorChapterContentById(data.chapterId);
         },
 
@@ -170,6 +176,15 @@ export default {
          */
         async handleTreeLeafLoad(node, resolve) {
             const { data } = node;
+
+            try {
+                if(data.chapterCount <= 0) {
+                    resolve(false)
+                }
+            } catch (error) {
+                return ;
+            }
+
             if(data.children && data.children.length || !data.volumeId) {
                 resolve([]);
                 return ;

@@ -1,12 +1,15 @@
 <template>
     <div class="chapterDraftList">
+        
+        <Breadcrumb />
+
         <div class="chapterDraftList__title">
             <template v-for='(item, index) in title'>
                 <span :key="index" :class="[ 'chapterDraftList__title__text', item.id == activity? 'activity' : '' ]" @click="changeRouter(item.id)">{{item.name}}</span>
             </template>
             <div class="chapterDraftList__btns">
-                <el-button type="primary" @click="addNewVolume" size="small">新建分卷</el-button>
-                <el-button type="primary" @click="addNewChapter" size="small">新建章节</el-button>
+                <el-button type="primary" @click="addNewVolume" size="small" class="btn">新建分卷</el-button>
+                <el-button type="primary" @click="addNewChapter" size="small" class="btn">新建章节</el-button>
             </div>
         </div>
         <router-view></router-view>
@@ -15,9 +18,13 @@
 <script>
 import Bus from '@/tools/bus.js';
 import { getAppBookDetailById } from "@/api/book";
+import Breadcrumb from "@/components/breadcrumb"
 
 export default {
     name: "chapterDraftList",
+    components: {
+        Breadcrumb,
+    },
     data(){
         return {
             title:[
@@ -96,6 +103,12 @@ export default {
         float: right;
         margin-right: 30px;
         margin-top: 17px;
+
+        .btn {
+            width: 88px;
+            font-size: 14px;
+            margin-left: 20px;
+        }
     }
     &__title{
         height: 66px;

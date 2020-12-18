@@ -151,10 +151,13 @@ export default {
          */
         handleClickWritingBtn(bookId) {
             this.$router.push({
-                path: "/writing/draft",
+                name: "draft",
                 query: {
                     bookId,
                 },
+                params: {
+                    bookId,
+                }
             })
         },
 

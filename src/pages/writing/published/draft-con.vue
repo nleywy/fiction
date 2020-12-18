@@ -66,6 +66,7 @@
         </slot>
     </div>
 </template>
+
 <script>
 import { updateAuthorChapter, } from "@/api/chapter";
 import { getAppVolumeListByBookId } from "@/api/volume";
@@ -140,8 +141,6 @@ export default {
     methods: {
         handleSubmit() {
             const content = this.$refs.editor.getContent();
-
-            console.log(this.chapterDraft);
 
             if(this.chapterDraft.reviewState == 2) {
                 if(this.chapterDraft.content === content) {
@@ -263,14 +262,13 @@ export default {
         display: flex;
         // margin-bottom: 20px;
         justify-content: space-between;
+
         &__btns {
             display: inline-block;
 
             .btn {
                 width: 88px;
                 font-size: 14px;
-                border-radius: 5px;
-
             }
         }
     }

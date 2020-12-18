@@ -44,6 +44,9 @@ const worksRouter = [
         path: '/writing',
         component: layout,
         name: 'writing',
+        meta: {
+            hideLeftMenu: true,
+        },
         children: [
             {
                 path: '',
@@ -52,17 +55,26 @@ const worksRouter = [
                     {
                         path: '/writing/draft',
                         component: () => import('@/pages/writing/draft/index'),
-                        name: 'draft'
+                        name: 'draft',
+                        meta: {
+                            hideLeftMenu: true,
+                        },
                     },
                     {
                         path: '/writing/volume',
                         component: () => import('@/pages/writing/volume/index'),
-                        name:'volume'
+                        name:'volume',
+                        meta: {
+                            hideLeftMenu: true,
+                        },
                     },
                     {
                         path: '/writing/published',
                         component: () => import('@/pages/writing/published/index'),
-                        name: 'published'
+                        name: 'published',
+                        meta: {
+                            hideLeftMenu: true,
+                        },
                     }
                 ]
             },

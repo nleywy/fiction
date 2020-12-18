@@ -32,6 +32,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import draftCon from './draft-con';
 import Bus from '@/tools/bus.js'
@@ -49,11 +50,6 @@ export default {
             draftId: null,
             appVolumeList: [],
             defaultProps: {
-                // isLeaf(data, node) {
-                //     console.log(data);
-                //     const keys = Object.keys(data);
-                //     return !keys.includes("chapterCount");
-                // },
                 isLeaf: '_isLeaf',
             },
             bookId: null,
@@ -208,15 +204,18 @@ export default {
 
 <style lang="scss" scoped>
 .draft {
-    display: flex;
+    display: block;
+    // display: flex;
+    // justify-content: space-between;
     
     .draft-left {
-        background-color: #fff;
-        padding: 10px 0;
+        display: inline-block;
         width: 245px;
-        height: 802px;
-        overflow: auto;
+        height: 853px;
         margin-right: 20px;
+        padding: 10px 0;
+        background-color: #ffffff;
+        vertical-align: top;
 
         &-leaf {
             &-label {
@@ -293,7 +292,9 @@ export default {
     }
 
     .draft-con{
-        flex:1;
+        display: inline-block;
+        width: 935px;
+        vertical-align: top;
     }
 }
 </style>

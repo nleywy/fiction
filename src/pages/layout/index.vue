@@ -3,15 +3,14 @@
         <public-header />
         
         <section class="app">
-            <div class='tags'>
+            <div class='tags' v-if="!hideLeftMenu">
                 <template v-for='tag in leftTags'>
                     <div :class="[ 'tag', leftTagsactivity == tag.id ? 'activity' : '' ]" :key='tag.id' @click='changeRouter(tag.id)'>
                         <span>{{tag.name}}</span>
                     </div>
                 </template>
             </div>
-
-            <div class="container">
+            <div class="container" :style="{ width: !hideLeftMenu ? '996px' : '1200px' }">
                 <transition name="fade-transform" mode="out-in">
                     <router-view @hook:mounted="handleHookMounted"></router-view>
                 </transition>
@@ -41,6 +40,9 @@ export default {
         leftTags() {
             return this.$store.state.leftTags;
         },
+        hideLeftMenu() {
+            return this.$route.meta.hideLeftMenu;
+        }
     },
     methods: {
         changeRouter(id){

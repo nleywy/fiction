@@ -1,14 +1,16 @@
 <template>
     <div class="volume">
         <div class="volume-left">
-            <template v-for='(volume, index) in appVolumeList'>
-                <div :class="['volume-left__item',active == index?'activity':'']" @click='changeVolume(volume, index)' :key="volume.volumeId">
-                    <div class="name">{{volume.title}}</div>
-                    <div class="des">
-                        共{{volume.chapterCount}}章
+            <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar">
+                <template v-for='(volume, index) in appVolumeList'>
+                    <div :class="['volume-left__item',active == index?'activity':'']" @click='changeVolume(volume, index)' :key="volume.volumeId">
+                        <div class="name">{{volume.title}}</div>
+                        <div class="des">
+                            共{{volume.chapterCount}}章
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </el-scrollbar>
         </div>
         <div class="volume-con">
             <div class="btns">
@@ -238,14 +240,17 @@ export default {
 
 <style lang="scss" scoped>
 .volume{
-    display: flex;
+    display: block;
+
     .volume-left {
-        background-color: #fff;
-        padding: 10px 0;
+        display: inline-block;
         width: 245px;
-        height: 802px;
-        overflow: auto;
+        height: 700px;
         margin-right: 20px;
+        padding: 10px 0;
+        vertical-align: top;
+        background-color: #fff;
+
         &__item {
             padding: 20px;
             color: #7b7b7b;
@@ -274,10 +279,13 @@ export default {
             }
         }
     }
-    .volume-con{
-        flex:1;
-        background-color: #fff;
+    .volume-con {
+        display: inline-block;
+        width: 935px;
+        height: 700px;
         padding-top: 100px;
+        background-color: #fff;
+        vertical-align: top;
         position: relative;
 
         .btns {

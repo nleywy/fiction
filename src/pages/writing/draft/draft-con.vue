@@ -1,100 +1,107 @@
 <template>
-    <div class="draftCon">
-        <el-form ref="ruleForm" :model="chapterDraft" :rules="rules">
-            <el-form-item prop="volumeId">
-                <div class="draftCon-title">
-                    <el-select v-model="chapterDraft.volumeId" placeholder="请选择分卷" style="width: 215px;">
-                        <template v-for="item in appVolumeList">
-                            <el-option :label="item.title" :value="item.volumeId" :key="item.volumeId"></el-option>
-                        </template>
-                    </el-select>
-                    <div class="draftCon-title__btns">
-                        <el-button @click="deleteChapterDraft">删除</el-button>
-                        <el-button @click="saveOrPublishChapter(false)">保存</el-button>
-                        <el-button type="primary" @click="dialogFormVisible = true">发布</el-button>
+    <div>
+        <div class="draftCon">
+            <el-form ref="ruleForm" :model="chapterDraft" :rules="rules">
+                <el-form-item prop="volumeId">
+                    <div class="draftCon-title">
+                        <el-select v-model="chapterDraft.volumeId" placeholder="请选择分卷" style="width: 215px;">
+                            <template v-for="item in appVolumeList">
+                                <el-option :label="item.title" :value="item.volumeId" :key="item.volumeId"></el-option>
+                            </template>
+                        </el-select>
+                        <div class="draftCon-title__btns">
+                            <el-button @click="deleteChapterDraft" plain size="small" class="btn">删除</el-button>
+                            <el-button @click="saveOrPublishChapter(false)" plain size="small" class="btn">保存</el-button>
+                            <el-button type="primary" @click="dialogFormVisible = true" size="small" class="btn">发布</el-button>
+                        </div>
                     </div>
-                </div>
-            </el-form-item>
-            <el-form-item prop="chapterName">
-                <el-input
-                    type="textarea"
-                    :rows="4"
-                    resize="none"
-                    placeholder="在此输入章节号和章节名。例如：“第十章 我和秋天有个约定”"
-                    v-model="chapterDraft.chapterName"
-                ></el-input>
-            </el-form-item>
-
-            <el-form-item prop="content">
-                <div class="quillCon">
-                    <editor ref="editor"/>
-                </div>
-            </el-form-item>
-
-            <el-form-item prop="remark">
-                <div class="remark">
+                </el-form-item>
+                <el-form-item prop="chapterName">
                     <el-input
-                        type="textarea"
-                        :rows="4"
-                        resize="none"
-                        placeholder="在此输入作者的话"
-                        v-model="chapterDraft.remark"
-                        style="margin-bottom: 20px;"
-                        :maxlength="500"
-                        show-word-limit
-                        >
-                    </el-input>
-                    <!-- <span class="textNum">{{ chapterDraft.remark ? chapterDraft.remark.length : 0 }}/500</span> -->
-                </div>
-            </el-form-item>
-        </el-form>
+                        style="font-size: 20px;"
+                        class="draftCon-input"
+                        type="text"
+                        placeholder="在此输入章节号和章节名。例如：“第十章 我和秋天有个约定”"
+                        v-model="chapterDraft.chapterName"
+                    ></el-input>
+                </el-form-item>
 
-        <el-dialog title="确认章节信息" :visible.sync="dialogFormVisible" @open="handleOpen" @close="handleClose">
-            <el-form>
-                <div class="dialog-info">
-                    <div class="name">书籍名称</div>
-                    <div class="value">{{chapterDraft.bookName}}</div>
-                </div>
-                <div class="dialog-info">
-                    <div class="name">最新章节</div>
-                    <div class="value">{{chapterDraft.latestChapterName}}</div>
-                </div>
-                <div class="dialog-info">
-                    <div class="name">发布章节</div>
-                    <div class="value">{{chapterDraft.chapterName}}</div>
-                </div>
-                <div class="dialog-info">
-                    <div class="name">章节字数</div>
-                    <div class="value">{{ chapterDraft.content ? chapterDraft.content.length : 0}}字</div>
-                </div>
-                <div class="dialog-info">
-                    <div class="name">分卷信息</div>
-                    <div class="value">{{findTitle(chapterDraft.volumeId)}}</div>
-                </div>
-                <div class="dialog-info">
-                    <div class="name">发布时间</div>
-                    <div class="value">
-                        <el-radio v-model="publishType" label="1">及时</el-radio>
-                        <el-radio v-model="publishType" label="2">定时</el-radio>
-                        <el-date-picker
-                            style='display:block;margin-top: 12px'
-                            v-model="scheduleTime"
-                            type="datetime"
-                            format="yyyy-MM-dd HH:mm:ss"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            v-show='publishType === "2"'
-                            placeholder="选择日期时间">
-                        </el-date-picker>
+                <el-form-item prop="content">
+                    <div class="quillCon">
+                        <editor ref="editor"/>
                     </div>
-                </div>
+                </el-form-item>
+
+                <el-form-item prop="remark">
+                    <div class="remark">
+                        <el-input
+                            style="font-size: 16px;"
+                            class="draftCon-input"
+                            type="textarea"
+                            :rows="6"
+                            resize="none"
+                            placeholder="在此输入作者的话"
+                            :maxlength="500"
+                            show-word-limit
+                            v-model="chapterDraft.remark"
+                            >
+                        </el-input>
+                        <!-- <span class="textNum">{{ chapterDraft.remark ? chapterDraft.remark.length : 0 }}/500</span> -->
+                    </div>
+                </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveOrPublishChapter(true)" :loading="loading">发 布</el-button>
-            </div>
-        </el-dialog>
+
+            <el-dialog title="确认章节信息" :visible.sync="dialogFormVisible" @open="handleOpen" @close="handleClose">
+                <el-form>
+                    <div class="dialog-info">
+                        <div class="name">书籍名称</div>
+                        <div class="value">{{chapterDraft.bookName}}</div>
+                    </div>
+                    <div class="dialog-info">
+                        <div class="name">最新章节</div>
+                        <div class="value">{{chapterDraft.latestChapterName}}</div>
+                    </div>
+                    <div class="dialog-info">
+                        <div class="name">发布章节</div>
+                        <div class="value">{{chapterDraft.chapterName}}</div>
+                    </div>
+                    <div class="dialog-info">
+                        <div class="name">章节字数</div>
+                        <div class="value">{{ chapterDraft.content ? chapterDraft.content.length : 0}}字</div>
+                    </div>
+                    <div class="dialog-info">
+                        <div class="name">分卷信息</div>
+                        <div class="value">{{findTitle(chapterDraft.volumeId)}}</div>
+                    </div>
+                    <div class="dialog-info">
+                        <div class="name">发布时间</div>
+                        <div class="value">
+                            <el-radio v-model="publishType" label="1">及时</el-radio>
+                            <el-radio v-model="publishType" label="2">定时</el-radio>
+                            <el-date-picker
+                                style='display:block;margin-top: 12px'
+                                v-model="scheduleTime"
+                                type="datetime"
+                                format="yyyy-MM-dd HH:mm:ss"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                v-show='publishType === "2"'
+                                placeholder="选择日期时间">
+                            </el-date-picker>
+                        </div>
+                    </div>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="saveOrPublishChapter(true)" :loading="loading">发 布</el-button>
+                </div>
+            </el-dialog>
+        </div>
+        <slot>
+            <div class="draftCon-footer"><span>本章字数：{{ chapterDraft.wordCount }} </span> <span style="margin-left: 30px;">发布时间：{{ chapterDraft.createTime }}</span></div>
+        </slot>
     </div>
 </template>
+
 <script>
 import {
     deleteChapterDraft,
@@ -365,16 +372,40 @@ export default {
 .draftCon {
     display: flex;
     height: 100%;
+    padding: 30px;
     flex-direction: column;
+    background: #ffffff;
+
     &-title {
         display: flex;
         // margin-bottom: 20px;
         justify-content: space-between;
         &__btns {
             display: inline-block;
+
+            .btn {
+                width: 88px;
+                font-size: 14px;
+            }
         }
     }
-    .quillCon,
+    
+    &-input {
+        & /deep/ .el-textarea__inner,
+        & /deep/ .el-input__inner {
+            border: 0px;
+            padding: 0px;
+        }
+
+        & /deep/ .el-input__inner {
+            color: #030303;
+        }
+
+        & /deep/ .el-textarea__inner {
+            color: #7B7B7B;
+        }
+    }
+
     .remark {
         position: relative;
         // margin-bottom: 20px;
@@ -411,5 +442,15 @@ export default {
             margin-right: 20px;
         }
     }
+}
+
+.draftCon-footer {
+    margin: 10px 0px;
+    height: 17px;
+    font-size: 12px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #7B7B7B;
+    line-height: 17px;
 }
 </style>

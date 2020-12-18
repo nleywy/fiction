@@ -1,5 +1,5 @@
 <template>
-    <div style="Editor">
+    <div style="Editor" v-loading="loading">
         <Editor
             ref="Editor"
             :api-key="apikey"
@@ -11,6 +11,7 @@
             :placeholder="placeholder"
             v-model="editorContent"
             :disabled="disabled"
+            @hook:mounted="hookMounted"
         />
 
         <div class="Editor-wordcount">{{ editorContent.length }}/20000</div>
@@ -37,6 +38,7 @@ export default {
     },
     data() {
         return {
+            loading: true,
             editorContent: "",
             placeholder: "在此输入正文，不满1000字时，设定该章节为免费章节",
             apikey: "zg1d2xp43sktfw6i580bg4awi1cicuq462z75l45aiayhw8b",
@@ -102,20 +104,16 @@ export default {
         setContent(newVal) {
             this.editorContent = newVal;
         },
-        // /**
-        //  * 
-        //  * 获取内容
-        //  */
-        // handleGetContent(event) {
-        //     console.log(event.content);
-        //     this.$emit("getContent", event.content);
-        // }
+        hookMounted() {
+            this.loading = false;
+        }
     },
 }
 </script>
 
 <style lang="scss" scoped>
     .Editor {
+        height: 500px;
         position: relative;
 
         &-wordcount {

@@ -12,3 +12,17 @@
     border-top: 0px solid #D8D8D8 !important;
     border-bottom: 1px solid #D8D8D8 !important;
 }
+
+.tox-statusbar__text-container {
+    display: none !important;
+}
+
+.mce-content-body::-webkit-input-placeholder {
+    color: #B8B8B8;
+}
+.mce-content-body::-moz-input-placeholder {
+    color: #B8B8B8;
+}
+.mce-content-body::-ms-input-placeholder {
+    color: #B8B8B8;
+}

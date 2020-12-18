@@ -1,15 +1,17 @@
 <template>
     <div class="draft">
         <div class="draft-left">
-            <template v-for='(draft, index) in draftListaft'>
-                <div :class="[ 'draft-left__item', active == index ? 'activity' : '' ]" @click='changeDraft(draft.draftId, index)' :key="index">
-                    <div class="name">{{draft.chapterName}}</div>
-                    <div class="des">
-                        <i class="el-icon-time" v-if='draft.createTim'></i>
-                        {{draft.createTime}} {{draft.wordCount}}字
+            <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar">
+                <template v-for='(draft, index) in draftListaft'>
+                    <div :class="[ 'draft-left__item', active == index ? 'activity' : '' ]" @click='changeDraft(draft.draftId, index)' :key="index">
+                        <div class="name">{{draft.chapterName}}</div>
+                        <div class="des">
+                            <i class="el-icon-time" v-if='draft.createTim'></i>
+                            {{draft.createTime}} {{draft.wordCount}}字
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </el-scrollbar>
         </div>
         <!-- <div class="draft-con" v-if='draftId'> -->
         <div class="draft-con">
@@ -75,17 +77,22 @@ export default {
 
 <style lang="scss" scoped>
 .draft {
-    display: flex;
+    // display: flex;
+    display: block;
+
     .draft-left {
-        background-color: #fff;
-        padding: 10px 0;
+        display: inline-block;
         width: 245px;
-        height: 802px;
-        overflow: auto;
+        height: 875px;
         margin-right: 20px;
+        padding: 10px 0;
+        background-color: #fff;
+        vertical-align: top;
+
         &__item {
             cursor: pointer;
-            padding: 20px;
+            height: 75px;
+            padding: 14px 30px;
             color: #7b7b7b;
 
             &:hover,
@@ -94,14 +101,17 @@ export default {
                 background: rgba(2, 103, 229, 0.05);
             }
             .name {
-                font-size: 18px;
-                font-weight: 400;
-                line-height: 25px;
+                height: 20px;
                 margin-bottom: 10px;
+                font-size: 14px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                line-height: 20px;
+
             }
             .des {
                 font-weight: 400;
-                font-size: 14px;
+                font-size: 12px;
                 line-height: 20px;
                 vertical-align: middle;
                 .el-icon-time {
@@ -111,8 +121,10 @@ export default {
             }
         }
     }
-    .draft-con{
-        flex:1;
+    .draft-con {
+        display: inline-block;
+        width: 935px;
+        vertical-align: top;
     }
 }
 </style>

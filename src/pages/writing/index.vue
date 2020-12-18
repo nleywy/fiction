@@ -5,8 +5,8 @@
                 <span :key="index" :class="[ 'chapterDraftList__title__text', item.id == activity? 'activity' : '' ]" @click="changeRouter(item.id)">{{item.name}}</span>
             </template>
             <div class="chapterDraftList__btns">
-                <el-button type="primary" @click="addNewVolume">新建分卷</el-button>
-                <el-button type="primary" @click="addNewChapter">新建章节</el-button>
+                <el-button type="primary" @click="addNewVolume" size="small">新建分卷</el-button>
+                <el-button type="primary" @click="addNewChapter" size="small">新建章节</el-button>
             </div>
         </div>
         <router-view></router-view>
@@ -92,21 +92,26 @@ export default {
 <style lang="scss" scoped>
 .chapterDraftList{
     &__btns{
-        display: inline-block;
+        // display: inline-block;
         float: right;
-        margin-top: 29px;
+        margin-right: 30px;
+        margin-top: 17px;
     }
     &__title{
+        height: 66px;
         background: #FFFFFF;
         margin-bottom: 20px;
         cursor: pointer;
+
         &__text{
-            padding: 25px 20px;
+            padding: 0px 20px;
             display: inline-block;
-            font-size: 22px;
-            font-weight: 400;
+            font-size: 18px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
             color: #7B7B7B;
-            line-height: 30px;
+            line-height: 66px;
+
             &.activity{
                 color: #3399FE;
             }

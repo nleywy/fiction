@@ -2,12 +2,14 @@
     <header class="header">
         <section class="container">
             <div class="left">
-                <el-image
-                    class="logo"
-                    style="width: 66px; height: 52px"
-                    :src="url"
-                    >
-                </el-image>
+                <router-link to="/">
+                    <el-image
+                        class="logo"
+                        style="width: 40px; height: 40px"
+                        :src="url"
+                        >
+                    </el-image>
+                </router-link>
                 <span class="title">作者中心</span>
             </div>
 
@@ -15,16 +17,16 @@
                 <div class="right">
                     <el-image
                         class="logo"
-                        style="width: 32px; height: 20px;margin-right: 50px;"
-                        :src="url"
+                        style="width: 24px; height: 24px;margin-right: 50px;"
+                        :src="require('@/assets/pc.png')"
                         >
                     </el-image>
 
                     <el-dropdown trigger="click" @command="handleCommand">
                         <el-avatar
                             class="avatar"
-                            style="width: 44px; height: 44px;"
-                            :src="url"
+                            style="width: 36px; height: 36px;"
+                            :src="url || require('@/assets/avatar.png')"
                             >
                         </el-avatar>
                         <el-dropdown-menu slot="dropdown">
@@ -97,7 +99,7 @@ export default {
     .header {
         box-sizing: border-box;
         width: 100%;
-        height: 100px;
+        height: 70px;
         margin-bottom: 20px;
         background: #FFFFFF;
 
@@ -111,13 +113,13 @@ export default {
             .right {
                 .title {
                     display: inline-block;
-                    height: 100px;
-                    margin-left: 20px;
-                    font-size: 24px;
+                    height: 70px;
+                    margin-left: 10px;
+                    font-size: 20px;
                     font-family: PingFangSC-Regular, PingFang SC;
                     font-weight: 400;
                     color: #030303;
-                    line-height: 100px;
+                    line-height: 70px;
                     vertical-align: middle;
                 }
 
@@ -130,11 +132,11 @@ export default {
 
             .left {
                 display: inline-block;
-                height: 100px;
+                height: 70px;
             }
 
             .right {
-                height: 100px;
+                height: 70px;
                 position: absolute;
                 top: 50%;
                 right: 0px;

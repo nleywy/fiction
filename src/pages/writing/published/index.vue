@@ -2,39 +2,51 @@
     <div class="draft">
         <div class="draft-left">
             <el-scrollbar style="height: 100%;" class="pageScrollbar">
-                <el-tree ref="tree" :data="appVolumeList" highlight-current :props="defaultProps" lazy @node-click="handleNodeClick" node-key="_key" :load="handleTreeLeafLoad">
+                <el-tree
+                    ref="tree"
+                    :default-expanded-keys="defaultKeys"
+                    :data="appVolumeList"
+                    highlight-current
+                    :props="defaultProps"
+                    lazy
+                    @node-click="handleNodeClick"
+                    node-key="_key"
+                    :load="handleTreeLeafLoad"
+                    >
                     <template slot-scope="{ node, data }">
                         <div v-if="!node.isLeaf">
                             <label for="" class="draft-left-label">{{ data._label }}</label>
                             <div class="draft-left-count">共{{ data.chapterCount }}章</div>
                         </div>
                         <div v-else class="draft-left-leaf">
-                            <label for="" class="draft-left-leaf-label">{{ data._label }}</label>
+                            <label for="" class="draft-left-leaf-label"><span :style="{ color: statusColor[data.reviewState] }">{{ data.reviewState | filterReviewState(enumsGetMap) }}</span> {{ data._label }}</label>
                             <div class="draft-left-leaf-count">{{ data.createTime.substring(6, 16) }} {{ data.wordCount }}字</div>
                         </div>
                     </template>
                 </el-tree>
             </el-scrollbar>
         </div>
-        <!-- <div class="draft-con" v-if='draftId'> -->
+
         <div class="draft-con">
-            <!-- <draftCon :draftId='draftId' :bookId='bookId' @changeDraftList="getChapterDraftListByBookId"></draftCon> -->
+            <draftCon :chapterData="chapterData" :bookId="bookId" @updateTree="updateTree"></draftCon>
         </div>
     </div>
 </template>
 <script>
-// import draftCon from '../draft/draft-con';
+import draftCon from './draft-con';
 import Bus from '@/tools/bus.js'
 import { getAppVolumeListByBookId } from "@/api/volume";
-import { getAppChapterListByVolumeId } from "@/api/chapter";
+import { getAppChapterListByVolumeId, getAuthorChapterContentById } from "@/api/chapter";
+import { mapGetters } from "vuex";
 
 export default {
     name: "draft",
     components: {
-        // draftCon
+        draftCon
     },
     data() {
         return {
+            draftId: null,
             appVolumeList: [],
             defaultProps: {
                 // isLeaf(data, node) {
@@ -45,31 +57,55 @@ export default {
                 isLeaf: '_isLeaf',
             },
             bookId: null,
+            chapterData: {},
+            statusColor: {
+                0: "#FF8D2B",
+                1: "#3399FE",
+                2: "#FF2A28",
+            },
+            defaultKeys: [],
         };
     },
+    computed: {
+        ...mapGetters("enums", [ "enumsGetMap" ])
+    },
     methods: {
-        // /**
-        //  * 
-        //  * 根据卷宗id获取章节列表
-        //  * @param { number } volumeId 卷宗id
-        //  * @param { number } pageNo
-        //  * @param { number } pageSize
-        //  */
-        // async getAppChapterListByVolumeId(volumeId, _key) {
-        //     const res = await getAppChapterListByVolumeId({ volumeId, pageNo: 1, pageSize: 10000, });
-        //     console.log(res);
+        updateTree(data) {
+            this.getAppChapterListByVolumeId(data.volumeId)
+                .then(list => {
+                    const find = this.appVolumeList.find(item => item.volumeId === data.volumeId);
 
-        //     if(res.code === "200") {
-        //         const list = res.data.chapterList.map(item => {
-        //             item._key = item.createTime + "_" + item.chapterId;
-        //             item._label = item.chapterName;
-        //             item._isLeaf = true;
-        //             return item;
-        //         })
+                    if(find) {
+                        this.$refs.tree.updateKeyChildren(find._key, list);
+                    }
+                });
+        },
 
-        //         this.$refs.tree.updateKeyChildren(_key, list);
-        //     }
-        // },
+        /**
+         * 
+         * 根据卷宗id获取章节列表
+         * @param { number } volumeId 卷宗id
+         * @param { number } pageNo
+         * @param { number } pageSize
+         */
+        getAppChapterListByVolumeId(volumeId) {
+            return new Promise(async (resolve, reject) => {
+                const res = await getAppChapterListByVolumeId({ volumeId, pageNo: 1, pageSize: 10000, });
+
+                if(res.code === "200") {
+                    const list = res.data.chapterList.map(item => {
+                        item._key = item.createTime + "_" + item.chapterId;
+                        item._label = item.chapterName;
+                        item._isLeaf = true;
+                        return item;
+                    })
+
+                    resolve(list);
+                }
+
+                reject(false)
+            })
+        },
 
         /**
          * 
@@ -82,17 +118,54 @@ export default {
             const res = await getAppVolumeListByBookId({ bookId: this.bookId, pageNo: 1, pageSize: 10000, });
 
             if(res.code === "200") {
-                this.appVolumeList = res.data.appVolumeList.map(item => {
+                const appVolumeList = res.data.appVolumeList.map(item => {
                     item._key = item.createTime + "_" + item.volumeId;
                     item._label = item.title;
                     item._isLeaf = item.chapterCount <= 0;
                     return item;
                 });
+
+                const defaultKeys = appVolumeList.find(item => !item._isLeaf);
+
+                this.defaultKeys = defaultKeys ? [ defaultKeys._key ] : [];
+
+                if(defaultKeys) {
+                    this.defaultKeys = [ defaultKeys._key ];
+                    this.getAppChapterListByVolumeId(defaultKeys.volumeId)
+                        .then(list => {
+                            this.getAuthorChapterContentById(list[0].chapterId);
+                            setTimeout(() => {
+                                this.$refs.tree.setCurrentKey(list[0]._key);
+                            }, 300);
+                        });
+                }
+
+                this.appVolumeList = appVolumeList;
             }
         },
 
-        async handleNodeClick(data) {
+        /**
+         * 
+         * 根据id获取作品章节详情
+         * @param { number } chapterId 章节id
+         */
+        async getAuthorChapterContentById(chapterId) {
+            const res = await getAuthorChapterContentById({ chapterId });
 
+            if(res.code === "200") {
+                this.chapterData = res.data.chapter;
+                return ;
+            }
+
+            this.$message.warning(res.msg);
+        },
+
+        async handleNodeClick(data) {
+            if(!data._isLeaf) {
+                return ;
+            }
+            
+            this.getAuthorChapterContentById(data.chapterId);
         },
 
         /**
@@ -106,20 +179,21 @@ export default {
                 return ;
             }
 
-            const res = await getAppChapterListByVolumeId({ volumeId: data.volumeId, pageNo: 1, pageSize: 10000, });
+            this.getAppChapterListByVolumeId(data.volumeId)
+                .then(list => resolve(list))
+                .catch(list => resolve([]));
+        },
+    },
+    filters: {
+        filterReviewState(status, enumsGetMap) {
+            const statusList = enumsGetMap("reviewStatusEnum");
 
-            if(res.code === "200") {
-                const list = res.data.chapterList.map(item => {
-                    item._key = item.createTime + "_" + item.chapterId;
-                    item._label = item.chapterName;
-                    item._isLeaf = true;
-                    return item;
-                });
-
-                resolve(list);
-            }else {
-                resolve([]);
+            const find = statusList.find(item => item.value == status);
+            if(find) {
+                return `[${find.text}]`;
             }
+
+            return "";
         }
     },
     created() {

@@ -75,3 +75,29 @@ export const getAppChapterListByVolumeId = params => {
         params,
     });
 }
+
+/**
+ * 
+ * 根据id获取作品章节详情
+ * @param { number } chapterId 章节id
+ */
+export const getAuthorChapterContentById = params => {
+    return request({
+        url: "/author/cms/chapter/getAuthorChapterContentById",
+        method: 'get',
+        params,
+    });
+}
+
+/**
+ * 
+ * 修改已发布章节内容
+ * @param { string } penName 笔名
+ */
+export const updateAuthorChapter = params => {
+    return request({
+        url: "/author/cms/chapter/updateAuthorChapter",
+        method: 'post',
+        data: params,
+    });
+}

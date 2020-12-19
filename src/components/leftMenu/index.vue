@@ -47,6 +47,15 @@ export default {
             return this.$route.meta.hideLeftMenu;
         }
     },
+    watch: {
+        $route() {
+            const find = this.leftTags.find(item => this.$route.path.includes(item.id));
+
+            if(find) {
+                this.setLeftTagsactivity(find.id);
+            }
+        }
+    },
     methods: {
         setLeftTagsactivity(id) {
             this.leftTagsactivity = id;

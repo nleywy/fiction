@@ -1,3 +1,5 @@
+import { existPenName } from "@/api/authorCms";
+
 // export const phone = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/ig;
 
 // export const phoneValidate = (rule, value, callback) => {
@@ -72,7 +74,7 @@ export const emailValidator = (rule, value, callback) => {
     }
 
     if (!email.test(value)) {
-        return callback(new Error('您输入的内容格式不正确'))
+        return callback(new Error('请输入有效邮箱'))
     }
 
     callback()
@@ -193,6 +195,104 @@ export const percentageValidator = (rule, value, callback) => {
 
     if (!percentage.test(value)) {
         return callback(new Error('请输入100以内的数字，小数点后最多2位数字'))
+    }
+
+    callback()
+}
+
+// 详细地址
+export const addressValidator = (rule, value, callback) => {
+    if (!value) {
+        return callback();
+    }
+
+    const length = value.length;
+
+    if(5 < length && length > 64) {
+        callback();
+    }else {
+        callback(new Error('地址必须在5 - 64个字内'));
+    }
+};
+
+// 真实姓名
+export const realNameValidator = (rule, value, callback) => {
+    if (!value) {
+        return callback();
+    }
+    
+    const length = value.length;
+
+    if(2 < length && length > 10) {
+        callback();
+    }else {
+        callback(new Error('真实姓名请使用2-10位汉字或英文'));
+    }
+};
+
+/**
+ * 
+ * 判断作者笔名是否存在
+ * @param { string } penName 笔名
+ * @returns { boolean } true-存在，false-不存在
+ */
+export function existPenNameRequest(penName) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const res = await existPenName({ penName });
+
+            if(res.code === "200") {
+                resolve(res.data.isExist);
+            }else {
+                reject(true);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+// 验证笔名
+export const penNameValidator = (rule, value, callback) => {
+    if (!value) {
+        return callback();
+    }
+
+    existPenNameRequest(value)
+        .then((bool) => {
+            if(bool) {
+                callback(new Error('该笔名已经被占用，请尝试其他笔名'));
+            }else {
+                callback();
+            }
+        });
+};
+
+// 验证qq
+export const qq = /\d{5,14}/ig;
+
+export const qqValidator = (rule, value, callback) => {
+    if (!value) {
+        return callback();
+    }
+
+    if (!qq.test(value)) {
+        return callback(new Error('请输入有效QQ号'))
+    }
+
+    callback()
+}
+
+// 验证qq
+export const wechat = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/ig;
+
+export const wechatValidator = (rule, value, callback) => {
+    if (!value) {
+        return callback();
+    }
+
+    if (!wechat.test(value)) {
+        return callback(new Error('请输入有效QQ号'))
     }
 
     callback()

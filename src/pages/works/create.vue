@@ -123,8 +123,8 @@
 import { mapGetters } from 'vuex'
 import { getAppBookDetailById, addOrUpdateAuthorBook, existBookName } from "@/api/book";
 import { getBookTagListByParams } from "@/api/tag";
-import { getBookClassifyListByParams } from "@/api/classify"
-import { upload } from "@/api/file"
+import { getBookClassifyListByParams } from "@/api/classify";
+import { upload } from "@/api/file";
 
 export default {
     name: "create",

@@ -30,8 +30,8 @@
                             >
                         </el-avatar>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>个人资料</el-dropdown-item>
-                            <el-dropdown-item>工作台</el-dropdown-item>
+                            <el-dropdown-item command="personalData">个人资料</el-dropdown-item>
+                            <el-dropdown-item command="management">工作台</el-dropdown-item>
                             <el-dropdown-item command="exit">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -60,13 +60,38 @@ export default {
          */
         handleCommand(command) {
             switch (command) {
+                case "personalData":
+                    this.personalData();
+                    break;
+                case "management":
+                    this.management();
+                    break;
                 case "exit":
                     this.handleExit();
                     break;
-            
                 default:
                     break;
             }
+        },
+
+        /**
+         * 
+         * 点击个人资料
+         */
+        personalData() {
+            this.$router.push({
+                name: "personalData"
+            });
+        },
+
+        /**
+         * 
+         * 点击工作台
+         */
+        management() {
+            this.$router.push({
+                name: "management"
+            });
         },
 
         /**

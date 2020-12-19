@@ -14,6 +14,7 @@ const worksRouter = [
             {
                 path: 'management',
                 component: works,
+                name: 'management',
             },
             {
                 path: '/writing',

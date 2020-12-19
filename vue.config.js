@@ -1,7 +1,3 @@
-// const path = require('path');
-// function resolve(dir) {
-//     return path.join(__dirname, dir)
-// }
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? "/fiction" : "/",
     css: {
@@ -11,13 +7,9 @@ module.exports = {
             }
         }
     },
-    // configureWebpack: {
-    //   resolve: {
-    //     alias: {
-    //       '@': resolve('src')
-    //     }
-    //   }
-    // },
+    configureWebpack: {
+        plugins: []
+    },
     devServer: {
         proxy: {
             '/api': {

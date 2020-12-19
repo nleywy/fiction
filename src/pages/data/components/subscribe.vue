@@ -2,7 +2,7 @@
     <div class="subscribe">
         <div class="time">
             <label for="" class="time-left">选择作品</label>
-            <el-select v-model="params.bookId" placeholder="请选择" class="time-select">
+            <el-select size="small" v-model="params.bookId" placeholder="请选择" class="time-select">
                 <el-option
                     v-for="item in bookList"
                     :key="item.bookId"
@@ -10,7 +10,7 @@
                     :value="item.bookId">
                 </el-option>
             </el-select>
-            <el-button type="primary" @click="handleClickView" :loading="loading">查看</el-button>
+            <el-button size="small" class="btn" type="primary" style="width: 88px;" @click="handleClickView" :loading="loading">查看</el-button>
         </div>
 
         <div class="block">
@@ -90,7 +90,7 @@ export default {
             tableData: [],
             loading: false,
             params: {
-                bookId: 1,
+                bookId: "",
                 pageNo: 1,
                 pageSize: 10
             },
@@ -212,26 +212,6 @@ export default {
 }
 </script>
 
-<style>
-    .block-table-header {
-        height: 28px;
-        font-size: 20px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #030303;
-        line-height: 28px;
-    }
-
-    .block-table-cell {
-        height: 25px;
-        font-size: 18px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #030303;
-        line-height: 25px;
-    }
-</style>
-
 <style lang="scss" scoped>
     .subscribe{
         .time {
@@ -241,12 +221,12 @@ export default {
             padding: 0px 30px;
 
             &-left {
-                height: 40px;
-                font-size: 20px;
+                height: 20px;
+                font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 color: #7B7B7B;
-                line-height: 40px;
+                line-height: 20px;
             }
 
             &-select {

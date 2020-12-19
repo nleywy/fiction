@@ -118,26 +118,6 @@ export default {
 }
 </script>
 
-<style>
-    .block-table-header {
-        height: 20px;
-        font-size: 14px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #030303;
-        line-height: 20px;
-    }
-
-    .block-table-cell {
-        height: 20px;
-        font-size: 14px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #030303;
-        line-height: 20px;
-    }
-</style>
-
 <style lang="scss" scoped>
     .books{
         width: 100%;

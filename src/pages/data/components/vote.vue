@@ -4,7 +4,7 @@
             <el-row>
                 <el-col :span="12">
                     <label for="" class="time-left">选择作品</label>
-                    <el-select v-model="params.bookId" placeholder="请选择" class="time-select" style="width: 300px;">
+                    <el-select size="small" v-model="params.bookId" placeholder="请选择" class="time-select" style="width: 300px;">
                         <el-option
                             v-for="item in bookList"
                             :key="item.bookId"
@@ -15,7 +15,7 @@
                 </el-col>
                 <el-col :span="12" style="text-align: right;">
                     <label for="" class="time-left">选择道具</label>
-                    <el-select v-model="params.giftType" placeholder="请选择" class="time-select">
+                    <el-select size="small" v-model="params.giftType" placeholder="请选择" class="time-select">
                         <el-option
                             v-for="item in enumsGetMap('giftTypeEnum')"
                             :key="item.value"
@@ -23,13 +23,13 @@
                             :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-button type="primary" @click="handleClickView" :loading="loading">查看</el-button>
+                    <el-button size="small" class="btn" style="width: 88px;" type="primary" @click="handleClickView" :loading="loading">查看</el-button>
                 </el-col>
             </el-row>
             <el-row style="margin-top: 30px;">
                 <el-col :span="24">
                     <label for="" class="time-left">选择维度</label>
-                    <el-select v-model="params.dateType" placeholder="请选择" class="time-select">
+                    <el-select size="small" v-model="params.dateType" placeholder="请选择" class="time-select">
                         <el-option
                             v-for="item in enumsGetMap('dateTypeEnum')"
                             :key="item.value"
@@ -39,6 +39,7 @@
                     </el-select>
 
                     <el-date-picker
+                        size="small"
                         v-show="params.dateType === '2'"
                         v-model="dateList"
                         type="daterange"
@@ -136,7 +137,7 @@ export default {
             tableData: [],
             loading: false,
             params: {
-                bookId: 1,
+                bookId: "",
                 pageNo: 1,
                 pageSize: 10,
                 giftType: "",
@@ -228,7 +229,6 @@ export default {
             console.log(this.params)
             const res = await countReward({ ...this.params, startDate: this.dateList[0] || "", endDate: this.dateList[1] || "", });
 
-            console.log(res);
             if(res.code === "200") {
                 this.gift = res.data.gift;
                 if(res.data.pageInfo) {
@@ -291,26 +291,6 @@ export default {
 }
 </script>
 
-<style>
-    .block-table-header {
-        height: 28px;
-        font-size: 20px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #030303;
-        line-height: 28px;
-    }
-
-    .block-table-cell {
-        height: 25px;
-        font-size: 18px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #030303;
-        line-height: 25px;
-    }
-</style>
-
 <style lang="scss" scoped>
     .gift{
         .time {
@@ -320,12 +300,12 @@ export default {
             padding: 0px 30px;
 
             &-left {
-                height: 40px;
-                font-size: 20px;
+                height: 20px;
+                font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 color: #7B7B7B;
-                line-height: 40px;
+                line-height: 20px;
             }
 
             &-select {

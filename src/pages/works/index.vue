@@ -34,10 +34,10 @@
                                     收藏{{item.collectNum}}
                                 </div>
                                 <div class="item__des__icons">
-                                    <el-button class="btn" size="small" v-if='!item.bookState || item.bookState == 3 || item.bookState == 6' @click='createWorks(item.bookId)'>作品设置</el-button>
+                                    <el-button class="btn" size="small" @click='createWorks(item.bookId)'>作品设置</el-button>
                                     <el-button class="btn" size="small" v-if='item.bookState == 6' @click='signUp(item)'>申请上架</el-button>
                                     <el-button class="btn" size="small" v-if='item.bookState == 3' @click='signUp(item)'>申请签约</el-button>
-                                    <el-button class="btn" size="small" v-if='!item.bookState || item.bookState == 6'>已发内容</el-button>
+                                    <el-button class="btn" size="small">已发章节</el-button>
                                     <el-button class="btn" type="primary" size="small" @click="handleClickWritingBtn(item.bookId)">新建章节</el-button>
                                 </div>
                             </div>
@@ -45,7 +45,6 @@
                     </div>
                 </el-scrollbar>
             </div>
-
 
             <div class="nowork" v-else>
                 <i class="bgc"></i>

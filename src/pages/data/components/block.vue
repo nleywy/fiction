@@ -26,14 +26,14 @@
     .colorBlock {
         box-sizing: border-box;
         width: 220px;
-        height: 140px;
+        height: 125px;
         background: #62C5F9;
         border-radius: 5px;
         text-align: center;
 
         .title {
             padding-top: 35px;
-            font-size: 18px;
+            font-size: 16px;
             font-family: PingFangSC-Regular, PingFang SC;
             font-weight: 400;
             color: #FFFFFF;

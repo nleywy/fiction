@@ -69,10 +69,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .data{
+    .data {
         width: 100%;
         height: 100%;
-        padding-bottom: 100px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
         background-color: #ffffff;
 
         .tag {

@@ -4,7 +4,7 @@
             <el-row>
                 <el-col :span="12">
                     <label for="" class="time-left">选择作品</label>
-                    <el-select v-model="params.bookId" placeholder="请选择" class="time-select" style="width: 300px;">
+                    <el-select size="small" v-model="params.bookId" placeholder="请选择" class="time-select" style="width: 300px;">
                         <el-option
                             v-for="item in bookList"
                             :key="item.bookId"
@@ -16,6 +16,7 @@
                 <el-col :span="12" style="text-align: right;">
                     <label for="" class="time-left">查看方式</label>
                     <el-date-picker
+                        size="small"
                         class="time-select"
                         v-model="params.month"
                         :clearable="false"
@@ -24,7 +25,7 @@
                         value-format="yyyy-MM"
                         >
                     </el-date-picker>
-                    <el-button type="primary" @click="handleClickView" :loading="loading">查看</el-button>
+                    <el-button size="small" class="btn" style="width: 88px;" type="primary" @click="handleClickView" :loading="loading">查看</el-button>
                 </el-col>
             </el-row>
         </div>
@@ -56,6 +57,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import { countUpdate, bookGetAuthorBookList } from "@/api/authorCms";
 
@@ -70,7 +72,7 @@ export default {
             dayList: [],
             loading: false,
             params: {
-                bookId: 1,
+                bookId: "",
                 month: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
             },
             bookListParams: {
@@ -199,26 +201,6 @@ export default {
 }
 </script>
 
-<style>
-    .block-table-header {
-        height: 28px;
-        font-size: 20px;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #030303;
-        line-height: 28px;
-    }
-
-    .block-table-cell {
-        height: 25px;
-        font-size: 18px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #030303;
-        line-height: 25px;
-    }
-</style>
-
 <style lang="scss" scoped>
     .update{
         .time {
@@ -228,12 +210,12 @@ export default {
             padding: 0px 30px;
 
             &-left {
-                height: 40px;
-                font-size: 20px;
+                height: 20px;
+                font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 color: #7B7B7B;
-                line-height: 40px;
+                line-height: 20px;
             }
 
             &-select {
@@ -264,7 +246,7 @@ export default {
 
             .el-calendar-day-cell {
                 height: 25px;
-                font-size: 18px;
+                font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 line-height: 25px;
@@ -283,6 +265,9 @@ export default {
                     thead {
                         th {
                             height: 66px;
+                            font-family: PingFangSC-Medium, PingFang SC;
+                            font-size: 14px;
+                            font-weight: 600;
                             background: #FFFFFF;
                             border: 1px solid #7B7B7B;
                             text-align: center;

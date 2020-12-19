@@ -5,6 +5,7 @@
         <div class="time">
             <label for="" class="time-left">选择时间</label>
             <el-date-picker
+                size="small"
                 class="time-select"
                 v-model="month"
                 :clearable="false"
@@ -13,7 +14,7 @@
                 value-format="yyyy-MM"
                 >
             </el-date-picker>
-            <el-button type="primary" @click="handleSelectChange">查看</el-button>
+            <el-button size="small" class="btn" style="width: 88px;" type="primary" @click="handleSelectChange">查看</el-button>
         </div>
 
         <div class="block">
@@ -66,6 +67,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import { countIncome } from "@/api/authorCms";
 
@@ -118,21 +120,21 @@ export default {
 
 <style>
     .block-table-header {
-        height: 28px;
-        font-size: 20px;
+        height: 20px;
+        font-size: 14px;
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
         color: #030303;
-        line-height: 28px;
+        line-height: 20px;
     }
 
     .block-table-cell {
-        height: 25px;
-        font-size: 18px;
+        height: 20px;
+        font-size: 14px;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #030303;
-        line-height: 25px;
+        line-height: 20px;
     }
 </style>
 
@@ -140,22 +142,24 @@ export default {
     .books{
         width: 100%;
         height: 100%;
-        padding-bottom: 200px;
+        min-height: 800px;
+        // padding-bottom: 200px;
         background-color: #ffffff;
 
         .time {
             width: 100%;
+            height: 38px;
             margin-top: 30px;
             margin-bottom: 40px;
             padding: 0px 30px;
 
             &-left {
-                height: 40px;
-                font-size: 20px;
+                height: 20px;
+                font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 color: #7B7B7B;
-                line-height: 40px;
+                line-height: 20px;
             }
 
             &-select {
@@ -169,14 +173,13 @@ export default {
             padding: 0px 30px;
 
             &-label {
-                width: 82px;
-                height: 28px;
-                margin-bottom: 20px;
-                font-size: 20px;
+                height: 25px;
+                margin-bottom: 30px;
+                font-size: 18px;
                 font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
                 color: #030303;
-                line-height: 28px;
+                line-height: 25px;
             }
 
             &-table {
@@ -184,9 +187,7 @@ export default {
             }
 
             &-tips {
-                width: 58px;
                 height: 20px;
-                margin-bottom: 10px;
                 font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
@@ -195,7 +196,6 @@ export default {
             }
 
             &-desc {
-                width: 243px;
                 height: 24px;
                 font-size: 14px;
                 font-family: PingFangSC-Regular, PingFang SC;

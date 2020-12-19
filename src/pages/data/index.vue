@@ -17,6 +17,7 @@
         </transition>
     </div>
 </template>
+
 <script>
 export default {
     name: "dataCenter",
@@ -76,13 +77,16 @@ export default {
 
         .tag {
             display: inline-block;
-            margin-right: 40px;
-            font-size: 22px;
-            font-weight: 500;
+            height: 70px;
+            margin-right: 48px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-size: 18px;
+            font-weight: 400;
             color: #7B7B7B;
-            line-height: 30px;
+            line-height: 70px;
             cursor: pointer;
             user-select: none;
+            vertical-align: top;
 
             &.activity,
             &:hover

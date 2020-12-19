@@ -16,6 +16,7 @@
             <slot name="right">
                 <div class="right">
                     <el-image
+                        @click="management"
                         class="logo"
                         style="width: 24px; height: 24px;margin-right: 50px;"
                         :src="require('@/assets/pc.png')"

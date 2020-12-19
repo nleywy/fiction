@@ -129,7 +129,7 @@ export default {
                 if(isFirst === "0") {
                     this.$router.push({ name: "management" });
                 }else {
-                    this.$router.push({ name: "personalData" });
+                    this.$router.push({ name: "applySuccess" });
                 }
             }else {
                 this.$message.warning(res.msg);

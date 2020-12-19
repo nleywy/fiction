@@ -6,7 +6,7 @@
                     <el-image
                         class="logo"
                         style="width: 40px; height: 40px"
-                        :src="url"
+                        :src="require('@/assets/logo.png')"
                         >
                     </el-image>
                 </router-link>

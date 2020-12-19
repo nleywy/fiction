@@ -4,7 +4,7 @@
         
         <section class="form">
             <el-form ref="ruleForm" :model="personData" :rules="rules" label-width="340px" status-icon label-suffix="">
-                <el-form-item label="作品封面" prop="photo">
+                <el-form-item label="头像" prop="photo">
                     <el-upload
                         v-loading="uploadLoading"
                         class="avatar-uploader"

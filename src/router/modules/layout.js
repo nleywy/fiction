@@ -5,10 +5,12 @@
 import booksRouter from "./books";
 import dataCenterRouter from "./dataCenter";
 import worksRouter from "./works";
-import personalData from "./personalData";
+import personalDataRouter from "./personalData";
+import applyRouter from "./apply";
 
 const layoutRouters = [
-    ...personalData,
+    ...applyRouter,
+    ...personalDataRouter,
     ...dataCenterRouter,
     ...booksRouter,
     ...worksRouter,

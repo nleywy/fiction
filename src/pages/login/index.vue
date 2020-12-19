@@ -12,25 +12,27 @@
                 <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0px" class="ruleForm">
                     <el-form-item prop="phone">
                         <el-input
+                            size="small"
                             class="cell"
                             type="text"
                             v-model="ruleForm.phone"
                             autocomplete
-                            placeholder="手机号"
+                            placeholder="请输入手机号"
                             >
                         </el-input>
                     </el-form-item>
                     <el-form-item prop="phoneCode">
                         <el-input
+                            size="small"
                             class="cell code"
                             v-model="ruleForm.phoneCode"
-                            placeholder="验证码"
+                            placeholder="请输入验证码"
                             autocomplete
                             >
                         </el-input>
 
-                        <el-button plain class="plain" @click="getCode" v-if="numTime === 60">发送验证码</el-button>
-                        <el-button plain class="plain" disabled v-else><span class="b">{{ numTime }}</span>s后重新获取</el-button>
+                        <el-button size="small" plain class="plain" @click="getCode" v-if="numTime === 60">发送验证码</el-button>
+                        <el-button size="small" plain class="plain" disabled v-else><span class="b">{{ numTime }}</span>s后重新获取</el-button>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('ruleForm')" class="submit" :loading="loading">手机号一键登录</el-button>
@@ -54,7 +56,7 @@ import { mobileValidator } from "@/utils/rules";
 import { setToken, setUserInfo } from "@/utils/auth";
 
 export default {
-    name: "login",
+    // name: "login",
     components: {
         "public-header": () => import("@/components/header"),
     },
@@ -119,11 +121,16 @@ export default {
             const res = await login(this.ruleForm);
 
             if(res.code === "200") {
-                const token = res.data.userInfo.token;
+                const { token, isFirst } = res.data.userInfo;
                 setToken(token);
                 setUserInfo(res.data.userInfo);
                 this.enumGetMap(); // 拿取全局枚举
-                this.$router.push("/works");
+
+                if(isFirst === "0") {
+                    this.$router.push({ name: "management" });
+                }else {
+                    this.$router.push({ name: "personalData" });
+                }
             }else {
                 this.$message.warning(res.msg);
             }
@@ -142,7 +149,6 @@ export default {
                 smsType: "1",
             });
 
-            console.log(res);
             if(res.code === "200") {
                 // 请求成功
             }
@@ -184,7 +190,7 @@ export default {
     .container {
         box-sizing: border-box;
         width: 1200px;
-        height: calc(100% - 120px);
+        height: calc(100vh - 90px);
         min-height: 745px;
         margin: 0px auto;
         padding-top: 5%;
@@ -202,14 +208,14 @@ export default {
         .block {
             display: inline-block;
             box-sizing: border-box;
-            width: 570px;
-            height: 552px;
-            padding-top: 70px;
+            width: 480px;
+            height: 434px;
+            padding-top: 50px;
             background: #FFFFFF;
             border-radius: 10px;
 
             .phone {
-                width: 470px;
+                width: 400px;
                 height: 53px;
                 margin: 0px auto;
                 padding-bottom: 20px;
@@ -223,7 +229,7 @@ export default {
             }
 
             .ruleForm {
-                padding: 50px;
+                padding: 40px;
 
                 & /deep/ .el-form-item {
                     margin-bottom: 30px;
@@ -231,27 +237,27 @@ export default {
 
                 .cell {
                     width: 100%;
-                    height: 54px;
+                    height: 40px;
                     background: #FFFFFF;
                     border-radius: 5px;
 
                     & /deep/ .el-input__inner {
-                        height: 54px;
-                        font-size: 20px;
+                        height: 40px;
+                        font-size: 14px;
                     }
                 }
 
                 .cell.code {
-                    width: 290px;
+                    width: 250px;
                     vertical-align: middle;
                 }
 
                 .plain {
-                    width: 160px;
-                    height: 54px;
-                    margin-left: 470px - 290px -160px;
-                    padding: 12px 0px;
-                    font-size: 20px;
+                    width: 130px;
+                    height: 40px;
+                    margin-left: 400px - 250px - 130px;
+                    // padding: 12px 0px;
+                    font-size: 14px;
                     background: #FFFFFF;
                     border-radius: 5px;
                     text-align: center;
@@ -264,8 +270,8 @@ export default {
 
                 .submit {
                     width: 100%;
-                    height: 54px;
-                    font-size: 20px;
+                    height: 40px;
+                    font-size: 14px;
                     background: #3399FE;
                     border-radius: 5px;
                 }
@@ -273,7 +279,7 @@ export default {
                 .link {
                     width: 100%;
                     height: 56px;
-                    font-size: 20px;
+                    font-size: 14px;
                     font-family: PingFangSC-Regular, PingFang SC;
                     font-weight: 400;
                     color: #7B7B7B;
@@ -291,17 +297,14 @@ export default {
     .footer {
         width: 100%;
         height: 28px;
-        font-size: 20px;
+        font-size: 14px;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #7B7B7B;
         line-height: 28px;
         text-align: center;
-        // position: absolute;
-        // left: 0px;
-        // bottom: 40px;
         position: absolute;
         left: 0px;
-        bottom: 40px;
+        bottom: 30px;
     }
 </style>

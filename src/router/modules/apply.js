@@ -1,21 +1,21 @@
 import layout from "@/pages/layout/index.vue";
 
-const personalDataRouter = [
+const applyRouter = [
     {
-        path: '/personalData',
+        path: '/applySuccess',
         component: layout,
         children: [
             {
                 path: '',
-                component: () => import('@/pages/personalData/index.vue'),
-                name: 'personalData',
+                component: () => import('@/pages/apply/index.vue'),
+                name: 'applySuccess',
                 meta: {
                     hideLeftMenu: true,
-                    title: "个人中心",
+                    title: "作家申请",
                 },
             },
         ]
     },
 ]
 
-export default personalDataRouter;
+export default applyRouter;

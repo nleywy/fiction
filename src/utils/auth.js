@@ -49,3 +49,13 @@ export function setEnums(Enums) {
 export function removeEnums() {
     return sessionStorage.removeItem(EnumsKey)
 }
+
+/**
+ * 
+ * 全部删除
+ */
+export function removeAll() {
+    removeToken();
+    removeUserInfo();
+    removeEnums();
+}

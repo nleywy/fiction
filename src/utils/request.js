@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
+import $router from "@/router";
 // import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, removeAll } from '@/utils/auth'
 const baseURL = process.env.NODE_ENV === 'production' ? "http://192.168.110.4/api" : process.env.VUE_APP_API_HOST;
 
 //全局发送post请求的默认头部content-type类型,定义类型为JSON格式，并且字符编码为utf-8
@@ -43,7 +44,30 @@ service.interceptors.response.use(
      * 如想通过 xmlhttprequest 来状态码标识 逻辑可写在下面error中
      * 以下代码均为样例，请结合自生需求加以修改，若不需要，则可删除
      */
-    response => response.data,
+    response => {
+        const res = response.data;
+        if(res.code === "402") {
+            // Alert('这是一段内容', '提示', {
+            //     confirmButtonText: '确定',
+            //     callback: action => {
+            //         removeAll();
+            //         $router.push({ name: login });
+            //     }
+            // });
+            MessageBox.confirm('登录状态已失效，是否重新登录?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    removeAll();
+                    $router.push({ name: "login" });
+                }).catch(() => {
+                    // no thing
+                });
+        }
+
+        return res;
+    },
     error => {
         //这里面是http的错误,给前端显示，方便处理
         console.log('err' + error) // for debug

@@ -26,7 +26,7 @@
                         <el-avatar
                             class="avatar"
                             style="width: 36px; height: 36px;"
-                            :src="url || require('@/assets/avatar.png')"
+                            :src="imgUrl || require('@/assets/avatar.png')"
                             >
                         </el-avatar>
                         <el-dropdown-menu slot="dropdown">
@@ -44,14 +44,19 @@
 </template>
 
 <script>
-import { removeToken, removeUserInfo } from "@/utils/auth";
+import { removeAll, getUserInfo } from "@/utils/auth";
 
 export default {
     name: "publicHeader",
     data() {
         return {
-            url: "",
+            imgUrl: "",
         }
+    },
+    watch: {
+        $route() {
+            this.imgUrl = getUserInfo().imgUrl;
+        },
     },
     methods: {
         /**
@@ -104,18 +109,20 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                removeToken();
-                removeUserInfo();
+                removeAll();
                 this.$message({
                     type: 'success',
                     message: '退出登录成功'
                 });
 
-                this.$router.push("/login");
+                this.$router.push({ name: "login" });
             }).catch(() => {
                 // no thing
             });
         }
+    },
+    created() {
+        this.imgUrl = getUserInfo().imgUrl;
     }
 }
 </script>

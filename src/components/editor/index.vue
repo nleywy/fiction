@@ -2,7 +2,7 @@
     <div style="Editor" v-loading="loading">
         <Editor
             ref="Editor"
-            :api-key="apikey"
+            tinymceScriptSrc="/tinymce/js/tinymce.min.js"
             :id="editorId"
             :init="init"
             :toolbar="toolbar"

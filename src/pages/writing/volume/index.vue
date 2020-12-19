@@ -21,14 +21,14 @@
 
             <el-form label-width="210px">
                 <el-form-item label="本卷章节">{{ activeData.chapterCount || 0 }}章</el-form-item>
-                <el-form-item label="分卷序号">
+                <!-- <el-form-item label="分卷序号">
                     <template v-if="activeData.sortNum <= 1">
                         {{ activeData.sortNum }}
                     </template>
                     <template v-else>
                         <el-input v-model.number="sortNum"></el-input>
                     </template>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="分卷名称">
                     <template v-if="activeData.sortNum == 0">
                         {{ activeData.title }}

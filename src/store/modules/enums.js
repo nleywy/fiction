@@ -40,7 +40,7 @@ export default {
             const res = await enumGetMap();
 
             if(res.code === "200") {
-                setEnums(res.data)
+                setEnums(res.data.enums)
                 commit('SET_ENUMS', res.data.enums);
             }
         }
@@ -52,7 +52,7 @@ export default {
          * @param {*} state 
          */
         enumsGetMap: state => name => {
-            const { enums } = state.enums;
+            const enums  = state.enums;
             const keys = Object.keys(enums);
 
             if(keys.includes(name)) {

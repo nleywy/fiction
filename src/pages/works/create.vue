@@ -8,8 +8,9 @@
             <el-form ref="ruleForm" :model="form" :rules="rules" label-width="120px">
                 <el-form-item label="作品封面" prop="blurryImgUrl">
                     <el-upload
+                        v-loading="uploadLoading"
                         class="avatar-uploader"
-                        action="https://www.zybuluo.com/lichen0310/note/1760702/"
+                        action="/"
                         :http-request="uploadFile"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
@@ -149,6 +150,7 @@ export default {
             showSearchOK: false,
             bookState: 0, //1 待审核 不让编辑
             classifyList: [],
+            uploadLoading: false,
         };
     },
     props: {
@@ -287,7 +289,7 @@ export default {
                 this.form.imgUrl = response.data.url;
             }
 
-            this.uoloadLoading = false;
+            this.uploadLoading = false;
         },
 
         /**
@@ -295,7 +297,8 @@ export default {
          * 上传头像失败的hook
          */
         handleUploadError(err, file, fileList) {
-            // this.uoloadLoading = false
+            this.$message.warning("上传头像失败，请重新上传");
+            this.uploadLoading = false
             console.log(err)
         },
 
@@ -313,7 +316,14 @@ export default {
             if (!isLt5M) {
                 this.$message.error('上传头像图片大小不能超过 5MB!');
             }
-            return isJPG && isLt5M;
+
+            const bool = isJPG && isLt5M;
+
+            if(bool) {
+                this.uploadLoading = true;
+            }
+
+            return bool;
         },
 
         /**

@@ -2,12 +2,12 @@
     <div class="myworks">
         <div class="myworks__title common-title">
             <span class="myworks__title__left">我的作品</span>
-            <el-button type="primary" class="myworks__title__right" v-if='items.length > 0' @click='createWorks()' size="small">新建作品</el-button>
+            <el-button type="primary" class="myworks__title__right" v-if='Array.isArray(bookList) && bookList.length > 0' @click='createWorks()' size="small">新建作品</el-button>
         </div>
         <div class="myworks__con">
-            <div class="items" v-if='items.length > 0'>
+            <div class="items" v-if='Array.isArray(bookList) && bookList.length > 0'>
                 <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar">
-                    <div class="item" v-for='item in items' :key='item.id'>
+                    <div class="item" v-for='item in bookList' :key='item.id'>
                         <el-image :src="item.blurryImgUrl" class="blurryImg"></el-image>
                         <div class="item__des">
                             <div class="item__des__top">
@@ -15,10 +15,8 @@
                                     {{item.bookName}}
                                 </div>
                                 <div class="item__des__status">
-                                    <!-- <el-button :type="bookStateStatus[item.bookState]" size='small'>{{ item.bookState | filtersBookState(enumsGetMap) }}</el-button>
-                                    <el-button :type="endStateStatus[item.endState]" size='small' disabled>{{ item.endState | filtersEndState(enumsGetMap) }}</el-button> -->
                                     <el-tag class="tag" :class="[ `tag-${bookStateStatus[item.bookState]}` ]" size='small'>{{ item.bookState | filtersBookState(enumsGetMap) }}</el-tag>
-                                    <el-tag class="tag" :class="[ `tag-${bookStateStatus[item.bookState]}` ]" size='small' disabled>{{ item.endState | filtersEndState(enumsGetMap) }}</el-tag>
+                                    <el-tag class="tag" :class="[ `tag-${endStateStatus[item.endState]}` ]" size='small' disabled>{{ item.endState | filtersEndState(enumsGetMap) }}</el-tag>
                                 </div>
                             </div>
                             <div class="item__des__center">
@@ -37,7 +35,7 @@
                                     <el-button class="btn" size="small" @click='createWorks(item.bookId)'>作品设置</el-button>
                                     <el-button class="btn" size="small" v-if='item.bookState == 6' @click='signUp(item)'>申请上架</el-button>
                                     <el-button class="btn" size="small" v-if='item.bookState == 3' @click='signUp(item)'>申请签约</el-button>
-                                    <el-button class="btn" size="small">已发章节</el-button>
+                                    <el-button class="btn" size="small" @click="handleClickPublishedBtn(item.bookId)">已发章节</el-button>
                                     <el-button class="btn" type="primary" size="small" @click="handleClickWritingBtn(item.bookId)">新建章节</el-button>
                                 </div>
                             </div>
@@ -46,7 +44,7 @@
                 </el-scrollbar>
             </div>
 
-            <div class="nowork" v-else>
+            <div class="nowork" v-if="Array.isArray(bookList) && !bookList.length">
                 <i class="bgc"></i>
                 <span class="text1">您目前还没有作品</span>
                 <span class="text2">快去创作您的第一部作品吧</span>
@@ -64,21 +62,12 @@ export default {
     name: "myworks",
     data(){
         return {
-            items: []
+            bookList: null,
         };
     },
     computed: {
         ...mapState("enums", [ "bookStateStatus", "endStateStatus" ]),
         ...mapGetters("enums", [ "enumsGetMap", ]),
-    },
-    props: {
-        
-    },
-    components: {
-        
-    },
-    watch: {
-        
     },
     methods: {
         /**
@@ -135,15 +124,7 @@ export default {
             });
 
             if(res.code === "200") {
-                console.log(res);
-                let bookList = res.data.bookList;
-                this.items = bookList;
-
-                if(this.items === 0){
-                    this.recommentShow = false;
-                }else{
-                    this.recommentList = res.data.data;
-                }
+                this.bookList = res.data.bookList;
             }
         },
 
@@ -161,7 +142,24 @@ export default {
                 params: {
                     bookId,
                 }
-            })
+            });
+        },
+        
+        /**
+         * 
+         * 点击写作按钮
+         * @param {number} bookId
+         */
+        handleClickPublishedBtn(bookId) {
+            this.$router.push({
+                name: "published",
+                query: {
+                    bookId,
+                },
+                params: {
+                    bookId,
+                }
+            });
         },
 
         /**
@@ -185,10 +183,7 @@ export default {
          * 格式化发布状态
          */
         filtersBookState(cellValue, enumsGetMap) {
-            // console.log(enumsGetMap)
-            // console.log(cellValue)
             const bookStateEnum = enumsGetMap("bookStateEnum");
-            // console.log(bookStateEnum)
             const find = bookStateEnum.find(item => item.value == cellValue);
 
             if(find) {
@@ -199,8 +194,8 @@ export default {
         },
 
         filtersEndState(cellValue, enumsGetMap) {
-            const bookStateEnum = enumsGetMap("endStateEnum");
-            const find = bookStateEnum.find(item => item.value == cellValue);
+            const endStateEnum = enumsGetMap("endStateEnum");
+            const find = endStateEnum.find(item => item.value == cellValue);
 
             if(find) {
                 return find.text;
@@ -210,7 +205,7 @@ export default {
         },
     },
     created(){
-        this.getAuthorBookList()
+        this.getAuthorBookList();
     }
 }
 </script>

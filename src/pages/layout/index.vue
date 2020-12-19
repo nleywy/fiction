@@ -3,13 +3,8 @@
         <public-header />
         
         <section class="app">
-            <div class='tags' v-if="!hideLeftMenu">
-                <template v-for='tag in leftTags'>
-                    <div :class="[ 'tag', leftTagsactivity == tag.id ? 'activity' : '' ]" :key='tag.id' @click='changeRouter(tag.id)'>
-                        <span>{{tag.name}}</span>
-                    </div>
-                </template>
-            </div>
+            <left-menu ref="leftMenu"/>
+
             <div class="container" :style="{ width: !hideLeftMenu ? '996px' : '1200px' }">
                 <transition name="fade-transform" mode="out-in">
                     <router-view @hook:mounted="handleHookMounted"></router-view>
@@ -24,41 +19,27 @@ export default {
     name: "layout",
     components: {
         "public-header": () => import("@/components/header"),
+        "left-menu": () => import("@/components/leftMenu"),
     },
     data() {
         return {
 
         };
     },
-    props: {
-
-    },
     computed:{
-        leftTagsactivity() {
-            return this.$store.state.leftTagsactivity;
-        },
-        leftTags() {
-            return this.$store.state.leftTags;
-        },
         hideLeftMenu() {
             return this.$route.meta.hideLeftMenu;
         }
     },
     methods: {
-        changeRouter(id){
-            if(this.leftTagsactivity === id) {
-                return ;
-            }
-
-            this.$store.commit("SET_LEFT_TAGSACTIVITY", id);
-            this.$router.push({ name: id });
-        },
         handleHookMounted() {
-            const find = this.leftTags.find(item => this.$route.path.includes(item.id));
+            // const leftMenu = this.$refs.leftMenu;
+            // console.log(leftMenu)
+            // const find = leftMenu.leftTags.find(item => this.$route.path.includes(item.id));
 
-            if(find) {
-                this.$store.commit("SET_LEFT_TAGSACTIVITY", find.id);
-            }
+            // if(find) {
+            //     leftMenu.setLeftTagsactivity(find.id);
+            // }
         }
     },
 }
@@ -90,31 +71,6 @@ export default {
         margin: 0px auto;
         font-size: 0px;
         position: relative;
-
-
-        .tags{
-            display: inline-block;
-            width: 184px;
-            margin-right: 20px;
-            background-color: #ffffff;
-            vertical-align: top;
-            font-size: 20px;
-            cursor: pointer;
-            user-select: none;
-
-            .tag {
-                height: 68px;
-                color:#7B7B7B;
-                line-height: 68px;
-                text-align: center;
-
-                &:hover,
-                &.activity {
-                    color: #3399FE;
-                    background: rgba(2, 103, 229, 0.05);
-                }
-            }
-        }
 
         .container {
             display: inline-block;

@@ -45,6 +45,7 @@
 
 <script>
 import { removeAll, getUserInfo } from "@/utils/auth";
+import { logout } from "@/api/login";
 
 export default {
     name: "publicHeader",
@@ -109,13 +110,16 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                removeAll();
-                this.$message({
-                    type: 'success',
-                    message: '退出登录成功'
-                });
+                logout().then(res => {
+                    if(res.code === "200") {
+                        removeAll();
+                        this.$message.success('退出登录成功');
+                        this.$router.push({ name: "login" });
+                        return ;
+                    }
 
-                this.$router.push({ name: "login" });
+                    this.$message.warning(res.msg);
+                });
             }).catch(() => {
                 // no thing
             });

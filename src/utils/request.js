@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import $router from "@/router";
-// import store from '@/store'
+import { logout } from "@/api/login";
 import { getToken, removeAll } from '@/utils/auth'
 const baseURL = process.env.NODE_ENV === 'production' ? "http://192.168.110.4/api" : process.env.VUE_APP_API_HOST;
 
@@ -59,8 +59,14 @@ service.interceptors.response.use(
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    removeAll();
-                    $router.push({ name: "login" });
+                    logout().then(res => {
+                        if(res.code === "200") {
+                            removeAll();
+                            $router.push({ name: "login" });
+                            return ;
+                        }
+                        this.$message.warning(res.msg);
+                    })
                 }).catch(() => {
                     // no thing
                 });
@@ -84,4 +90,4 @@ service.interceptors.response.use(
     }
 )
 
-export default service
+export default service;

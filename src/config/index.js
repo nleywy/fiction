@@ -1,0 +1,1 @@
+export const ASSETS_BASE_URL = process.env.NODE_ENV === 'production' ? "/fiction" : "";

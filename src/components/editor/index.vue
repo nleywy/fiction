@@ -2,7 +2,7 @@
     <div style="Editor" v-loading="loading">
         <Editor
             ref="Editor"
-            tinymceScriptSrc="/tinymce/js/tinymce.min.js"
+            :tinymceScriptSrc="tinymceScriptSrc"
             :id="editorId"
             :init="init"
             :toolbar="toolbar"
@@ -20,6 +20,7 @@
 
 <script>
 import Editor from '@tinymce/tinymce-vue';
+import { ASSETS_BASE_URL } from "@/config";
 
 export default {
     name: "tinymceEditor",
@@ -44,8 +45,6 @@ export default {
             apikey: "zg1d2xp43sktfw6i580bg4awi1cicuq462z75l45aiayhw8b",
             editorId: "Editor",
             init: {
-                // skin: 'oxide-dark',
-                // skin_url: '/tinymce/css/skin.css',
                 content_style: `
                     body {
                         margin: 0px;
@@ -58,7 +57,7 @@ export default {
                         line-height: 30px;
                     }
                 `,
-                language_url : "/tinymce/langs/zh_CN.js",
+                language_url : ASSETS_BASE_URL + "/tinymce/langs/zh_CN.js",
                 language:'zh_CN',
                 branding: false,
                 resize: false,
@@ -86,7 +85,9 @@ export default {
                 // "wordcount",
                 // "fullscreen"
             ],
-            outputFormat: "text"
+            outputFormat: "text",
+            tinymceScriptSrc: ASSETS_BASE_URL + "/tinymce/js/tinymce.min.js",
+            ASSETS_BASE_URL,
         }
     },
     methods: {

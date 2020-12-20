@@ -36,7 +36,7 @@ export const deleteChapterDraft = params => {
  * @param { number } volumeId 分卷id
  * @param { string } chapterName 章节名
  * @param { string } content 章节内容
- * @param { string } publishType 1-及时，2-定时 （保存不发布时，可不传）
+ * @param { string } publishType 1-立即，2-定时 （保存不发布时，可不传）
  * @param { date } scheduleTime 定时发布时需要传
  * @param { string } remark
  */

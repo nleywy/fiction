@@ -13,26 +13,25 @@
                 </template>
             </el-scrollbar>
         </div>
-        <!-- <div class="draft-con" v-if='draftId'> -->
         <div class="draft-con">
-            <draftCon :draftId='draftId' :bookId='bookId' @changeDraftList="getChapterDraftListByBookId"></draftCon>
+            <draftCon :draftListaft="draftListaft" :draftId='draftId' :bookId='bookId' @changeDraftList="getChapterDraftListByBookId" @delDraft="delDraft"></draftCon>
         </div>
     </div>
 </template>
+
 <script>
 import draftCon from './draft-con';
 import Bus from '@/tools/bus.js'
 import { getChapterDraftListByBookId } from "@/api/chapter";
 
 export default {
-    name: "draft",
     components: {
-        draftCon
+        draftCon,
     },
     data() {
         return {
             bookId: 0,
-            draftListaft:[],
+            draftListaft: [],
             draftId: 0,
             active: 0,
         };
@@ -54,15 +53,18 @@ export default {
                 }
             }
         },
-        changeDraft(draftId, index){
+        changeDraft(draftId, index) {
             this.active = index;
             this.draftId = draftId ? draftId : (this.draftId === null ? 0 : null);
+        },
+        delDraft() {
+            this.draftListaft.splice(this.active, 1);
         }
     },
     created() {
         this.bookId = this.$route.query.bookId;
         this.getChapterDraftListByBookId();
-        Bus.$on("add",val => {
+        Bus.$on("add", val => {
             this.draftListaft.unshift({
                 chapterName: "无字节名" ,
                 wordCount: 0,

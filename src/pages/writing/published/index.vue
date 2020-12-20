@@ -41,7 +41,6 @@ import { getAppChapterListByVolumeId, getAuthorChapterContentById } from "@/api/
 import { mapGetters } from "vuex";
 
 export default {
-    name: "draft",
     components: {
         draftCon
     },
@@ -67,7 +66,7 @@ export default {
     },
     methods: {
         updateTree(data) {
-            this.getAppChapterListByVolumeId(data.volumeId)
+            this.getAppChapterListByVolumeId({ volumeId: data.volumeId, pageNo: 1, pageSize: 10000, })
                 .then(list => {
                     const find = this.appVolumeList.find(item => item.volumeId === data.volumeId);
 

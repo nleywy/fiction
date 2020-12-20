@@ -54,7 +54,6 @@ import { getAppVolumeListByBookId, getAppVolumeById, addOrUpdateAppVolume, delet
 import Bus from '@/tools/bus.js';
 
 export default {
-    name: "volume",
     data(){
         return {
             volumeId: null,

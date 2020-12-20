@@ -62,7 +62,8 @@
             </el-form>
         </div>
         <slot>
-            <div class="draftCon-footer"><span>本章字数：{{ chapterDraft.wordCount }} </span> <span style="margin-left: 30px;">发布时间：{{ chapterDraft.createTime }}</span></div>
+            <div class="draftCon-footer" v-if="chapterDraft.wordCount || chapterDraft.createTime"><span>本章字数：{{ chapterDraft.wordCount }} </span> <span style="margin-left: 30px;">发布时间：{{ chapterDraft.createTime }}</span></div>
+            <div class="draftCon-footer" v-else></div>
         </slot>
     </div>
 </template>
@@ -87,7 +88,7 @@ export default {
             appVolumeList: [],
             dialogFormVisible: false,
             scheduleTime:'',
-            publishType: null, //1-及时，2-定时
+            publishType: null, //1-立即，2-定时
             chapterDraft: {},
             loading: false,
             isUpdate: false,
@@ -196,22 +197,6 @@ export default {
         }
     },
     created() {
-        // if(this.draftId != 100){
-        //     this.chapterDraft = {
-        //         volumeId: '',
-        //         ...this.$store.state.bookInfo,
-        //         publishType: null,
-        //         scheduleTime: null,
-        //         remark: "",
-        //         wordCount: null,
-        //         content: "",
-        //         bookName:'',
-        //         latestChapterId:'',
-        //         latestChapterName:'',
-        //     }
-        // }
-    },
-    mounted() {
         this.getAppVolumeListByBookId(this.bookId);
     },
 }

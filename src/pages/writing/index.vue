@@ -17,11 +17,11 @@
 </template>
 <script>
 import Bus from '@/tools/bus.js';
+import { mapMutations } from "vuex";
 import { getAppBookDetailById } from "@/api/book";
 import Breadcrumb from "@/components/breadcrumb"
 
 export default {
-    name: "chapterDraftList",
     components: {
         Breadcrumb,
     },
@@ -34,11 +34,11 @@ export default {
                 },
                 {
                     name:'草稿箱',
-                    id:'draft',
+                    id: 'draft',
                 },
                 {
                     name:'分卷管理',
-                    id:'volume',
+                    id: 'volume',
                 }
             ],
             activity: 'draft',
@@ -46,6 +46,7 @@ export default {
         };
     },
     methods: {
+        ...mapMutations("writingIndex", [ "SET_APP_BOOK" ]),
         addNewVolume() {
             Bus.$emit('addVolume');
             
@@ -64,10 +65,12 @@ export default {
                     name: id,
                     query: {
                         bookId: this.bookId
+                    },
+                    params: {
+                        bookId: this.bookId,
                     }
                 });
             }
-    
         },
 
         /**
@@ -79,9 +82,7 @@ export default {
             const res = await getAppBookDetailById({ bookId: this.bookId });
 
             if(res.code === "200") {
-                this.$store.commit('change',{
-                    bookInfo: res.data.appBook
-                })
+                this.SET_APP_BOOK(res.data.appBook);
             }
         }
     },

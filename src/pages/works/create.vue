@@ -1,8 +1,6 @@
 <template>
     <div class="create">
-        <div class="myworks__title common-title">
-            <span class="myworks__title__left">我的作品</span>
-        </div>
+        <page-book-header title="我的作品"></page-book-header>
 
         <div class="create-con common-con">
             <el-form ref="ruleForm" :model="form" :rules="rules" label-width="120px">
@@ -55,13 +53,13 @@
                             <div style='margin-bottom:20px;width: 470px' v-if='form.tagList&&form.tagList.length'>
                                 <el-tag
                                     :key="index"
-                                    v-for="(tag,index) in form.tagList"
+                                    v-for="(tag, index) in form.tagList"
                                     closable
-                                    :disable-transitions="false" 
-                                    @close="deleteTag(form.tagList,index)"
+                                    :disable-transitions="false"
+                                    @close="deleteTag(form.tagList, index)"
                                     style="margin-right: 10px;"
                                 >
-                                    {{tag.name}}
+                                    {{ tag.tagName || tag.name }}
                                 </el-tag>
                             </div>
                         </el-col>
@@ -92,9 +90,20 @@
                                         :disable-transitions="false"
                                         @click="addTag(tag)"
                                         style="cursor: pointer;margin-right: 10px;"
+                                        :effect="tag | filtersTagIsActive(form.tagList)"
+                                    >
+                                        {{ tag.tagName || tag.name }}
+                                    </el-tag>
+                                    <!-- <el-tag
+                                        :key="tag.tagId"
+                                        v-for="tag in bookTagList"
+                                        :disable-transitions="false"
+                                        @click="addTag(tag)"
+                                        style="cursor: pointer;margin-right: 10px;"
+                                        :effect="form.tagList.includes(tag) ? 'dark' : 'plain'"
                                     >
                                         {{tag.name}}
-                                    </el-tag>
+                                    </el-tag> -->
                                 </el-scrollbar>
                             </div>
                         </el-col>
@@ -102,7 +111,17 @@
                 </el-form-item>
 
                 <el-form-item label="作品简介" prop="notes">
-                    <el-input type="textarea" :rows="5" resize="none" v-model="form.notes" style='width: 470px' placeholder="请输入作品简介"></el-input>
+                    <el-input
+                        type="textarea"
+                        :rows="5"
+                        resize="none"
+                        v-model="form.notes"
+                        style='width: 470px'
+                        placeholder="请输入作品简介，作品简介不得少于20字，不得多于500字"
+                        :maxlength="500"
+                        show-word-limit
+                        >
+                    </el-input>
                 </el-form-item>
 
                 <el-form-item>
@@ -111,8 +130,8 @@
                     </template>
                     <template v-else>
                         <el-button type="primary" @click="onSubmit(true)" v-if='!bookId'>立即创建</el-button>
-                        <el-button type="primary" @click="onSubmit"  v-else>提交</el-button>
-                        <el-button>取消</el-button>
+                        <el-button type="primary" @click="onSubmit"  v-else>保存</el-button>
+                        <el-button @click="cancel">取消</el-button>
                     </template>
                 </el-form-item>
             </el-form>
@@ -121,13 +140,16 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getAppBookDetailById, addOrUpdateAuthorBook, existBookName } from "@/api/book";
+import { addOrUpdateAuthorBook, existBookName, getUpdateBookDetail } from "@/api/book";
 import { getBookTagListByParams } from "@/api/tag";
 import { getBookClassifyListByParams } from "@/api/classify";
 import { upload } from "@/api/file";
 
 export default {
     name: "create",
+    components: {
+        "page-book-header": () => import('@/components/pageBookHeader/index.vue'),
+    },
     data() {
         return {
             bookId:'',
@@ -153,9 +175,6 @@ export default {
             uploadLoading: false,
         };
     },
-    props: {
-
-    },
     computed:{
         ...mapGetters("enums", [ "enumsGetMap" ]),
         rules() {
@@ -180,10 +199,20 @@ export default {
                 ],
                 notes: [
                     { required: true, message: "请输入作品简介", trigger: 'blur' },
-                    { min: 20, max: 500, message: "请输入20-500长度的作品简介", trigger: 'blur' },
+                    { min: 20, max: 500, message: "作品简介不得少于20字，不得多于500字", trigger: 'blur' },
                 ],
             }
         }
+    },
+    filters: {
+        /**
+         * 
+         * 判断标签是否已选中
+         */
+        filtersTagIsActive(tag, tagList) {
+            const findIndex = tagList.findIndex(item => item.tagId === tag.tagId);
+            return findIndex !== -1 ? 'dark' : 'plain'
+        },
     },
     methods: {
         checkBookName(){
@@ -231,10 +260,6 @@ export default {
 
             if(res.code === "200") {
                 if(isCreate){
-                    this.$store.commit('change', {
-                        bookInfo: res.data.appBook
-                    });
-
                     const params = this.bookId ? { id: this.bookId } : {}
 
                     this.$router.push({
@@ -331,7 +356,7 @@ export default {
          * 删除标签
          */
         deleteTag(tagList,index){
-            tagList.splice(index,1)
+            tagList.splice(index, 1);
         },
 
         /**
@@ -339,10 +364,11 @@ export default {
          * 添加标签
          */
         addTag(tag){
+            // const findIndex = this.form.tagList.indexOf(tag);
             const findIndex = this.form.tagList.findIndex(item => item.tagId === tag.tagId);
 
             if(findIndex !== -1) {
-                this.$message.warning("请勿添加重复标签");
+                this.form.tagList.splice(findIndex, 1);
                 return ;
             }
 
@@ -377,19 +403,23 @@ export default {
          */
         async getBookTagListByParams(isSearch){
             this.searchName = this.searchName.trim();
-            !this.searchName && (this.pageNo = 1);
+            // !this.searchName && (this.pageNo = 1);
 
-            const res = await getBookTagListByParams({
-                pageNo: this.pageNo++,
-                pageSize: 40,
-                name: this.searchName
-            });
-            
-            if(res.code === "200") {
-                this.bookTagList = res.data.bookTagList;
-                if(this.searchName && this.bookTagList.length>0){
-                    this.showSearchOK = true;
+            try {
+                const res = await getBookTagListByParams({
+                    pageNo: 1,
+                    pageSize: 10000,
+                    name: this.searchName,
+                });
+                
+                if(res.code === "200") {
+                    this.bookTagList = res.data.bookTagList;
+                    if(this.searchName && this.bookTagList.length>0){
+                        this.showSearchOK = true;
+                    }
                 }
+            } catch (error) {
+                console.log(error);
             }
         },
 
@@ -398,34 +428,37 @@ export default {
          * 根据书籍id获取作品信息
          * @param { number } bookId
          */
-        async getAppBookDetailById() {
-            const res = await getAppBookDetailById({ bookId: this.bookId });
+        async getUpdateBookDetail() {
+            const res = await getUpdateBookDetail({ bookId: this.bookId });
 
             if(res.code === "200") {
                 this.form = res.data.appBook;
                 this.bookState = this.form.bookState;
-                this.$store.commit('change', {
-                    bookInfo: res.data.data.appBook
-                })
 
-                if(this.bookState == 1){
+                if(this.bookState == "1"){
                     this.$message({
                         message: '资料审核中，请在审核完成后修改',
                         type: 'warning'
                     });
                 }
             }
+        },
+
+        /**
+         * 点击取消按钮
+        */
+        cancel() {
+            this.$router.go(-1);
         }
     },
     created() {
+        const route = this.$route;
+        this.bookId = route.query.bookId;
         this.getBookTagListByParams();
         this.getBookClassifyListByParams();
 
-        const route = this.$route;
-        this.bookId = route.params.id;
-
         if(this.bookId){
-            this.getAppBookDetailById();
+            this.getUpdateBookDetail();
         }
     }
 }

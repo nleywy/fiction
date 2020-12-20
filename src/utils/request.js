@@ -46,6 +46,12 @@ service.interceptors.response.use(
      */
     response => {
         const res = response.data;
+
+        if(res.code === "400") {
+            Message.warning(res.msg);
+        }
+
+
         if(res.code === "402") {
             // Alert('这是一段内容', '提示', {
             //     confirmButtonText: '确定',
@@ -65,7 +71,7 @@ service.interceptors.response.use(
                             $router.push({ name: "login" });
                             return ;
                         }
-                        this.$message.warning(res.msg);
+                        Message.warning(res.msg);
                     })
                 }).catch(() => {
                     // no thing

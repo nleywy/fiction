@@ -40,7 +40,7 @@ export default {
     data() {
         return {
             loading: true,
-            editorContent: "",
+            editorContent: "111\r111",
             placeholder: "在此输入正文，不满1000字时，设定该章节为免费章节",
             apikey: "zg1d2xp43sktfw6i580bg4awi1cicuq462z75l45aiayhw8b",
             editorId: "Editor",
@@ -75,7 +75,6 @@ export default {
                     // tools: {title: '工具', items: 'spellchecker code'}
                 }
             },
-            // toolbar: [],
             toolbar: [ //数组写法
                 // 'undo redo | wordcount | fullscreen',
                 // 'undo redo | wordcount | fullscreen',
@@ -87,7 +86,6 @@ export default {
             ],
             outputFormat: "text",
             tinymceScriptSrc: ASSETS_BASE_URL + "/tinymce/js/tinymce.min.js",
-            ASSETS_BASE_URL,
         }
     },
     methods: {

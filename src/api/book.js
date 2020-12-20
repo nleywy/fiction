@@ -43,6 +43,19 @@ export const getAppBookDetailById = params => {
 
 /**
  * 
+ * 根据书籍id获取作品信息
+ * @param { number } bookId
+ */
+export const getUpdateBookDetail = params => {
+    return request({
+        url: "/author/cms/book/getUpdateBookDetail",
+        method: 'get',
+        params,
+    });
+};
+
+/**
+ * 
  * 新增编辑作品
  * @param { number } bookId 书籍id 无值：新增， 有值：编辑
  * @param { string } imgUrl 书籍封面url

@@ -10,7 +10,7 @@
                             </template>
                         </el-select>
                         <div class="draftCon-title__btns">
-                            <el-button @click="deleteChapterDraft" plain size="small" class="btn">删除</el-button>
+                            <el-button @click="deleteChapterDraft" plain size="small" class="btn" v-if="draftListaft.length > 1">删除</el-button>
                             <el-button @click="saveOrPublishChapter(false)" plain size="small" class="btn">保存</el-button>
                             <el-button type="primary" @click="dialogFormVisible = true" size="small" class="btn">发布</el-button>
                         </div>
@@ -55,15 +55,15 @@
                 <el-form>
                     <div class="dialog-info">
                         <div class="name">书籍名称</div>
-                        <div class="value">{{chapterDraft.bookName}}</div>
+                        <div class="value">{{appBook.bookName}}</div>
                     </div>
                     <div class="dialog-info">
                         <div class="name">最新章节</div>
-                        <div class="value">{{chapterDraft.latestChapterName}}</div>
+                        <div class="value">{{appBook.latestChapterName || "无"}}</div>
                     </div>
                     <div class="dialog-info">
                         <div class="name">发布章节</div>
-                        <div class="value">{{chapterDraft.chapterName}}</div>
+                        <div class="value">{{chapterDraft.chapterName || "无"}}</div>
                     </div>
                     <div class="dialog-info">
                         <div class="name">章节字数</div>
@@ -76,7 +76,7 @@
                     <div class="dialog-info">
                         <div class="name">发布时间</div>
                         <div class="value">
-                            <el-radio v-model="publishType" label="1">及时</el-radio>
+                            <el-radio v-model="publishType" label="1">立即</el-radio>
                             <el-radio v-model="publishType" label="2">定时</el-radio>
                             <el-date-picker
                                 style='display:block;margin-top: 12px'
@@ -97,7 +97,8 @@
             </el-dialog>
         </div>
         <slot>
-            <div class="draftCon-footer"><span>本章字数：{{ chapterDraft.wordCount }} </span> <span style="margin-left: 30px;">发布时间：{{ chapterDraft.createTime }}</span></div>
+            <div class="draftCon-footer" v-if="draftId"><span>本章字数：{{ chapterDraft.wordCount }} </span> <span style="margin-left: 30px;">创建时间：{{ chapterDraft.createTime }}</span></div>
+            <div v-else class="draftCon-footer"></div>
         </slot>
     </div>
 </template>
@@ -110,6 +111,8 @@ import {
 } from "@/api/chapter";
 import { getAppVolumeListByBookId } from "@/api/volume";
 import editor from "@/components/editor";
+import { mapState } from "vuex";
+import { findUnidimensionalListName } from "@/utils/findList";
 
 export default {
     name: "draftCon",
@@ -117,6 +120,7 @@ export default {
         editor
     },
     props: {
+        draftListaft: Array,
         draftId: [ Number, String, ],
         bookId: [ Number, String ]
     },
@@ -125,13 +129,13 @@ export default {
             appVolumeList: [],
             dialogFormVisible: false,
             scheduleTime:'',
-            publishType: null, //1-及时，2-定时
-            TiLength: 0,
+            publishType: null, //1-立即，2-定时
             chapterDraft: {},
             loading: false,
         }
     },
     computed: {
+        ...mapState("writingIndex", [ "appBook" ]),
         rules() {
             const that = this;
             
@@ -190,13 +194,7 @@ export default {
     },
     methods: {
         findTitle(volumeId){
-            let l = this.appVolumeList.length;
-            for(let i=0;i<l;i++){
-                let item = this.appVolumeList[i];
-                if(item.volumeId == volumeId){
-                    return item.title
-                }
-            }
+            return findUnidimensionalListName(this.appVolumeList, "title", "volumeId", volumeId);
         },
 
         /**
@@ -226,7 +224,11 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.apiDeleteChapterDraft();
+                if(this.draftId) {
+                    this.apiDeleteChapterDraft();
+                }else {
+                    this.$emit("delDraft");
+                }
             }).catch(() => {
                 this.$message.info("已取消删除");
             });
@@ -240,7 +242,7 @@ export default {
          * @param { number } volumeId 分卷id
          * @param { string } chapterName 章节名
          * @param { string } content 章节内容
-         * @param { string } publishType 1-及时，2-定时 （保存不发布时，可不传）
+         * @param { string } publishType 1-立即，2-定时 （保存不发布时，可不传）
          * @param { date } scheduleTime 定时发布时需要传
          * @param { string } remark
          */
@@ -261,19 +263,30 @@ export default {
 
             this.loading = true;
 
+            // const formData = new FormData();
+            // Object.keys(params).forEach(keys => {
+            //     formData.append(keys, params[keys])
+            // })
+
             const res = await saveOrPublishChapter(params);
+            // const res = await saveOrPublishChapter(formData);
 
             if(res.code === "200") {
                 this.dialogFormVisible = false;
                 this.$emit('changeDraftList')
                 if(isPublish){
-                    this.$alert('发布成功', '提示', {
-                        confirmButtonText: '确定'
-                    });
+                    this.$message.success("发布成功");
+                    this.$router.push({
+                        name: "published",
+                        query: {
+                            bookId: this.bookId,
+                        },
+                        params: {
+                            bookId: this.bookId,
+                        }
+                    })
                 }else{
-                    this.$alert('保存成功', '提示', {
-                        confirmButtonText: '确定'
-                    });
+                    this.$message.success("保存成功");
                 }
             }
 
@@ -281,23 +294,26 @@ export default {
         },
 
         saveOrPublishChapter(isPublish) {
+            if(!isPublish) {
+                delete this.chapterDraft.draftId
+                this.apiSaveOrPublishChapter(isPublish);
+                return ;
+            }
+
             this.$refs["ruleForm"].validate((valid) => {
                 if (valid) {
-                    if(isPublish){
-                        if(!this.publishType){
-                            this.$alert('请选择发布类型！', '错误', {
-                                confirmButtonText: '确定'
-                            });
-                            return
-                        }
-                        if(this.publishType == 2 && !this.scheduleTime){
-                            this.$alert('请选择发布时间！', '错误', {
-                                confirmButtonText: '确定'
-                            });
-                            return
-                        }
-                    }else{
-                        delete this.chapterDraft.draftId
+                    if(!this.publishType){
+                        this.$alert('请选择发布类型！', '错误', {
+                            confirmButtonText: '确定'
+                        });
+                        return
+                    }
+
+                    if(this.publishType == 2 && !this.scheduleTime){
+                        this.$alert('请选择发布时间！', '错误', {
+                            confirmButtonText: '确定'
+                        });
+                        return
                     }
 
                     this.apiSaveOrPublishChapter(isPublish);
@@ -332,7 +348,7 @@ export default {
             
             if(res.code === "200") {
                 this.appVolumeList = res.data.appVolumeList;
-                if(this.draftId && this.draftId != 100){
+                if(this.draftId){
                     this.getChapterDraftById(this.draftId)
                 }
             }
@@ -340,29 +356,13 @@ export default {
 
         handleOpen() {
             this.publishType = "1";
+            this.chapterDraft.content = this.$refs.editor.getContent();
         },
-
         handleClose() {
             this.publishType = null;
         }
     },
     created() {
-        // if(this.draftId != 100){
-        //     this.chapterDraft = {
-        //         volumeId: '',
-        //         ...this.$store.state.bookInfo,
-        //         publishType: null,
-        //         scheduleTime: null,
-        //         remark: "",
-        //         wordCount: null,
-        //         content: "",
-        //         bookName:'',
-        //         latestChapterId:'',
-        //         latestChapterName:'',
-        //     }
-        // }
-    },
-    mounted() {
         this.getAppVolumeListByBookId(this.bookId);
     },
 }

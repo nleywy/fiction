@@ -24,13 +24,16 @@
                                     无最新章节
                                 </template>
                                 <template v-else>
-                                    第{{item.chapterId}}章{{item.chapterName}}
+                                    第{{item.chapterId}}章 {{item.chapterName}}
                                 </template>
                             </div>
                             <div class="item__des__bottom">
                                 <div class="item__des__collect">
-                                    收藏{{item.collectNum}}
+                                    <span>收藏：{{item.collectNum}}</span>
+                                    <span style="margin-left: 10px;">字数：{{item.wordCount}}字</span>
+                                    
                                 </div>
+                                
                                 <div class="item__des__icons">
                                     <el-button class="btn" size="small" @click='createWorks(item.bookId)'>作品设置</el-button>
                                     <el-button class="btn" size="small" v-if='item.bookState == 6' @click='signUp(item)'>申请上架</el-button>
@@ -167,11 +170,14 @@ export default {
          * 跳转新建/编辑作品页面
          * @param {number} bookId
          */
-        createWorks(id){
+        createWorks(bookId){
             this.$router.push({
-                path: "/createWork/start",
+                name: "createWorkStart",
+                query: {
+                    bookId,
+                },
                 params:{
-                    id: id || -100
+                    bookId,
                 },
             });
         },

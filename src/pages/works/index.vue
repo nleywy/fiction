@@ -36,8 +36,8 @@
                                 
                                 <div class="item__des__icons">
                                     <el-button class="btn" size="small" @click='createWorks(item.bookId)'>作品设置</el-button>
-                                    <el-button class="btn" size="small" v-if='item.bookState == 6' @click='signUp(item)'>申请上架</el-button>
-                                    <el-button class="btn" size="small" v-if='item.bookState == 3' @click='signUp(item)'>申请签约</el-button>
+                                    <el-button class="btn" size="small" v-if='item.bookState == 7' @click='signUp(item)'>申请上架</el-button>
+                                    <el-button class="btn" size="small" v-if='item.bookState == 4' @click='signUp(item)'>申请签约</el-button>
                                     <el-button class="btn" size="small" @click="handleClickPublishedBtn(item.bookId)">已发章节</el-button>
                                     <el-button class="btn" type="primary" size="small" @click="handleClickWritingBtn(item.bookId)">新建章节</el-button>
                                 </div>
@@ -95,7 +95,7 @@ export default {
             let title = '签约申请';
             let con = '是否确认申请签约本书？';
 
-            if(item.bookState == 6){
+            if(item.bookState == 7){
                 title = '上架申请';
                 con = '是否确认申请上架本书？';
             }

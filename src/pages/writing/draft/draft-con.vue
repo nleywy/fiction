@@ -10,7 +10,7 @@
                             </template>
                         </el-select>
                         <div class="draftCon-title__btns">
-                            <el-button @click="deleteChapterDraft" plain size="small" class="btn" v-if="draftListaft.length > 1">删除</el-button>
+                            <el-button @click="deleteChapterDraft" plain size="small" class="btn" v-if="!(draftListaft.length === 1 && !draftListaft[0].draftId)">删除</el-button>
                             <el-button @click="saveOrPublishChapter(false)" plain size="small" class="btn">保存</el-button>
                             <el-button type="primary" @click="dialogFormVisible = true" size="small" class="btn">发布</el-button>
                         </div>
@@ -273,7 +273,6 @@ export default {
 
             if(res.code === "200") {
                 this.dialogFormVisible = false;
-                this.$emit('changeDraftList')
                 if(isPublish){
                     this.$message.success("发布成功");
                     this.$router.push({
@@ -286,7 +285,9 @@ export default {
                         }
                     })
                 }else{
+                    // draftId
                     this.$message.success("保存成功");
+                    this.$emit('changeDraftList'. res.data.draftId);
                 }
             }
 

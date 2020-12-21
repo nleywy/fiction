@@ -41,15 +41,25 @@ export default {
          * 
          * 获取草稿箱内容列表
          */
-        async getChapterDraftListByBookId() {
-            const res = await getChapterDraftListByBookId({ bookId: this.bookId })
+        async getChapterDraftListByBookId(draftId) {
+            const res = await getChapterDraftListByBookId({ bookId: this.bookId });
 
             if(res.code === "200") {
-                this.draftListaft = res.data.draftListaft;
-                if(this.draftListaft.length == 0){
-                    Bus.$emit('add')
+                const draftListaft = res.data.draftListaft;
+                this.draftListaft = draftListaft;
+                if(draftListaft.length == 0){
+                    Bus.$emit('add');
                 }else{
-                    this.draftId = this.draftListaft[0].draftId;
+                    // this.draftId = this.draftListaft[0].draftId;
+                    const findIndex = draftListaft.findIndex(item => item.draftId === draftId);
+
+                    if(findIndex !== -1) {
+                        this.active = findIndex;
+                        this.draftId = draftId;
+                    }else {
+                        this.active = 0;
+                        this.draftId = draftListaft[0].draftId;
+                    }
                 }
             }
         },
@@ -59,6 +69,13 @@ export default {
         },
         delDraft() {
             this.draftListaft.splice(this.active, 1);
+
+            if(!this.draftListaft.length) {
+                Bus.$emit('add')
+            }else {
+                this.active = 0;
+                this.draftId = this.draftListaft[0].draftId;
+            }
         }
     },
     created() {

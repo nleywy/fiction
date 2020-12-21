@@ -65,19 +65,26 @@ service.interceptors.response.use(
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    if(!getToken()) {
-                        removeAll();
-                        $router.push({ name: "login" });
-                        return ;
-                    }
-                    logout().then(res => {
-                        if(res.code === "200") {
-                            removeAll();
-                            $router.push({ name: "login" });
-                            return ;
-                        }
-                        Message.warning(res.msg);
-                    })
+                    removeAll();
+                    $router.push({ name: "login" });
+                    return ;
+                    // if(!getToken()) {
+                    //     removeAll();
+                    //     $router.push({ name: "login" });
+                    //     return ;
+                    // }
+                    // try {
+                    //     logout().then(res => {
+                    //         removeAll();
+                    //         if(res.code === "200") {
+                    //             $router.push({ name: "login" });
+                    //             return ;
+                    //         }
+                    //         Message.warning(res.msg);
+                    //     })
+                    // } catch (error) {
+                        
+                    // }
                 }).catch(() => {
                     // no thing
                 });

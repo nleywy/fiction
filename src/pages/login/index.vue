@@ -132,7 +132,7 @@ export default {
                     this.$router.push({ name: "applySuccess" });
                 }
             }else {
-                this.$message.warning(res.msg);
+                // this.$message.warning(res.msg);
             }
 
             this.loading = false;

@@ -153,7 +153,7 @@ export default {
                 return ;
             }
 
-            this.$message.warning(res.msg);
+            // this.$message.warning(res.msg);
         },
 
         async handleNodeClick(data) {

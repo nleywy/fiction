@@ -111,6 +111,13 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
+                if(!getToken()) {
+                    removeAll();
+                    this.$message.success('退出登录成功');
+                    this.$router.push({ name: "login" });
+                    return ;
+                }
+
                 logout().then(res => {
                     if(res.code === "200") {
                         removeAll();
@@ -119,7 +126,7 @@ export default {
                         return ;
                     }
 
-                    this.$message.warning(res.msg);
+                    // this.$message.warning(res.msg);
                 });
             }).catch(() => {
                 // no thing

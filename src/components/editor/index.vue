@@ -11,10 +11,13 @@
             :placeholder="placeholder"
             v-model="editorContent"
             :disabled="disabled"
+            @onKeyUp="handleKeyUp"
+            @onFocus="handleFocusIn"
+            @onBlur="handleFocusOut"
             @hook:mounted="hookMounted"
         />
 
-        <div class="Editor-wordcount">{{ editorContent.length }}/20000</div>
+        <div class="Editor-wordcount">{{ editorContent | fliterEditorContentLength }}/20000</div>
     </div>
 </template>
 
@@ -40,7 +43,7 @@ export default {
     data() {
         return {
             loading: true,
-            editorContent: "111\r111",
+            editorContent: "",
             placeholder: "在此输入正文，不满1000字时，设定该章节为免费章节",
             apikey: "zg1d2xp43sktfw6i580bg4awi1cicuq462z75l45aiayhw8b",
             editorId: "Editor",
@@ -73,7 +76,9 @@ export default {
                     // format: {title: '格式', items: 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
                     // table: {title: '表格', items: 'inserttable tableprops deletetable | cell row column'},
                     // tools: {title: '工具', items: 'spellchecker code'}
-                }
+                },
+                nonbreaking_force_tab: true,
+                paste_as_text: true,
             },
             toolbar: [ //数组写法
                 // 'undo redo | wordcount | fullscreen',
@@ -81,11 +86,23 @@ export default {
                 'undo redo',
             ],
             plugins: [
+                "nonbreaking",
+                "paste",
                 // "wordcount",
                 // "fullscreen"
             ],
             outputFormat: "text",
             tinymceScriptSrc: ASSETS_BASE_URL + "/tinymce/js/tinymce.min.js",
+            ASSETS_BASE_URL,
+        }
+    },
+    filters: {
+        fliterEditorContentLength(editorContent) {
+            if(typeof editorContent === "string") {
+                return editorContent.trim().replace("\n", "").replace("　　", "").replace(" ", "").length;
+            }
+
+            return editorContent.length;
         }
     },
     methods: {
@@ -105,6 +122,12 @@ export default {
         },
         hookMounted() {
             this.loading = false;
+        },
+        handleKeyUp(event, editor) {
+        },
+        handleFocusIn(event, editor) {
+        },
+        handleFocusOut(event, editor) {
         }
     },
 }

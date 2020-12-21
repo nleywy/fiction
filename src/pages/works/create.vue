@@ -3,7 +3,7 @@
         <page-book-header title="我的作品"></page-book-header>
 
         <div class="create-con common-con">
-            <el-form ref="ruleForm" :model="form" :rules="rules" label-width="120px">
+            <el-form ref="ruleForm" :model="form" :rules="rules" label-width="120px" status-icon>
                 <el-form-item label="作品封面" prop="blurryImgUrl">
                     <el-upload
                         v-loading="uploadLoading"
@@ -13,8 +13,15 @@
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
                         :on-error="handleUploadError"
-                        :before-upload="beforeAvatarUpload">
-                        <img v-if="form.blurryImgUrl" :src="form.blurryImgUrl" class="avatar">
+                        :before-upload="beforeAvatarUpload"
+                        >
+                        <el-image
+                            v-if="form.blurryImgUrl"
+                            class="avatar"
+                            style="width: 150px; height: 200px"
+                            :src="form.blurryImgUrl"
+                            >
+                        </el-image>
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                         <span class="tips">
@@ -28,7 +35,7 @@
 
                 <el-form-item label="作品名称" prop="bookName">
                     <el-input v-model="form.bookName" style='width: 470px' @blur='checkBookName' placeholder="请输入作品名称"></el-input>
-                    <i class="el-icon-circle-check" v-if='isExist == 1'></i>
+                    <!-- <i class="el-icon-circle-check" v-if='isExist == 1'></i> -->
                     <div class='nameTips' v-if='isExist == 2'>该书名已被占用，请尝试其他书名</div>
                 </el-form-item>
 
@@ -260,10 +267,13 @@ export default {
 
             if(res.code === "200") {
                 if(isCreate){
-                    const params = this.bookId ? { id: this.bookId } : {}
+                    const params = (res.data && res.data.bookId) ? { bookId: res.data.bookId } : { bookId: this.bookId };
 
                     this.$router.push({
                         path: "/createWork/success",
+                        query: {
+                            ...params,
+                        },
                         params,
                     });
                 }
@@ -465,12 +475,12 @@ export default {
 </script>
 
 <style>
-    .avatar-uploader{
+    .avatar-uploader {
         width: 150px;
         height: 200px;
         display: inline-block;
     }
-    .avatar-uploader-icon{
+    .avatar-uploader-icon {
         width: 150px;
         height: 200px;
         font-size: 28px;
@@ -490,16 +500,16 @@ export default {
             font-size:28px;
             margin-left: 20px;
             color: #259B25;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .nameTips{
-            font-size: 18px;
+            font-size: 12px;
             color: #FF5656;
             line-height: 25px;
             margin-top:10px;
         }
         .tigsTips{
-            font-size: 18px;
+            font-size: 12px;
             font-weight: 400;
             color: #FF5656;
             line-height: 25px;
@@ -518,7 +528,11 @@ export default {
             display: inline-block;
             margin-left: 20px;
             width: 550px;
-            vertical-align: middle;
+            vertical-align: top;
+            font-size: 14px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #7B7B7B;
         }
 
         .bookTagList{

@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar appScrollbar">
+        <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar" id="appScrollbar">
             <router-view />
         </el-scrollbar>
     </div>
@@ -17,13 +17,17 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     #app {
         width: 100%;
         height: 100%;
         position: relative;
 
-        .appScrollbar /deep/ {
+        #appScrollbar /deep/ {
+            .el-scrollbar__wrap {
+                overflow-x: hidden !important;
+            }
+
             .el-scrollbar__view {
                 min-height: 100%;
             }

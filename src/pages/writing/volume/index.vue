@@ -164,7 +164,7 @@ export default {
                 return ;
             }
 
-            this.$message.warning(res.msg);
+            // this.$message.warning(res.msg);
         },
 
         /**
@@ -179,15 +179,15 @@ export default {
                 this.getAppVolumeListByBookId();
                 this.$message.success("删除分卷成功");
             }else {
-                this.$message.warning("删除分卷失败");
+                // this.$message.warning("删除分卷失败");
             }
         },
 
         handleSubmit() {
-            if(parseInt(this.sortNum) < 2) {
-                this.$message.warning("分卷序号必须填入大于等于2的正整数");
-                return ;
-            }
+            // if(parseInt(this.sortNum) < 2) {
+            //     this.$message.warning("分卷序号必须填入大于等于2的正整数");
+            //     return ;
+            // }
 
             this.addOrUpdateAppVolume();
         },

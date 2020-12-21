@@ -86,11 +86,9 @@ export default {
             });
 
             if(res.code === "200") {
-                this.$message.success("申请成功")
+                this.$message.success("申请成功");
                 return ;
             }
-
-            this.$message.warning("申请失败")
         },
 
         signUp(item){

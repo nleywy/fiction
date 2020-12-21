@@ -65,6 +65,11 @@ service.interceptors.response.use(
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    if(!getToken()) {
+                        removeAll();
+                        $router.push({ name: "login" });
+                        return ;
+                    }
                     logout().then(res => {
                         if(res.code === "200") {
                             removeAll();

@@ -34,9 +34,9 @@
                 </el-form-item>
 
                 <el-form-item label="作品名称" prop="bookName">
-                    <el-input v-model="form.bookName" style='width: 470px' @blur='checkBookName' placeholder="请输入作品名称"></el-input>
+                    <el-input v-model="form.bookName" style='width: 470px' placeholder="请输入作品名称"></el-input>
                     <!-- <i class="el-icon-circle-check" v-if='isExist == 1'></i> -->
-                    <div class='nameTips' v-if='isExist == 2'>该书名已被占用，请尝试其他书名</div>
+                    <!-- <div class='nameTips' v-if='isExist == 2'>该书名已被占用，请尝试其他书名</div> -->
                 </el-form-item>
 
                 <el-form-item label="作品分类" prop="firstClassify">
@@ -80,7 +80,7 @@
                         <el-col :span="24">
                             <div class="tigsTips">
                                 <span v-if='(showFiveTips) || (searchName && bookTagList.length == 0)' class='fiveTips'>
-                                    {{ showFiveTips ? "最多添加5个标签" : "" }}
+                                    <!-- {{ showFiveTips ? "最多添加5个标签" : "" }} -->
                                     <br>
                                     {{ (searchName && bookTagList.length == 0) ? "搜索不到该标签，请联系编辑添加" : "" }}
                                 </span>
@@ -101,16 +101,6 @@
                                     >
                                         {{ tag.tagName || tag.name }}
                                     </el-tag>
-                                    <!-- <el-tag
-                                        :key="tag.tagId"
-                                        v-for="tag in bookTagList"
-                                        :disable-transitions="false"
-                                        @click="addTag(tag)"
-                                        style="cursor: pointer;margin-right: 10px;"
-                                        :effect="form.tagList.includes(tag) ? 'dark' : 'plain'"
-                                    >
-                                        {{tag.name}}
-                                    </el-tag> -->
                                 </el-scrollbar>
                             </div>
                         </el-col>
@@ -151,6 +141,7 @@ import { addOrUpdateAuthorBook, existBookName, getUpdateBookDetail } from "@/api
 import { getBookTagListByParams } from "@/api/tag";
 import { getBookClassifyListByParams } from "@/api/classify";
 import { upload } from "@/api/file";
+import { bookNameValidator } from "@/utils/rules";
 
 export default {
     name: "create",
@@ -187,6 +178,14 @@ export default {
         rules() {
             const that = this;
 
+            const tagListValidator = (rule, value, callback) => {
+                if(value.length > 5) {
+                    callback(Error("最多添加5个标签"));
+                }else {
+                    callback();
+                }
+            };
+
             return {
                 blurryImgUrl: [
                     { required: true, message: "请上传作品封面", trigger: 'blur' }
@@ -194,6 +193,7 @@ export default {
                 bookName: [
                     { required: true, message: "请输入作品名称", trigger: 'blur' },
                     { max: 15, message: "请输入最大长度15字符的作品名称", trigger: 'blur' },
+                    { validator: bookNameValidator, trigger: 'blur' },
                 ],
                 firstClassify: [
                     { required: true, message: "请选择作品分类", trigger: 'blur' }
@@ -202,7 +202,8 @@ export default {
                     { required: true, message: "请选择首发站", trigger: 'blur' }
                 ],
                 tagList: [
-                    { required: true, message: "请添加作品标签", trigger: 'blur' }
+                    { required: true, message: "请添加作品标签", trigger: 'blur' },
+                    { validator: tagListValidator, trigger: 'change' },
                 ],
                 notes: [
                     { required: true, message: "请输入作品简介", trigger: 'blur' },
@@ -382,12 +383,16 @@ export default {
                 return ;
             }
 
-            if(this.form.tagList.length >= 5){
-                this.showFiveTips = true;
-            }else{
-                this.showFiveTips = false;
+            if(!(this.form.tagList.length >= 5)){
                 this.form.tagList.push(tag);
             }
+
+            // if(!(this.form.tagList.length >= 5)){
+            //     this.showFiveTips = true;
+            // }else{
+            //     this.showFiveTips = false;
+            //     this.form.tagList.push(tag);
+            // }
         },
 
         /**

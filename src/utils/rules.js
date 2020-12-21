@@ -1,4 +1,5 @@
 import { existPenName } from "@/api/authorCms";
+import { existBookName } from "@/api/book";
 
 // export const phone = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/ig;
 
@@ -283,7 +284,7 @@ export const qqValidator = (rule, value, callback) => {
     callback()
 }
 
-// 验证qq
+// 验证微信
 export const wechat = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/ig;
 
 export const wechatValidator = (rule, value, callback) => {
@@ -296,4 +297,42 @@ export const wechatValidator = (rule, value, callback) => {
     }
 
     callback()
+}
+
+/**
+ * 
+ * 判断书名是否存在
+ * @param { string } bookName 笔名
+ * @returns { boolean } true-存在，false-不存在
+ */
+export function existBookNameRequest(bookName) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const res = await existBookName({ bookName });
+
+            if(res.code === "200") {
+                resolve(res.data.isExist);
+            }else {
+                reject(true);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+// 判断书名是否存在
+export const bookNameValidator = (rule, value, callback) => {
+    if (!value) {
+        return callback();
+    }
+
+    existBookNameRequest(value)
+        .then((bool) => {
+            if(bool) {
+                callback(new Error('该书名已被占用，请尝试其他书名'));
+            }else {
+                callback();
+            }
+        });
 }

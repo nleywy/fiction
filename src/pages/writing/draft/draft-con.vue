@@ -141,7 +141,7 @@ export default {
             
             const contentValidator = (rule, value, callback) => {
                 const content = that.$refs.editor.getContent();
-                const length = content.trim().length;
+                const length = typeof content === "string" ? content.trim().length : 0;
 
                 if(!length) {
                     callback(Error("请输入正文"));
@@ -351,7 +351,9 @@ export default {
 
             if(res.code === "200") {
                 this.chapterDraft = res.data.chapterDraft || {};
-                this.$refs.editor.setContent(res.data.chapterDraft.chapterContentFormat);
+                setTimeout(() => {
+                    this.$refs.editor.setContent(res.data.chapterDraft.chapterContentFormat);
+                }, 300);
             }
         },
 

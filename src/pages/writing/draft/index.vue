@@ -4,7 +4,7 @@
             <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar">
                 <template v-for='(draft, index) in draftListaft'>
                     <div :class="[ 'draft-left__item', active == index ? 'activity' : '' ]" @click='changeDraft(draft.draftId, index)' :key="index">
-                        <div class="name">{{draft.chapterName}}</div>
+                        <div class="name" :title="draft.chapterName">{{draft.chapterName}}</div>
                         <div class="des">
                             <i class="el-icon-time" v-if='draft.createTim'></i>
                             {{draft.createTime}} {{draft.wordCount}}字
@@ -126,7 +126,7 @@ export default {
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
                 line-height: 20px;
-
+                @include mixin-textHidden;
             }
             .des {
                 font-weight: 400;

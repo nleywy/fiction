@@ -38,8 +38,11 @@
                         <el-button type="primary" @click="submitForm('ruleForm')" class="submit" :loading="loading">手机号一键登录</el-button>
                     </el-form-item>
 
-                    <div class="link">登录即代表同意<a href="http://" target="_blank" rel="noopener noreferrer">《用户服务协议》《隐私政策》《作
-品合作基础协议》</a></div>
+                    <div class="link">登录即代表同意
+                        <a href="<%= BASE_URL %>pdf/userAgreement.pdf" target="_blank" rel="noopener noreferrer">《用户服务协议》</a>
+                        <a href="<%= BASE_URL %>pdf/privacy.pdf" target="_blank" rel="noopener noreferrer">《隐私政策》</a>
+                        <a href="<%= BASE_URL %>pdf/workCooperation.pdf" target="_blank" rel="noopener noreferrer">《作品合作基础协议》</a>
+                    </div>
                 </el-form>
             </section>
 

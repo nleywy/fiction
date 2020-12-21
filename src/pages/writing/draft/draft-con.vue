@@ -12,7 +12,7 @@
                         <div class="draftCon-title__btns">
                             <el-button @click="deleteChapterDraft" plain size="small" class="btn" v-if="!(draftListaft.length === 1 && !draftListaft[0].draftId)">删除</el-button>
                             <el-button @click="saveOrPublishChapter(false)" plain size="small" class="btn">保存</el-button>
-                            <el-button type="primary" @click="dialogFormVisible = true" size="small" class="btn">发布</el-button>
+                            <el-button type="primary" @click="showDialog" size="small" class="btn">发布</el-button>
                         </div>
                     </div>
                 </el-form-item>
@@ -193,6 +193,17 @@ export default {
         },
     },
     methods: {
+        showDialog() {
+            this.$refs["ruleForm"].validate((valid) => {
+                if (valid) {
+                    this.dialogFormVisible = true;
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+
         findTitle(volumeId){
             return findUnidimensionalListName(this.appVolumeList, "title", "volumeId", volumeId);
         },
@@ -268,27 +279,31 @@ export default {
             //     formData.append(keys, params[keys])
             // })
 
-            const res = await saveOrPublishChapter(params);
-            // const res = await saveOrPublishChapter(formData);
+            try {
+                const res = await saveOrPublishChapter(params);
+                // const res = await saveOrPublishChapter(formData);
 
-            if(res.code === "200") {
-                this.dialogFormVisible = false;
-                if(isPublish){
-                    this.$message.success("发布成功");
-                    this.$router.push({
-                        name: "published",
-                        query: {
-                            bookId: this.bookId,
-                        },
-                        params: {
-                            bookId: this.bookId,
-                        }
-                    })
-                }else{
-                    // draftId
-                    this.$message.success("保存成功");
-                    this.$emit('changeDraftList'. res.data.draftId);
+                if(res.code === "200") {
+                    this.dialogFormVisible = false;
+                    if(isPublish){
+                        this.$message.success("发布成功");
+                        this.$router.push({
+                            name: "published",
+                            query: {
+                                bookId: this.bookId,
+                            },
+                            params: {
+                                bookId: this.bookId,
+                            }
+                        })
+                    }else{
+                        // draftId
+                        this.$message.success("保存成功");
+                        this.$emit('changeDraftList'. res.data.draftId);
+                    }
                 }
+            } catch (error) {
+                
             }
 
             this.loading = false;

@@ -15,11 +15,14 @@
                     >
                     <template slot-scope="{ node, data }">
                         <div v-if="!node.isLeaf">
-                            <label for="" class="draft-left-label">{{ data._label }}</label>
+                            <label for="" class="draft-left-label" :title="data._label">{{ data._label }}</label>
                             <div class="draft-left-count">共{{ data.chapterCount }}章</div>
                         </div>
                         <div v-else class="draft-left-leaf">
-                            <label for="" class="draft-left-leaf-label"><span :style="{ color: statusColor[data.reviewState] }">{{ data.reviewState | filterReviewState(enumsGetMap) }}</span> {{ data._label }}</label>
+                            <label for="" class="draft-left-leaf-label">
+                                <span :style="{ color: statusColor[data.reviewState] }">{{ data.reviewState | filterReviewState(enumsGetMap) }}</span>
+                                <span :title="data._label">{{ data._label }}</span>
+                            </label>
                             <div class="draft-left-leaf-count">{{ data.createTime.substring(6, 16) }} {{ data.wordCount }}字</div>
                         </div>
                     </template>
@@ -66,7 +69,7 @@ export default {
     },
     methods: {
         updateTree(data) {
-            this.getAppChapterListByVolumeId({ volumeId: data.volumeId, pageNo: 1, pageSize: 10000, })
+            this.getAppChapterListByVolumeId(data.volumeId)
                 .then(list => {
                     const find = this.appVolumeList.find(item => item.volumeId === data.volumeId);
 
@@ -234,6 +237,8 @@ export default {
         &-leaf {
             &-label {
                 display: block;
+                // width: 245px;
+                width: 245px - 46px - 18px - 18px;
                 height: 17px;
                 margin-bottom: 10px;
                 font-size: 12px;
@@ -241,6 +246,7 @@ export default {
                 font-weight: 400;
                 color: #7B7B7B;
                 line-height: 17px;
+                @include mixin-textHidden;
             }
 
             &-count {
@@ -255,12 +261,14 @@ export default {
 
         &-label {
             display: block;
+            width: 245px - 46px - 18px - 18px;
             height: 30px;
             font-size: 14px;
             font-family: PingFangSC-Regular, PingFang SC;
             font-weight: 400;
             color: #030303;
             line-height: 20px;
+            @include mixin-textHidden;
         }
 
         &-count {

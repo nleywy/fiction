@@ -4,7 +4,7 @@
             <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar">
                 <template v-for='(volume, index) in appVolumeList'>
                     <div :class="['volume-left__item',active == index?'activity':'']" @click='changeVolume(volume, index)' :key="volume.volumeId">
-                        <div class="name">{{volume.title}}</div>
+                        <div class="name" :title="volume.title">{{volume.title}}</div>
                         <div class="des">
                             共{{volume.chapterCount}}章
                         </div>
@@ -260,10 +260,12 @@ export default {
                 background: rgba(2, 103, 229, 0.05);
             }
             .name {
+                height: 20px;
                 font-size: 14px;
                 font-weight: 400;
                 line-height: 25px;
                 margin-bottom: 10px;
+                @include mixin-textHidden;
             }
             .des {
                 font-weight: 400;

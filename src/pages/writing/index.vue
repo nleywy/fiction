@@ -5,7 +5,7 @@
 
         <div class="chapterDraftList__title">
             <template v-for='(item, index) in title'>
-                <span :key="index" :class="[ 'chapterDraftList__title__text', item.id == activity? 'activity' : '' ]" @click="changeRouter(item.id)">{{item.name}}</span>
+                <span :key="index" :class="[ 'chapterDraftList__title__text', item.id == activity? 'activity' : '' ]" @click="changeRouter(item)">{{item.name}}</span>
             </template>
             <div class="chapterDraftList__btns">
                 <el-button type="primary" @click="addNewVolume" size="small" class="btn">新建分卷</el-button>
@@ -30,39 +30,48 @@ export default {
             title:[
                 {
                     name:'已发章节',
-                    id: 'published',
+                    path: '/writing/published',
+                    id: "published",
                 },
                 {
                     name:'草稿箱',
-                    id: 'draft',
+                    path: '/writing/draft',
+                    id: "draft",
                 },
                 {
                     name:'分卷管理',
-                    id: 'volume',
+                    path: '/writing/volume',
+                    id: "volume",
                 }
             ],
             activity: 'draft',
             bookId: "",
         };
     },
+    watch: {
+        $route(newVal) {
+            this.activity = newVal.name;
+        }
+    },
     methods: {
         ...mapMutations("writingIndex", [ "SET_APP_BOOK" ]),
         addNewVolume() {
             Bus.$emit('addVolume');
             
-            this.changeRouter("volume");
+            this.changeRouter(this.title[2]);
         },
         addNewChapter(){
-            this.changeRouter("draft");
+            this.changeRouter(this.title[1]);
             Bus.$emit('add');
         },
 
-        changeRouter(id){
-            this.activity = id;
+        changeRouter(item){
+            this.activity = item.id;
 
-            if(this.$route.name !== id) {
+            if(this.$route.path !== item.path) {
                 this.$router.push({
-                    name: id,
+                    // name: id,
+                    path: item.path,
                     query: {
                         bookId: this.bookId
                     },

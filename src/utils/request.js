@@ -4,6 +4,7 @@ import $router from "@/router";
 import { logout } from "@/api/login";
 import { getToken, removeAll } from '@/utils/auth'
 const baseURL = process.env.NODE_ENV === 'production' ? "http://192.168.110.4/api" : process.env.VUE_APP_API_HOST;
+const bool = true;
 
 //全局发送post请求的默认头部content-type类型,定义类型为JSON格式，并且字符编码为utf-8
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
@@ -51,22 +52,19 @@ service.interceptors.response.use(
             Message.warning(res.msg);
         }
 
-
         if(res.code === "402") {
-            // Alert('这是一段内容', '提示', {
-            //     confirmButtonText: '确定',
-            //     callback: action => {
-            //         removeAll();
-            //         $router.push({ name: login });
-            //     }
-            // });
-            MessageBox.confirm('登录状态已失效，是否重新登录?', '提示', {
+            if(bool) {
+                bool = false;
+
+                MessageBox.confirm('登录状态已失效，是否重新登录?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
                     removeAll();
+                    bool = true;
                     $router.push({ name: "login" });
+                    
                     return ;
                     // if(!getToken()) {
                     //     removeAll();
@@ -87,7 +85,9 @@ service.interceptors.response.use(
                     // }
                 }).catch(() => {
                     // no thing
+                    bool = true;
                 });
+            }
         }
 
         return res;

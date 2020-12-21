@@ -187,7 +187,7 @@ export default {
                 }
 
                 this.$nextTick().then(() => {
-                    this.$refs.editor.setContent(this.chapterDraft.content);
+                    this.$refs.editor.setContent(this.chapterDraft.chapterContentFormat);
                 });
             }
         },
@@ -261,6 +261,7 @@ export default {
             let params = {
                 ...this.chapterDraft,
                 content: this.$refs.editor.getContent(),
+                chapterContentFormat: this.$refs.editor.getHtmlContent(),
             };
 
             if(this.draftId) {
@@ -350,7 +351,7 @@ export default {
 
             if(res.code === "200") {
                 this.chapterDraft = res.data.chapterDraft || {};
-                this.$refs.editor.setContent(res.data.chapterDraft.content);
+                this.$refs.editor.setContent(res.data.chapterDraft.chapterContentFormat);
             }
         },
 

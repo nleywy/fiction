@@ -99,7 +99,7 @@ export default {
             deep: true,
             handler(newVal) {
                 this.chapterDraft = JSON.parse(JSON.stringify(newVal));
-                this.$refs.editor.setContent(this.chapterDraft.content);
+                this.$refs.editor.setContent(this.chapterDraft.chapterContentFormat);
                 this.isUpdate = false;
             },
         },
@@ -149,7 +149,7 @@ export default {
                 }
             }
 
-            this.updateAuthorChapter({ ...this.chapterDraft, content });
+            this.updateAuthorChapter({ ...this.chapterDraft, content, chapterContentFormat: this.$refs.editor.getHtmlContent(), });
         },
 
         async updateAuthorChapter(chapterDraft) {

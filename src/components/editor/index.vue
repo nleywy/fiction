@@ -17,7 +17,7 @@
             @hook:mounted="hookMounted"
         />
 
-        <div class="Editor-wordcount">{{ editorContent | fliterEditorContentLength }}/20000</div>
+        <div class="Editor-wordcount" v-if="!disabled">{{ editorContent | fliterEditorContentLength }}/20000</div>
     </div>
 </template>
 
@@ -102,16 +102,24 @@ export default {
                 return editorContent.trim().replace("\n", "").replace("　　", "").replace(" ", "").length;
             }
 
-            return editorContent.length;
+            return editorContent ? editorContent.length : 0;
         }
     },
     methods: {
         /**
          * 
-         * 获取内容
+         * 获取文本内容
          */
         getContent() {
+            window.edi = this.$refs.Editor;
             return this.editorContent;
+        },
+        /**
+         * 
+         * 获取html内容
+         */
+        getHtmlContent() {
+            return this.$refs.Editor.editor.getContent({ format: "html" });
         },
         /**
          * 

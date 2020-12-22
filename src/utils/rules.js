@@ -209,7 +209,7 @@ export const addressValidator = (rule, value, callback) => {
 
     const length = value.length;
 
-    if(5 < length && length > 64) {
+    if(5 < length && length < 64) {
         callback();
     }else {
         callback(new Error('地址必须在5 - 64个字内'));
@@ -224,7 +224,7 @@ export const realNameValidator = (rule, value, callback) => {
     
     const length = value.length;
 
-    if(2 < length && length > 10) {
+    if(2 < length && length < 10) {
         callback();
     }else {
         callback(new Error('真实姓名请使用2-10位汉字或英文'));
@@ -270,14 +270,17 @@ export const penNameValidator = (rule, value, callback) => {
 };
 
 // 验证qq
-export const qq = /\d{5,14}/ig;
+export const qq = /\d{5,14}/;
 
 export const qqValidator = (rule, value, callback) => {
+    console.log(value)
     if (!value) {
         return callback();
     }
 
-    if (!qq.test(value)) {
+    const bool = !qq.test(value)
+
+    if (bool) {
         return callback(new Error('请输入有效QQ号'))
     }
 
@@ -285,7 +288,7 @@ export const qqValidator = (rule, value, callback) => {
 }
 
 // 验证微信
-export const wechat = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/ig;
+export const wechat = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/;
 
 export const wechatValidator = (rule, value, callback) => {
     if (!value) {
@@ -293,7 +296,7 @@ export const wechatValidator = (rule, value, callback) => {
     }
 
     if (!wechat.test(value)) {
-        return callback(new Error('请输入有效QQ号'))
+        return callback(new Error('请输入有效微信号'))
     }
 
     callback()
@@ -308,7 +311,7 @@ export const wechatValidator = (rule, value, callback) => {
 export function existBookNameRequest(bookName) {
     return new Promise(async (resolve, reject) => {
         try {
-            const res = await existBookName({ bookName });
+            const res = await existBookName({ bookName, bookId });
 
             if(res.code === "200") {
                 resolve(res.data.isExist);

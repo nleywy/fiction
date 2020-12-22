@@ -81,7 +81,7 @@
                             <div class="tigsTips">
                                 <span v-if='(showFiveTips) || (searchName && bookTagList.length == 0)' class='fiveTips'>
                                     <!-- {{ showFiveTips ? "最多添加5个标签" : "" }} -->
-                                    <br>
+                                    <!-- <br> -->
                                     {{ (searchName && bookTagList.length == 0) ? "搜索不到该标签，请联系编辑添加" : "" }}
                                 </span>
                                 <!-- <span v-if='searchName && bookTagList.length == 0' class='noTags'>搜索不到该标签，请联系编辑添加</span> -->
@@ -385,6 +385,8 @@ export default {
 
             if(!(this.form.tagList.length >= 5)){
                 this.form.tagList.push(tag);
+            }else {
+                this.$message.warning("最多添加5个标签");
             }
 
             // if(!(this.form.tagList.length >= 5)){

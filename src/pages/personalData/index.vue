@@ -55,7 +55,7 @@
                 </el-form-item>
 
                 <el-form-item label="证件" prop="certificateNo">
-                    <el-select v-model="personData.certificateType" placeholder="请选择" style="width: 100px;">
+                    <el-select v-model="personData.certificateType" placeholder="请选择" style="width: 200px;">
                         <el-option
                             v-for="item in enumsGetMap('cardTypeEnum')"
                             :key="item.value"
@@ -64,7 +64,7 @@
                             >
                         </el-option>
                     </el-select>
-                    <el-input type="text" v-model="personData.certificateNo" style='width: 330px;margin-left: 20px;' placeholder="请输入证件号码"></el-input>
+                    <el-input type="text" v-model="personData.certificateNo" style='width: 230px;margin-left: 20px;' placeholder="请输入证件号码"></el-input>
                 </el-form-item>
 
                 <!-- <el-form-item label="常驻地" prop="bookName">
@@ -178,7 +178,7 @@ export default {
                     callback(new Error('请选择证件类型'));
                 }
 
-                if(8 < length && length > 18) {
+                if(8 < length && length < 19) {
                     callback();
                 }else {
                     callback(new Error('证件号码为8位以上且不能超过18位'));

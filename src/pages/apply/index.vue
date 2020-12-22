@@ -3,7 +3,8 @@
         <page-book-header title="作家申请"></page-book-header>
 
         <section class="block">
-            <i class="el-icon-circle-check"></i>
+            <!-- <i class="el-icon-circle-check"></i> -->
+            <el-image class="block-icon" :src="require('@/assets/success.png')"></el-image>
             <p class="success">申请成功</p>
             <p class="tips">恭喜，你已成功加入次元姬</p>
             <div>
@@ -43,11 +44,11 @@ export default {
         .block {
             text-align: center;
 
-            .el-icon-circle-check {
+            &-icon {
                 margin-top: 100px;
                 margin-bottom: 20px;
-                font-size: 80px;
-                color: #259B25;
+                // font-size: 80px;
+                // color: #259B25;
             }
 
             .success {

@@ -36,8 +36,8 @@
                                 
                                 <div class="item__des__icons">
                                     <el-button class="btn" size="small" @click='createWorks(item.bookId)'>作品设置</el-button>
-                                    <el-button class="btn" size="small" v-if='item.bookState == 6' @click='signUp(item)'>申请上架</el-button>
-                                    <el-button class="btn" size="small" v-if='item.bookState == 4' @click='signUp(item)'>申请签约</el-button>
+                                    <el-button class="btn" size="small" v-if='item.bookState == 6' @click='signUp(item, 7)'>申请上架</el-button>
+                                    <el-button class="btn" size="small" v-if='item.bookState == 3' @click='signUp(item, 4)'>申请签约</el-button>
                                     <el-button class="btn" size="small" @click="handleClickPublishedBtn(item.bookId)">已发章节</el-button>
                                     <el-button class="btn" type="primary" size="small" @click="handleClickWritingBtn(item.bookId)">新建章节</el-button>
                                 </div>
@@ -91,7 +91,7 @@ export default {
             }
         },
 
-        signUp(item){
+        signUp(item, bookState){
             let title = '签约申请';
             let con = '是否确认申请签约本书？';
 
@@ -105,7 +105,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.applyShelfOrSign({ ...item, bookState: 7 });
+                this.applyShelfOrSign({ ...item, bookState });
             }).catch(() => {
                 // catch
                 this.$message.info("已取消申请")

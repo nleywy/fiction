@@ -10,9 +10,9 @@
                             </template>
                         </el-select>
                         <div class="draftCon-title__btns">
-                            <el-button @click="deleteChapterDraft" plain size="small" class="btn" v-if="!(draftListaft.length === 1 && !draftListaft[0].draftId)">删除</el-button>
-                            <el-button @click="saveOrPublishChapter(false)" plain size="small" class="btn">保存</el-button>
-                            <el-button type="primary" @click="showDialog" size="small" class="btn">发布</el-button>
+                            <el-button @click="deleteChapterDraft" plain size="small" class="btn" :disabled="loading" v-if="!(draftListaft.length === 1 && !draftListaft[0].draftId)">删除</el-button>
+                            <el-button @click="saveOrPublishChapter(false)" plain size="small" class="btn" :loading="loading">保存</el-button>
+                            <el-button type="primary" @click="showDialog" size="small" class="btn" :disabled="loading">发布</el-button>
                         </div>
                     </div>
                 </el-form-item>
@@ -28,7 +28,7 @@
 
                 <el-form-item prop="content">
                     <div class="quillCon">
-                        <editor ref="editor"/>
+                        <editor ref="editor" @editorBlur="saveOrPublishChapter(false)"/>
                     </div>
                 </el-form-item>
 
@@ -97,8 +97,8 @@
             </el-dialog>
         </div>
         <slot>
-            <div class="draftCon-footer" v-if="draftId"><span>本章字数：{{ chapterDraft.wordCount }} </span> <span style="margin-left: 30px;">创建时间：{{ chapterDraft.createTime }}</span></div>
-            <div v-else class="draftCon-footer"></div>
+            <div class="draftCon-footer"><span>本章字数：{{ chapterDraft.wordCount }} </span> <span style="margin-left: 30px;">创建时间：{{ chapterDraft.createTime }}</span></div>
+            <!-- <div v-else class="draftCon-footer"></div> -->
         </slot>
     </div>
 </template>
@@ -113,6 +113,7 @@ import { getAppVolumeListByBookId } from "@/api/volume";
 import editor from "@/components/editor";
 import { mapState } from "vuex";
 import { findUnidimensionalListName } from "@/utils/findList";
+import { dateFormat } from "@/utils/formatDate"
 
 export default {
     name: "draftCon",
@@ -174,20 +175,20 @@ export default {
                 this.getChapterDraftById(value)
             }else{
                 this.chapterDraft = {
-                    volumeId:'',
-                    // ...this.$store.state.bookInfo,
+                    volumeId: this.appVolumeList.length ? this.appVolumeList[0].volumeId : "",
+                    createTime: dateFormat(new Date(), "yyyy-MM-dd hh:mm:ss"),
                     publishType: null,
                     scheduleTime: null,
                     remark: "",
-                    wordCount: null,
+                    wordCount: 0,
                     content: "",
-                    bookName:'',
-                    latestChapterId:'',
-                    latestChapterName:''
+                    bookName: '',
+                    latestChapterId: '',
+                    latestChapterName: ''
                 }
 
                 this.$nextTick().then(() => {
-                    this.$refs.editor.setContent(this.chapterDraft.chapterContentFormat);
+                    this.$refs.editor.setContent("");
                 });
             }
         },
@@ -273,16 +274,20 @@ export default {
                 params.scheduleTime = this.scheduleTime;
             }
 
-            this.loading = true;
 
             // const formData = new FormData();
             // Object.keys(params).forEach(keys => {
             //     formData.append(keys, params[keys])
             // })
 
+            if(this.loading) {
+                return ;
+            }
+
+            this.loading = true;
+
             try {
                 const res = await saveOrPublishChapter(params);
-                // const res = await saveOrPublishChapter(formData);
 
                 if(res.code === "200") {
                     this.dialogFormVisible = false;
@@ -304,7 +309,7 @@ export default {
                     }
                 }
             } catch (error) {
-                
+
             }
 
             this.loading = false;
@@ -369,6 +374,10 @@ export default {
                 this.appVolumeList = res.data.appVolumeList;
                 if(this.draftId){
                     this.getChapterDraftById(this.draftId)
+                }
+
+                if(!this.chapterDraft.volumeId) {
+                    this.chapterDraft.volumeId = this.appVolumeList.length ? this.appVolumeList[0].volumeId : "";
                 }
             }
         },

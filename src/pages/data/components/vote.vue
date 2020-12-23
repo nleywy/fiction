@@ -16,8 +16,14 @@
                 <el-col :span="12" style="text-align: right;">
                     <label for="" class="time-left">选择道具</label>
                     <el-select size="small" v-model="params.giftType" placeholder="请选择" class="time-select">
-                        <el-option
+                        <!-- <el-option
                             v-for="item in enumsGetMap('giftTypeEnum')"
+                            :key="item.value"
+                            :label="item.text"
+                            :value="item.value">
+                        </el-option> -->
+                        <el-option
+                            v-for="item in propList"
                             :key="item.value"
                             :label="item.text"
                             :value="item.value">
@@ -140,7 +146,7 @@ export default {
                 bookId: "",
                 pageNo: 1,
                 pageSize: 10,
-                giftType: "",
+                giftType: null,
                 dateType: "",
             },
             dateList: [ date, date ],
@@ -151,20 +157,24 @@ export default {
             bookList: [],
             propList: [ // 道具列表
                 {
-                    propId: 1,
-                    propName: "月票",
+                    value: null, 
+                    text: "全部",
                 },
                 {
-                    propId: 2,
-                    propName: "推荐票",
+                    value: "1", 
+                    text: "月票",
                 },
                 {
-                    propId: 3,
-                    propName: "刀片",
+                    value: "2",
+                    text: "推荐票",
                 },
                 {
-                    propId: 4,
-                    propName: "打赏",
+                    value: "3",
+                    text: "刀片",
+                },
+                {
+                    value: "4",
+                    text: "打赏",
                 },
             ],
         };
@@ -226,7 +236,6 @@ export default {
          */
         async countReward() {
             this.loading = true;
-            console.log(this.params)
             const res = await countReward({ ...this.params, startDate: this.dateList[0] || "", endDate: this.dateList[1] || "", });
 
             if(res.code === "200") {
@@ -250,11 +259,12 @@ export default {
             if(res.code === "200") {
                 const bookList = res.data.bookList;
                 const dateTypeEnum = this.enumsGetMap('dateTypeEnum');
-                const giftTypeEnum = this.enumsGetMap('giftTypeEnum');
-                if(Array.isArray(bookList) && bookList.length && giftTypeEnum.length && giftTypeEnum.length) {
+                // const giftTypeEnum = this.enumsGetMap('giftTypeEnum');
+                // const giftTypeEnum = this.propList;
+                if(Array.isArray(bookList) && bookList.length && this.propList.length) {
                     this.bookList = res.data.bookList;
                     this.params.bookId = bookList[0].bookId;
-                    this.params.giftType = giftTypeEnum[0].value;
+                    this.params.giftType = this.propList[0].value;
                     this.params.dateType = dateTypeEnum[0].value;
                     this.$nextTick().then(() => {
                         this.countReward();

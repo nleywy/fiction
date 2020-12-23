@@ -136,6 +136,7 @@ export default {
         handleFocusIn(event, editor) {
         },
         handleFocusOut(event, editor) {
+            this.$emit("editorBlur")
         }
     },
 }

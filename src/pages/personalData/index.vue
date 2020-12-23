@@ -268,9 +268,6 @@ export default {
                 this.$message.success("保存成功");
                 return ;
             }
-
-            this.$message.success(res.msg);
-
         },
 
         /**

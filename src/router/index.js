@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import layoutRouters from "./modules/layout";
 import { getToken } from "@/utils/auth";
+// import { clearPending } from "@/utils/clearPending";
 
 Vue.use(Router);
 
@@ -38,10 +39,12 @@ router.beforeEach((to, from, next) => {
         if(white.includes(to.path)) {
             next(from.fullPath);
         }else {
+            // clearPending(); // 切换路由取消请求
             next();
         }
     }else {
         if(white.includes(to.path)) {
+            // clearPending(); // 切换路由取消请求
             next();
         }else {
             next('/login');

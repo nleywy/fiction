@@ -108,20 +108,30 @@
                 </el-form-item>
 
                 <el-form-item label="作品简介" prop="notes">
-                    <el-input
-                        type="textarea"
-                        :rows="5"
-                        resize="none"
-                        v-model="form.notes"
-                        style='width: 470px'
-                        placeholder="请输入作品简介，作品简介不得少于20字，不得多于500字"
-                        :maxlength="500"
-                        show-word-limit
-                        >
-                    </el-input>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-input
+                                type="textarea"
+                                :rows="5"
+                                resize="none"
+                                v-model="form.notes"
+                                style='width: 470px'
+                                placeholder="请输入作品简介，作品简介不得少于20字，不得多于500字"
+                                :maxlength="500"
+                                show-word-limit
+                                >
+                            </el-input>
+                        </el-col>
+                        <el-col :span="24">
+                            <div class="tigsTips" v-if="form.reviewStatus == '2'">
+                                <span class='fiveTips'>{{ form.refuseReason }}</span>
+                            </div>
+                        </el-col>
+                    </el-row>
                 </el-form-item>
 
                 <el-form-item>
+
                     <template v-if='bookState == 1'>
                         <el-button type="primary" @click='reviewTips'>审核中</el-button>
                     </template>
@@ -186,6 +196,10 @@ export default {
                 }
             };
 
+            
+
+            const bookNameValidators = bookNameValidator.bind(that);
+
             return {
                 blurryImgUrl: [
                     { required: true, message: "请上传作品封面", trigger: 'blur' }
@@ -193,7 +207,7 @@ export default {
                 bookName: [
                     { required: true, message: "请输入作品名称", trigger: 'blur' },
                     { max: 15, message: "请输入最大长度15字符的作品名称", trigger: 'blur' },
-                    { validator: bookNameValidator, trigger: 'blur' },
+                    { validator: bookNameValidators, trigger: 'blur' },
                 ],
                 firstClassify: [
                     { required: true, message: "请选择作品分类", trigger: 'blur' }

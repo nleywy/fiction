@@ -8,7 +8,7 @@
             <div class="items" v-if='Array.isArray(bookList) && bookList.length > 0'>
                 <el-scrollbar style="width: 100%;height: 100%;" class="pageScrollbar">
                     <div class="item" v-for='item in bookList' :key='item.id'>
-                        <el-image :src="item.blurryImgUrl" class="blurryImg"></el-image>
+                        <el-image :src="item.blurryImgUrl || require('@/assets/cover.png')" class="blurryImg" @error="handleImageError"></el-image>
                         <div class="item__des">
                             <div class="item__des__top">
                                 <div class="item__des__name">
@@ -24,7 +24,8 @@
                                     无最新章节
                                 </template>
                                 <template v-else>
-                                    第{{item.chapterId}}章 {{item.chapterName}}
+                                    <!-- 第{{item.chapterId}}章 {{item.chapterName}} -->
+                                    {{item.chapterName}}
                                 </template>
                             </div>
                             <div class="item__des__bottom">
@@ -180,6 +181,9 @@ export default {
             });
         },
         
+        handleImageError(e) {
+            console.log(e)
+        }
     },
     filters: {
         /**

@@ -308,7 +308,7 @@ export const wechatValidator = (rule, value, callback) => {
  * @param { string } bookName 笔名
  * @returns { boolean } true-存在，false-不存在
  */
-export function existBookNameRequest(bookName) {
+export function existBookNameRequest(bookName, bookId) {
     return new Promise(async (resolve, reject) => {
         try {
             const res = await existBookName({ bookName, bookId });
@@ -325,12 +325,12 @@ export function existBookNameRequest(bookName) {
 }
 
 // 判断书名是否存在
-export const bookNameValidator = (rule, value, callback) => {
+export const bookNameValidator = function(rule, value, callback) {
     if (!value) {
         return callback();
     }
 
-    existBookNameRequest(value)
+    existBookNameRequest(value, this.bookId)
         .then((bool) => {
             if(bool) {
                 callback(new Error('该书名已被占用，请尝试其他书名'));

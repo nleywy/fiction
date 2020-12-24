@@ -192,7 +192,10 @@ export default {
                 return "";
             }
 
-            return `更新${dayData.wordCount}字，${dayData.chapterCount}章`;
+            const wordCount = dayData.wordCount.toString();
+            const length = wordCount.length;
+
+            return `更新${length > 4 ? (wordCount.substring(0, length - 4) + "万") : wordCount }字，${dayData.chapterCount}章`;
         }
     },
     created(){

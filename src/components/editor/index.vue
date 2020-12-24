@@ -17,7 +17,7 @@
             @hook:mounted="hookMounted"
         />
 
-        <div class="Editor-wordcount" v-if="!disabled">{{ editorContent | fliterEditorContentLength }}/20000</div>
+        <div class="Editor-wordcount" v-if="!disabled">{{ editorContentLength }}/20000</div>
     </div>
 </template>
 
@@ -42,7 +42,10 @@ export default {
     },
     data() {
         return {
+            wordCount: 0,
+            length: 0,
             loading: true,
+            content: "",
             editorContent: "",
             placeholder: "在此输入正文，不满1000字时，设定该章节为免费章节",
             apikey: "zg1d2xp43sktfw6i580bg4awi1cicuq462z75l45aiayhw8b",
@@ -96,23 +99,46 @@ export default {
             ASSETS_BASE_URL,
         }
     },
-    filters: {
-        fliterEditorContentLength(editorContent) {
-            if(typeof editorContent === "string") {
-                return editorContent.trim().replace("\n", "").replace("　　", "").replace(" ", "").length;
+    watch: {
+        editorContent(newVal) {
+            if(typeof newVal === "string") {
+                // const editorContent = newVal.trim().replaceAll("↵", "").replaceAll("\n", "").replaceAll("　　", "").replaceAll(" ", "");
+                // const editorContent = newVal.trim().replace(/↵|\n|　| /g, "").replace(/\n/g, "").replace(/　/g, "").replace(/ /g, "");
+                // const editorContent = newVal.trim().replace(/↵|\n|　| |\s/g, "");
+                const editorContent = newVal.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/　　/g, "").replace(/ /g, "");
+                this.wordCount = editorContent.length;
             }
-
-            return editorContent ? editorContent.length : 0;
         }
     },
+    computed: {
+        editorContentLength() {
+            // let editorContent = this.editorContent;
+            // if(typeof editorContent === "string") {
+            //     editorContent = editorContent.trim().replace("\n", "").replace("　　", "").replace(" ", "");
+            //     return editorContent.length;
+            // }
+
+            // return editorContent ? editorContent.length : 0;
+            return this.wordCount;
+        }
+    },
+    // filters: {
+    //     fliterEditorContentLength(editorContent) {
+    //         if(typeof editorContent === "string") {
+    //             return editorContent.trim().replace("\n", "").replace("　　", "").replace(" ", "").length;
+    //         }
+
+    //         return editorContent ? editorContent.length : 0;
+    //     }
+    // },
     methods: {
         /**
          * 
          * 获取文本内容
          */
         getContent() {
-            window.edi = this.$refs.Editor;
-            return this.editorContent;
+            // return this.editorContent;
+            return this.$refs.Editor.editor.getContent({ format: "text" });
         },
         /**
          * 
@@ -125,8 +151,11 @@ export default {
          * 
          * 设置内容
          */
-        setContent(newVal) {
+        setContent(newVal, wordCount) {
             this.editorContent = newVal;
+            setTimeout(() => {
+                this.wordCount = wordCount;
+            }, 100)
         },
         hookMounted() {
             this.loading = false;

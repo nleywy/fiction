@@ -42,6 +42,7 @@ export default {
          * 获取草稿箱内容列表
          */
         async getChapterDraftListByBookId(draftId) {
+            console.log(draftId)
             const res = await getChapterDraftListByBookId({ bookId: this.bookId });
 
             if(res.code === "200") {

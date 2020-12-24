@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 100%;">
+    <div style="height: 100%;" class="bg">
         <public-header class="header">
             <div slot="right"></div>
         </public-header>
@@ -186,6 +186,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .bg {
+        background: url("~@/assets/login-bg.png");
+        background-size: cover;
+    }
+
     .header {
         background-color: transparent !important;
     }
@@ -194,9 +199,10 @@ export default {
         box-sizing: border-box;
         width: 1200px;
         height: calc(100vh - 90px);
-        min-height: 745px;
+        min-height: 645px;
         margin: 0px auto;
-        padding-top: 5%;
+        // padding-top: calc((100vh - 90px - 434px - 28px) / 2);
+        padding-top: calc((100vh - 110px - 434px - 28px) / 2);
         // margin-top: 125px;
         // margin-top: 5%;
         // text-align: center;

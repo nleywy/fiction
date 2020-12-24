@@ -188,7 +188,7 @@ export default {
                 }
 
                 this.$nextTick().then(() => {
-                    this.$refs.editor.setContent("");
+                    this.$refs.editor.setContent("", 0);
                 });
             }
         },
@@ -287,8 +287,8 @@ export default {
             this.loading = true;
 
             try {
-                const res = await saveOrPublishChapter(params);
-
+                const res = await saveOrPublishChapter({...params, chapterName: this.chapterDraft.chapterName || "无章节名" });
+                
                 if(res.code === "200") {
                     this.dialogFormVisible = false;
                     if(isPublish){
@@ -305,7 +305,8 @@ export default {
                     }else{
                         // draftId
                         this.$message.success("保存成功");
-                        this.$emit('changeDraftList'. res.data.draftId);
+                        this.$emit('changeDraftList', res.data.draftId);
+                        this.getChapterDraftById(res.data.draftId);
                     }
                 }
             } catch (error) {
@@ -355,9 +356,10 @@ export default {
             const res = await getChapterDraftById({ draftId });
 
             if(res.code === "200") {
-                this.chapterDraft = res.data.chapterDraft || {};
+                const chapterDraft = res.data.chapterDraft;
+                this.chapterDraft = chapterDraft || {};
                 setTimeout(() => {
-                    this.$refs.editor.setContent(res.data.chapterDraft.chapterContentFormat);
+                    this.$refs.editor.setContent(chapterDraft.chapterContentFormat, chapterDraft.wordCount);
                 }, 300);
             }
         },

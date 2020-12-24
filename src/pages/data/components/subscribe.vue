@@ -30,7 +30,7 @@
                 >
                 <el-table-column
                     align="center"
-                    prop="bookName"
+                    prop="chapterName"
                     label="章节名"
                     >
                 </el-table-column>
@@ -48,7 +48,7 @@
                 </el-table-column>
                 <el-table-column
                     align="center"
-                    prop="releaseTime"
+                    prop="createTime"
                     label="发布时间"
                     >
                 </el-table-column>
@@ -67,7 +67,7 @@
                     layout="prev, pager, next"
                     :current-page="params.pageNo"
                     :page-size="params.pageSize"
-                    :total="subscribe.total || 0"
+                    :total="total"
                     @current-change="handleCurrentChange"
                     >
                 </el-pagination>
@@ -85,6 +85,7 @@ export default {
     },
     data(){
         return {
+            total: 0,
             value: '',
             subscribe: {},
             tableData: [],
@@ -157,9 +158,16 @@ export default {
 
             const res = await countSubscribe(this.params);
 
+            console.log(res)
+
             if(res.code === "200") {
-                this.subscribe = res.data.subscribe;
-                this.tableData = res.data.pageInfo;
+                const subscribe = res.data.subscribe;
+                this.subscribe = subscribe;
+
+                if(subscribe && subscribe.pageInfo) {
+                    this.tableData = subscribe.pageInfo.list;
+                    this.total = subscribe.pageInfo.totalCount;
+                }
             }
 
             this.loading = false;

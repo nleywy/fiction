@@ -99,7 +99,7 @@ export default {
             deep: true,
             handler(newVal) {
                 this.chapterDraft = JSON.parse(JSON.stringify(newVal));
-                this.$refs.editor.setContent(this.chapterDraft.chapterContentFormat);
+                this.$refs.editor.setContent(newVal.chapterContentFormat, newVal.wordCount);
                 this.isUpdate = false;
             },
         },

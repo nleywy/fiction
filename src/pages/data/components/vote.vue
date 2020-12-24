@@ -239,10 +239,11 @@ export default {
             const res = await countReward({ ...this.params, startDate: this.dateList[0] || "", endDate: this.dateList[1] || "", });
 
             if(res.code === "200") {
+                const gift = res.data.gift;
                 this.gift = res.data.gift;
-                if(res.data.pageInfo) {
-                    this.tableData = res.data.pageInfo.list;
-                    this.gift.total = res.data.totalCount;
+                if(gift.pageInfo) {
+                    this.tableData = gift.pageInfo.list;
+                    this.gift.total = gift.pageInfo.totalCount;
                 }
             }
 

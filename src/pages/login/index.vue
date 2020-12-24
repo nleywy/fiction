@@ -187,8 +187,12 @@ export default {
 
 <style lang="scss" scoped>
     .bg {
-        background: url("~@/assets/login-bg.png");
+        // width: 100vw;
+        // height: 100vh;
+        background: url("~@/assets/login-bg.png") no-repeat fixed;
         background-size: cover;
+        position: center center;
+        // background-size: 1920px 1080px;
     }
 
     .header {
@@ -314,6 +318,6 @@ export default {
         text-align: center;
         position: absolute;
         left: 0px;
-        bottom: 30px;
+        bottom: 0px;
     }
 </style>

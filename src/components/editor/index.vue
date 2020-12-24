@@ -165,7 +165,7 @@ export default {
         handleFocusIn(event, editor) {
         },
         handleFocusOut(event, editor) {
-            this.$emit("editorBlur")
+            // this.$emit("editorBlur") // 关闭自动保存
         }
     },
 }

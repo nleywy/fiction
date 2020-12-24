@@ -47,6 +47,8 @@
                     </div>
                 </el-scrollbar>
             </div>
+            
+            <empty v-else/>
 
             <div class="nowork" v-if="Array.isArray(bookList) && !bookList.length">
                 <i class="bgc"></i>
@@ -60,10 +62,13 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { applyShelfOrSign, getAuthorBookList } from "@/api/book";
+import { applyShelfOrSign, getAuthorBookList } from "@/api/book"
 
 export default {
     name: "myworks",
+    components: {
+        empty: () => import("@/components/empty")
+    },
     data(){
         return {
             bookList: null,

@@ -163,7 +163,8 @@ export default {
             form: {
                 bookName: '',
                 startStation:'1',
-                blurryImgUrl: '',
+                blurryImgUrl: 'http://huowen-novel.oss-cn-hangzhou.aliyuncs.com/files/2020/12/24/bbf25cc3a7eb4330b15453f318660a6b.png',
+                imgUrl: 'http://huowen-novel.oss-cn-hangzhou.aliyuncs.com/files/2020/12/24/bbf25cc3a7eb4330b15453f318660a6b.png',
                 tagList: [],
                 firstClassify: "",
                 delivery: false,
@@ -201,7 +202,7 @@ export default {
 
             return {
                 blurryImgUrl: [
-                    { required: true, message: "请上传作品封面", trigger: 'blur' }
+                    // { required: true, message: "请上传作品封面", trigger: 'blur' }
                 ],
                 bookName: [
                     { required: true, message: "请输入作品名称", trigger: 'blur' },

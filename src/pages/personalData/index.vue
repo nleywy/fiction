@@ -161,7 +161,9 @@ export default {
         return {
             submitLoading: false,
             uploadLoading: false,
-            personData: {},
+            personData: {
+                photo: "http://huowen-novel.oss-cn-hangzhou.aliyuncs.com/files/2020/12/24/ed605614331f4d46bed8ed8d38bd48a1.png"
+            },
         }
     },
     computed: {

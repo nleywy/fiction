@@ -207,6 +207,7 @@ export default {
     display: flex;
     height: 100%;
     padding: 30px;
+    padding-bottom: 15px;
     flex-direction: column;
     background: #ffffff;
 

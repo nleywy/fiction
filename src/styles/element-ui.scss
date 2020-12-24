@@ -21,3 +21,24 @@
     color: #030303;
     line-height: 20px;
 }
+
+.el-input .el-input__inner {
+    padding-right: 30px;
+}
+
+.el-textarea {
+    padding-bottom: 15px;
+    position: relative;
+
+    & > textarea.el-textarea__inner {
+        box-sizing: border-box;
+    }
+
+    .el-input__count {
+        position: absolute;
+        bottom: 0px !important;
+        right: 0px !important;
+        line-height: 1 !important;
+    }
+}
+

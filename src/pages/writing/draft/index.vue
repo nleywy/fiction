@@ -84,7 +84,7 @@ export default {
         this.getChapterDraftListByBookId();
         Bus.$on("add", val => {
             this.draftListaft.unshift({
-                chapterName: "无字节名" ,
+                chapterName: "无章节名" ,
                 wordCount: 0,
                 draftId: null,
             })

@@ -11,7 +11,7 @@
                         </el-select>
                         <div class="draftCon-title__btns">
                             <el-button @click="deleteChapterDraft" plain size="small" class="btn" :disabled="loading" v-if="!(draftListaft.length === 1 && !draftListaft[0].draftId)">删除</el-button>
-                            <el-button @click="saveOrPublishChapter(false)" plain size="small" class="btn" :loading="loading">保存</el-button>
+                            <el-button @click="saveOrPublishChapters(false, true)" plain size="small" class="btn">保存</el-button>
                             <el-button type="primary" @click="showDialog" size="small" class="btn" :disabled="loading">发布</el-button>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
 
                 <el-form-item prop="content">
                     <div class="quillCon">
-                        <editor ref="editor" @editorBlur="saveOrPublishChapter(false)"/>
+                        <editor ref="editor" @editorBlur="handleEditorBlur"/>
                     </div>
                 </el-form-item>
 
@@ -92,7 +92,7 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="saveOrPublishChapter(true)" :loading="loading">发 布</el-button>
+                    <el-button type="primary" @click="saveOrPublishChapters(true, true)" :loading="loading">发 布</el-button>
                 </div>
             </el-dialog>
         </div>
@@ -194,6 +194,11 @@ export default {
         },
     },
     methods: {
+        handleEditorBlur() {
+            // setTimeout(() => {
+                this.saveOrPublishChapters(false, false);
+            // }, 300);
+        },
         showDialog() {
             this.$refs["ruleForm"].validate((valid) => {
                 if (valid) {
@@ -258,7 +263,7 @@ export default {
          * @param { date } scheduleTime 定时发布时需要传
          * @param { string } remark
          */
-        async apiSaveOrPublishChapter(isPublish) {
+        async apiSaveOrPublishChapters(isPublish, isTips) {
             let params = {
                 ...this.chapterDraft,
                 content: this.$refs.editor.getContent(),
@@ -280,19 +285,19 @@ export default {
             //     formData.append(keys, params[keys])
             // })
 
-            if(this.loading) {
+            if(this.loading && !isTips) {
                 return ;
             }
 
             this.loading = true;
 
             try {
-                const res = await saveOrPublishChapter({...params, chapterName: this.chapterDraft.chapterName || "无章节名" });
+                const res = await saveOrPublishChapter({...params, chapterName: this.chapterDraft.chapterName || "无章节名", bookId: this.bookId });
                 
                 if(res.code === "200") {
                     this.dialogFormVisible = false;
                     if(isPublish){
-                        this.$message.success("发布成功");
+                        isTips && this.$message.success("发布成功");
                         this.$router.push({
                             name: "published",
                             query: {
@@ -304,22 +309,25 @@ export default {
                         })
                     }else{
                         // draftId
-                        this.$message.success("保存成功");
+                        isTips && this.$message.success("保存成功");
                         this.$emit('changeDraftList', res.data.draftId);
                         this.getChapterDraftById(res.data.draftId);
                     }
                 }
+
+                setTimeout(() => {
+                    this.loading = false;
+                }, 300)
+
             } catch (error) {
 
             }
-
-            this.loading = false;
         },
 
-        saveOrPublishChapter(isPublish) {
+        saveOrPublishChapters(isPublish, isTips) {
             if(!isPublish) {
                 delete this.chapterDraft.draftId
-                this.apiSaveOrPublishChapter(isPublish);
+                this.apiSaveOrPublishChapters(isPublish, isTips);
                 return ;
             }
 
@@ -339,7 +347,7 @@ export default {
                         return
                     }
 
-                    this.apiSaveOrPublishChapter(isPublish);
+                    this.apiSaveOrPublishChapters(isPublish, isTips);
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -403,6 +411,8 @@ export default {
     display: flex;
     height: 100%;
     padding: 30px;
+    padding-bottom: 15px;
+    
     flex-direction: column;
     background: #ffffff;
 

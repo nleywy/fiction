@@ -124,7 +124,7 @@
                         </el-col>
                         <el-col :span="24">
                             <div class="tigsTips" v-if="form.reviewStatus == '2'">
-                                <span class='fiveTips'>{{ form.refuseReason }}</span>
+                                <span class='fiveTips'>{{ form.refuseReason || "审核未通过，请重新提交资料" }}</span>
                             </div>
                         </el-col>
                     </el-row>

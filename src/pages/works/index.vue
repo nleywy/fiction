@@ -24,7 +24,6 @@
                                     无最新章节
                                 </template>
                                 <template v-else>
-                                    <!-- 第{{item.chapterId}}章 {{item.chapterName}} -->
                                     {{item.chapterName}}
                                 </template>
                             </div>
@@ -48,10 +47,12 @@
                 </el-scrollbar>
             </div>
             
-            <empty v-else/>
+            <!-- <empty v-else/> -->
 
             <div class="nowork" v-if="Array.isArray(bookList) && !bookList.length">
-                <i class="bgc"></i>
+            <!-- <div class="nowork"> -->
+                <!-- <i class="bgc"></i> -->
+                <el-image class="bgc" :src="require('@/assets/empty.png')"></el-image>
                 <span class="text1">您目前还没有作品</span>
                 <span class="text2">快去创作您的第一部作品吧</span>
                 <el-button type="primary" class="myworks__title__right" @click='createWorks()'>新建作品</el-button>
@@ -357,8 +358,8 @@ export default {
                 width: 200px;
                 display: inline-block;
                 margin-bottom: 20px;
-                height: 158px;
-                background: #D8D8D8;
+                // height: 158px;
+                // background: #D8D8D8;
             }
             .text1{
                 font-size: 22px;

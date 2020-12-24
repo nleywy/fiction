@@ -28,6 +28,7 @@
                             v-model="ruleForm.phoneCode"
                             placeholder="请输入验证码"
                             autocomplete
+                            @keyup.enter.native="submitForm('ruleForm')"
                             >
                         </el-input>
 

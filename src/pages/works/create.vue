@@ -131,8 +131,7 @@
                 </el-form-item>
 
                 <el-form-item>
-
-                    <template v-if='bookState == 1'>
+                    <template v-if='form.reviewStatus != null && form.reviewStatus == 0'>
                         <el-button type="primary" @click='reviewTips'>审核中</el-button>
                     </template>
                     <template v-else>

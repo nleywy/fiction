@@ -42,6 +42,7 @@ import Bus from '@/tools/bus.js'
 import { getAppVolumeListByBookId } from "@/api/volume";
 import { getAppChapterListByVolumeId, getAuthorChapterContentById } from "@/api/chapter";
 import { mapGetters } from "vuex";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
     components: {
@@ -92,7 +93,7 @@ export default {
          */
         getAppChapterListByVolumeId(volumeId) {
             return new Promise(async (resolve, reject) => {
-                const res = await getAppChapterListByVolumeId({ volumeId, pageNo: 1, pageSize: 10000, time: new Date().getTime() });
+                const res = await getAppChapterListByVolumeId({ volumeId, pageNo: 1, pageSize: 10000, time: uuidv4() });
 
                 if(res.code === "200") {
                     const list = res.data.chapterList.map(item => {

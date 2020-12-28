@@ -201,7 +201,7 @@ export default {
         filterReviewState(status, enumsGetMap) {
             const statusList = enumsGetMap("reviewStatusEnum");
 
-            const find = statusList.find(item => item.value == status);
+            const find = statusList.find(item => item.value == status && item.value != "1");
             if(find) {
                 return `[${find.text}]`;
             }

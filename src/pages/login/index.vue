@@ -40,9 +40,9 @@
                     </el-form-item>
 
                     <div class="link">登录即代表同意
-                        <a href="<%= BASE_URL %>pdf/userAgreement.pdf" target="_blank" rel="noopener noreferrer">《用户服务协议》</a>
-                        <a href="<%= BASE_URL %>pdf/privacy.pdf" target="_blank" rel="noopener noreferrer">《隐私政策》</a>
-                        <a href="<%= BASE_URL %>pdf/workCooperation.pdf" target="_blank" rel="noopener noreferrer">《作品合作基础协议》</a>
+                        <a :href="publicPath + 'pdf/userAgreement.pdf'" target="_blank" rel="noopener noreferrer">《用户服务协议》</a>
+                        <a :href="publicPath + 'pdf/privacy.pdf'" target="_blank" rel="noopener noreferrer">《隐私政策》</a>
+                        <a :href="publicPath + 'pdf/workCooperation.pdf'" target="_blank" rel="noopener noreferrer">《作品合作基础协议》</a>
                     </div>
                 </el-form>
             </section>
@@ -54,17 +54,19 @@
 </template>
 
 <script>
+import { dirname } from "path";
 import { mapGetters, mapActions } from "vuex";
 import { login, getPhoneCode } from "@/api/authorCms";
 import { mobileValidator } from "@/utils/rules";
 import { setToken, setUserInfo } from "@/utils/auth";
-
+console.log(process.env.BASE_URL)
 export default {
     // name: "login",
     components: {
         "public-header": () => import("@/components/header"),
     },
     data() {
+
         return {
             tipsCode: "发送验证码",
             loading: false,
@@ -79,7 +81,8 @@ export default {
                     { validator: mobileValidator, trigger: 'blur' },
                     { required: true, message: '手机号码不能为空', trigger: 'blur' },
                 ],
-            }
+            },
+            publicPath: process.env.BASE_URL,
         }
     },
     computed: {

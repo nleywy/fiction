@@ -32,7 +32,7 @@ const router = new Router({
  */
 router.addRoutes(layoutRouters);
 
-const white = ['/login']
+const white = ['/login', '/pdf/userAgreement', '/pdf/privacy', '/pdf/workCooperation']
 
 router.beforeEach((to, from, next) => {
     if (getToken()) {

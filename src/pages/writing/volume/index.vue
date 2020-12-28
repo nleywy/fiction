@@ -51,8 +51,8 @@
 </template>
 <script>
 import { getAppVolumeListByBookId, getAppVolumeById, addOrUpdateAppVolume, deleteAppVolume } from "@/api/volume";
-import Bus from '@/tools/bus.js';
 import { mapState, mapMutations, mapActions } from "vuex";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
     data(){
@@ -109,7 +109,7 @@ export default {
          * @param { number } bookId 书籍id
          */
         async getAppVolumeListByBookId(bookId) {
-            const res = await getAppVolumeListByBookId({ bookId: this.bookId });
+            const res = await getAppVolumeListByBookId({ bookId: this.bookId, time: uuidv4(), });
             
             if(res.code === "200") {
                 const appVolumeList = res.data.appVolumeList;

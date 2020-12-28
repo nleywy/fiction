@@ -54,6 +54,8 @@ export default {
                 content_style: `
                     body {
                         margin: 0px;
+                        line-height: 30px;
+                        font-size: 16px;
                     }
                     p {
                         font-size: 16px;
@@ -63,8 +65,9 @@ export default {
                         line-height: 30px;
                     }
                 `,
-                skin_url: ASSETS_BASE_URL + "/tinymce/css",
                 language_url : ASSETS_BASE_URL + "/tinymce/langs/zh_CN.js",
+                content_css : ASSETS_BASE_URL + "/tinymce/css/content.min.css",
+                skin_url: ASSETS_BASE_URL + "/tinymce/css",
                 language:'zh_CN',
                 branding: false,
                 resize: false,

@@ -18,7 +18,9 @@
 <script>
 import Bus from '@/tools/bus.js';
 import { mapMutations } from "vuex";
-import { getAppBookDetailById } from "@/api/book";
+import { getAppBookDetailById, } from "@/api/book";
+import { getAppVolumeListByBookId, } from "@/api/volume";
+
 import Breadcrumb from "@/components/breadcrumb"
 
 export default {
@@ -56,9 +58,8 @@ export default {
     methods: {
         ...mapMutations("writingIndex", [ "SET_APP_BOOK" ]),
         ...mapMutations("writingDraft", [ "ADD_DRAFT" ]),
-        ...mapMutations("writingVolume", [ "ADD_VOLUME" ]),
+        ...mapMutations("writingVolume", [ "ADD_VOLUME", "SET_APP_VOLUME_LIST" ]),
         addNewVolume() {
-            // Bus.$emit('addVolume');
             this.ADD_VOLUME();
             this.changeRouter(this.title[2]);
         },
@@ -98,7 +99,21 @@ export default {
             if(res.code === "200") {
                 this.SET_APP_BOOK(res.data.appBook);
             }
-        }
+        },
+
+        /**
+         * 
+         * 根据作品id获取卷宗列表
+         * @param { number } bookId 书籍id
+         */
+        async getAppVolumeListByBookId() {
+            const res = await getAppVolumeListByBookId({ bookId: this.bookId });
+            
+            if(res.code === "200") {
+                const appVolumeList = res.data.appVolumeList;
+                this.SET_APP_VOLUME_LIST(appVolumeList);
+            }
+        },
     },
     created(){
         this.bookId = this.$route.query.bookId;
@@ -106,6 +121,7 @@ export default {
 
         this.$nextTick().then(() => {
             this.getAppBookDetailById();
+            this.getAppVolumeListByBookId();
         });
     }
 }

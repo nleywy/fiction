@@ -14,12 +14,19 @@
                         :on-success="handleAvatarSuccess"
                         :on-error="handleUploadError"
                         :before-upload="beforeAvatarUpload">
-                        <el-image
+                        <!-- <el-image
                             style="width: 140px;height: 140px;"
                             v-if="personData.photo"
                             class="avatar"
                             :src="personData.photo"
                             :preview-src-list="[ personData.photo ]">
+                        </el-image> -->
+                        <el-image
+                            style="width: 140px;height: 140px;"
+                            v-if="personData.photo"
+                            class="avatar"
+                            :src="personData.photo"
+                            >
                         </el-image>
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -339,7 +346,11 @@ export default {
             const res = await getBookAuthor();
 
             if(res.code === "200") {
-                this.personData = res.data.bookAuthor;
+                const bookAuthor = res.data.bookAuthor
+                this.personData = bookAuthor;
+                if(bookAuthor.sex === null) {
+                    this.personData.sex = "0";
+                }
             }
         }
     },

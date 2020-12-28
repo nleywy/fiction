@@ -14,83 +14,81 @@
             </el-scrollbar>
         </div>
         <div class="draft-con">
-            <draftCon :draftListaft="draftListaft" :draftId='draftId' :bookId='bookId' @changeDraftList="getChapterDraftListByBookId" @delDraft="delDraft"></draftCon>
+            <draftCon :draftListaft="draftListaft" :draftId='draftId' :bookId='bookId' @changeDraftList="getList" @delDraft="delDraft"></draftCon>
         </div>
     </div>
 </template>
 
 <script>
 import draftCon from './draft-con';
-import Bus from '@/tools/bus.js'
-import { getChapterDraftListByBookId } from "@/api/chapter";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
     components: {
         draftCon,
     },
     data() {
-        return {
-            bookId: 0,
-            draftListaft: [],
-            draftId: 0,
-            active: 0,
-        };
+        return {};
+    },
+    computed: {
+        ...mapState("writingDraft", [ "draftListaft", "active", "draftId", "bookId" ]),
     },
     methods: {
+        ...mapMutations("writingDraft", [ "SET_DRAFT_LISTAFT", "SET_ACTIVE", "SET_DRAFTID", "SET_BOOKID", "ADD_DRAFT" ]),
+        ...mapActions("writingDraft", [ "getChapterDraftListByBookId" ]),
         /**
          * 
          * 获取草稿箱内容列表
          */
-        async getChapterDraftListByBookId(draftId) {
-            console.log(draftId)
-            const res = await getChapterDraftListByBookId({ bookId: this.bookId, pageNo: 1, pageSize: 100000 });
+        async getList(draftId = null) {
+            const draftListaft = await this.getChapterDraftListByBookId();
+            
+            if(Array.isArray(draftListaft)) {
+                this.SET_DRAFT_LISTAFT(draftListaft);
+            }
 
-            if(res.code === "200") {
-                const draftListaft = res.data.draftListaft;
-                this.draftListaft = draftListaft;
-                if(draftListaft.length == 0){
-                    Bus.$emit('add');
-                }else{
-                    // this.draftId = this.draftListaft[0].draftId;
-                    const findIndex = draftListaft.findIndex(item => item.draftId === draftId);
+            if(draftListaft.length == 0){
+                this.ADD_DRAFT();
+            }else{
+                const findIndex = this.draftListaft.findIndex(item => item.draftId === draftId);
 
-                    if(findIndex !== -1) {
-                        this.active = findIndex;
-                        this.draftId = draftId;
-                    }else {
-                        this.active = 0;
-                        this.draftId = draftListaft[0].draftId;
-                    }
+                if(findIndex !== -1) {
+                    this.SET_ACTIVE(findIndex);
+                    this.SET_DRAFTID(draftId);
+                }else {
+                    this.SET_ACTIVE(0);
+                    console.log(this.draftListaft)
+                    this.SET_DRAFTID(this.draftListaft[0].draftId);
                 }
             }
         },
+        /**
+         * 
+         * 草稿变化
+         */
         changeDraft(draftId, index) {
-            this.active = index;
-            this.draftId = draftId ? draftId : (this.draftId === null ? 0 : null);
+            this.SET_ACTIVE(index);
+            const id = draftId ? draftId : (this.draftId === null ? 0 : null);
+            this.SET_DRAFTID(id);
         },
+        /**
+         * 
+         * 删除草稿
+         */
         delDraft() {
-            this.draftListaft.splice(this.active, 1);
+            this.SET_DRAFT_LISTAFT([ ...draftListaft ].splice(this.active, 1));
 
             if(!this.draftListaft.length) {
-                Bus.$emit('add')
+                this.ADD_DRAFT();
             }else {
-                this.active = 0;
-                this.draftId = this.draftListaft[0].draftId;
+                this.SET_ACTIVE(0);
+                this.SET_DRAFTID(this.draftListaft[0].draftId);
             }
-        }
+        },
     },
     created() {
-        this.bookId = this.$route.query.bookId;
-        this.getChapterDraftListByBookId();
-        Bus.$on("add", val => {
-            this.draftListaft.unshift({
-                chapterName: "无章节名" ,
-                wordCount: 0,
-                draftId: null,
-            })
-            this.draftId = null;
-            this.active = 0;
-        })
+        this.SET_BOOKID(this.$route.query.bookId);
+        this.getList();
     }
 }
 </script>

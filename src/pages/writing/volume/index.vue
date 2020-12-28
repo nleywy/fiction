@@ -52,35 +52,27 @@
 <script>
 import { getAppVolumeListByBookId, getAppVolumeById, addOrUpdateAppVolume, deleteAppVolume } from "@/api/volume";
 import Bus from '@/tools/bus.js';
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
     data(){
         return {
             volumeId: null,
-            bookId: '',
-            appVolumeList: [],
-            activeData: {},
-            active: 0,
-            isUpdate: false,
-            sortNum: 0,
+            // active: 0,
         };
     },
     computed: {
-        rules() {
-            const that = this;
-            return {
-
-            };
-        }
+        ...mapState("writingVolume", [ "appVolumeList", "bookId", "sortNum", "isUpdate", "activeData", "active" ]),
     },
     methods: {
+        ...mapMutations("writingVolume", [ "SET_APP_VOLUME_LIST", "SET_BOOKID", "SET_ACTIVE_DATA", "SET_SORT_NUM", "SET_ACTIVE" ]),
         changeVolume(volume, index) {
             this.volumeId = volume.volumeId;
-            this.active = index;
+            this.SET_ACTIVE(index);
 
             if(!volume.volumeId) {
-                this.activeData = volume;
-                this.sortNum = this.activeData.sortNum;
+                this.SET_ACTIVE_DATA(volume);
+                this.SET_SORT_NUM(this.activeData.sortNum);
             }else {
                 this.$nextTick().then(() => {
                     this.getAppVolumeById();
@@ -104,13 +96,11 @@ export default {
                 sortNum,
                 notes: "",
             };
-            this.appVolumeList.unshift(params);
-            this.activeData = { ...params };
-            this.sortNum = this.activeData.sortNum;
-            this.isUpdate = true;
-
-            // this.draftId = null;
-            this.active = 0;
+            this.SET_APP_VOLUME_LIST([ params, ...this.appVolumeList ]);
+            this.SET_ACTIVE_DATA({ ...params });
+            this.SET_SORT_NUM(this.activeData.sortNum);
+            this.SET_IS_UPDATE(true);
+            this.SET_ACTIVE(0);
         },
 
         /**
@@ -123,10 +113,11 @@ export default {
             
             if(res.code === "200") {
                 const appVolumeList = res.data.appVolumeList;
-                this.appVolumeList = appVolumeList;
+                // this.appVolumeList = appVolumeList;
+                this.SET_APP_VOLUME_LIST(appVolumeList);
 
-                if(Array.isArray(appVolumeList) && appVolumeList.length ) {
-                    this.changeVolume(appVolumeList[0], 0);
+                if(Array.isArray(this.appVolumeList) && this.appVolumeList.length ) {
+                    this.changeVolume(this.appVolumeList[0], 0);
                 }
             }
         },
@@ -140,8 +131,8 @@ export default {
             const res = await getAppVolumeById({ volumeId: this.volumeId });
             
             if(res.code === "200") {
-                this.activeData = res.data.appVolume;
-                this.sortNum = this.activeData.sortNum;
+                this.SET_ACTIVE_DATA(res.data.appVolume);
+                this.SET_SORT_NUM(this.activeData.sortNum);
             }
         },
 
@@ -163,8 +154,6 @@ export default {
                 this.$message.success("保存分卷成功");
                 return ;
             }
-
-            // this.$message.warning(res.msg);
         },
 
         /**
@@ -193,7 +182,7 @@ export default {
         },
 
         handleUpdate() {
-            this.isUpdate = true;
+            this.SET_IS_UPDATE(true);
         },
 
         handleDel() {
@@ -212,10 +201,11 @@ export default {
                     return ;
                 }
 
-                this.appVolumeList = this.appVolumeList.filter(item => item.sortNum !== this.activeData.sortNum);
-                this.active = 0;
-                this.activeData = this.appVolumeList[0];
-                this.sortNum = this.activeData.sortNum;
+                const appVolumeList = this.appVolumeList.filter(item => item.sortNum !== this.activeData.sortNum);
+                this.SET_APP_VOLUME_LIST(appVolumeList);
+                this.SET_ACTIVE(0);
+                this.SET_ACTIVE_DATA(this.appVolumeList[0])
+                this.SET_SORT_NUM(this.activeData.sortNum);
             }).catch(() => {
                 this.$message({
                     type: 'info',
@@ -225,13 +215,12 @@ export default {
         }
     },
     created(){
-        this.bookId = this.$route.query.bookId;
+        this.SET_BOOKID(this.$route.query.bookId);
         this.$nextTick().then(() => {
             this.getAppVolumeListByBookId();
         });
 
-        Bus.$on('addVolume', this.addVolume);
-        
+        // Bus.$on('addVolume', this.addVolume);
     }
 }
 </script>

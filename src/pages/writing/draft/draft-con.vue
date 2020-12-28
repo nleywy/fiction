@@ -111,7 +111,7 @@ import {
 } from "@/api/chapter";
 import { getAppVolumeListByBookId } from "@/api/volume";
 import editor from "@/components/editor";
-import { mapState } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import { findUnidimensionalListName } from "@/utils/findList";
 import { dateFormat } from "@/utils/formatDate"
 
@@ -120,11 +120,11 @@ export default {
     components: {
         editor
     },
-    props: {
-        draftListaft: Array,
-        draftId: [ Number, String, ],
-        bookId: [ Number, String ]
-    },
+    // props: {
+    //     draftListaft: Array,
+    //     draftId: [ Number, String, ],
+    //     bookId: [ Number, String ]
+    // },
     data() {
         return {
             appVolumeList: [],
@@ -137,6 +137,7 @@ export default {
     },
     computed: {
         ...mapState("writingIndex", [ "appBook" ]),
+        ...mapState("writingDraft", [ "draftListaft", "draftId", "bookId" ]),
         rules() {
             const that = this;
             
@@ -167,10 +168,11 @@ export default {
                     { validator: contentValidator, trigger: 'blur' }
                 ],
             }
-        }
+        },
     },
     watch: {
         draftId(value) {
+            console.log(value)
             if(value){
                 this.getChapterDraftById(value)
             }else{
@@ -195,9 +197,7 @@ export default {
     },
     methods: {
         handleEditorBlur() {
-            // setTimeout(() => {
-                this.saveOrPublishChapters(false, false);
-            // }, 300);
+            this.saveOrPublishChapters(false, false);
         },
         showDialog() {
             this.$refs["ruleForm"].validate((valid) => {
@@ -324,6 +324,10 @@ export default {
             }
         },
 
+        /**
+         * 
+         * 保存发布章节
+         */
         saveOrPublishChapters(isPublish, isTips) {
             if(!isPublish) {
                 delete this.chapterDraft.draftId

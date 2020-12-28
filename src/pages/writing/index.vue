@@ -55,16 +55,21 @@ export default {
     },
     methods: {
         ...mapMutations("writingIndex", [ "SET_APP_BOOK" ]),
+        ...mapMutations("writingDraft", [ "ADD_DRAFT" ]),
+        ...mapMutations("writingVolume", [ "ADD_VOLUME" ]),
         addNewVolume() {
-            Bus.$emit('addVolume');
-            
+            // Bus.$emit('addVolume');
+            this.ADD_VOLUME();
             this.changeRouter(this.title[2]);
         },
-        addNewChapter(){
+        /**
+         * 
+         * 添加章节
+         */
+        addNewChapter() {
+            this.ADD_DRAFT();
             this.changeRouter(this.title[1]);
-            Bus.$emit('add');
         },
-
         changeRouter(item){
             this.activity = item.id;
 

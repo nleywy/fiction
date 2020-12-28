@@ -159,6 +159,9 @@ import {
     qqValidator,
     wechatValidator,
 } from '@/utils/rules';
+import { getUserInfo, setUserInfo } from "@/utils/auth";
+import { v4 as uuidV4 } from "uuid";
+
 
 export default {
     components: {
@@ -270,11 +273,22 @@ export default {
          */
         async addOrUpdateBookAuthor() {
             this.submitLoading = true;
-            const res = await addOrUpdateBookAuthor({ ...this.personData });
+            const params = { ...this.personData };
+            const res = await addOrUpdateBookAuthor(params);
 
             this.submitLoading = false;
             if(res.code === "200") {
+                const userInfo = getUserInfo();
+                userInfo.imgUrl = params.photo;
+                setUserInfo(userInfo);
                 this.$message.success("保存成功");
+                this.$router.push({
+                    path: this.$route.path,
+                    query: {
+                        ...this.$route.query,
+                        time: uuidV4(),
+                    }
+                })
                 return ;
             }
         },

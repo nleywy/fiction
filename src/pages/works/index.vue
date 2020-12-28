@@ -94,6 +94,7 @@ export default {
 
             if(res.code === "200") {
                 this.$message.success("申请成功");
+                this.getAuthorBookList();
                 return ;
             }
         },

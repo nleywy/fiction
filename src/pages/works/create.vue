@@ -196,8 +196,6 @@ export default {
                 }
             };
 
-            
-
             const bookNameValidators = bookNameValidator.bind(that);
 
             return {
@@ -223,6 +221,13 @@ export default {
                     { required: true, message: "请输入作品简介", trigger: 'blur' },
                     { min: 20, max: 500, message: "作品简介不得少于20字，不得多于500字", trigger: 'blur' },
                 ],
+            }
+        }
+    },
+    watch: {
+        'form.tagList'(newVal) {
+            if(newVal.length > 0) {
+                this.$refs["ruleForm"].clearValidate('tagList');
             }
         }
     },

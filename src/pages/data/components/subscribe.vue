@@ -54,7 +54,7 @@
                 </el-table-column>
                 <el-table-column
                     align="center"
-                    prop="subscribeCount"
+                    prop="subCount"
                     label="订阅次数">
                 </el-table-column>
 

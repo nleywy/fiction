@@ -43,7 +43,7 @@ export default {
          */
         async getChapterDraftListByBookId(draftId) {
             console.log(draftId)
-            const res = await getChapterDraftListByBookId({ bookId: this.bookId });
+            const res = await getChapterDraftListByBookId({ bookId: this.bookId, pageNo: 1, pageSize: 100000 });
 
             if(res.code === "200") {
                 const draftListaft = res.data.draftListaft;

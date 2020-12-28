@@ -7,6 +7,10 @@
     background-color: #F5F5F5 !important;
 }
 
+.tox .tox-toolbar.tox-tbtn--disabled {
+    display: none;
+}
+
 .tox .tox-statusbar {
     height: 40px !important;
     border-top: 0px solid #D8D8D8 !important;

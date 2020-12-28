@@ -57,7 +57,8 @@
                 <el-form-item label="作品标签" prop="tagList">
                     <el-row>
                         <el-col :span="24">
-                            <div style='margin-bottom:20px;width: 470px' v-if='form.tagList&&form.tagList.length'>
+                            <!-- <div style='margin-bottom:20px;width: 470px' v-if='form.tagList&&form.tagList.length'> -->
+                            <div style='width: 470px' v-if='form.tagList&&form.tagList.length'>
                                 <el-tag
                                     :key="index"
                                     v-for="(tag, index) in form.tagList"
@@ -71,26 +72,23 @@
                             </div>
                         </el-col>
 
-                        <el-col :span="24">
+                        <!-- <el-col :span="24">
                             <el-input v-model="searchName" style='width: 300px;margin-right:20px;' placeholder="请添加作品标签"></el-input>
                             <el-button type="primary" size='medium' @click='getBookTagListByParams(true)'>搜索</el-button>
                             <i class="el-icon-circle-check" v-if='showSearchOK'></i>
-                        </el-col>
+                        </el-col> -->
 
-                        <el-col :span="24">
+                        <!-- <el-col :span="24">
                             <div class="tigsTips">
                                 <span v-if='(showFiveTips) || (searchName && bookTagList.length == 0)' class='fiveTips'>
-                                    <!-- {{ showFiveTips ? "最多添加5个标签" : "" }} -->
-                                    <!-- <br> -->
                                     {{ (searchName && bookTagList.length == 0) ? "搜索不到该标签，请联系编辑添加" : "" }}
                                 </span>
-                                <!-- <span v-if='searchName && bookTagList.length == 0' class='noTags'>搜索不到该标签，请联系编辑添加</span> -->
                             </div>
-                        </el-col>
+                        </el-col> -->
 
                         <el-col :span="24">
                             <div class="bookTagList">
-                                <el-scrollbar style="height: 100%;" class="pageScrollbar">
+                                <!-- <el-scrollbar style="height: 100%;" class="pageScrollbar"> -->
                                     <el-tag
                                         :key="tag.tagId"
                                         v-for="tag in bookTagList"
@@ -101,7 +99,7 @@
                                     >
                                         {{ tag.tagName || tag.name }}
                                     </el-tag>
-                                </el-scrollbar>
+                                <!-- </el-scrollbar> -->
                             </div>
                         </el-col>
                     </el-row>
@@ -562,7 +560,7 @@ export default {
         }
 
         .bookTagList{
-            height: 190px;
+            // height: 190px;
             width: 470px;
             overflow: hidden;
         }

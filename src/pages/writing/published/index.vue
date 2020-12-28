@@ -68,6 +68,10 @@ export default {
         ...mapGetters("enums", [ "enumsGetMap" ])
     },
     methods: {
+        /**
+         * 
+         * 更新机构树
+         */
         updateTree(data) {
             this.getAppChapterListByVolumeId(data.volumeId)
                 .then(list => {
@@ -88,7 +92,7 @@ export default {
          */
         getAppChapterListByVolumeId(volumeId) {
             return new Promise(async (resolve, reject) => {
-                const res = await getAppChapterListByVolumeId({ volumeId, pageNo: 1, pageSize: 10000, });
+                const res = await getAppChapterListByVolumeId({ volumeId, pageNo: 1, pageSize: 10000, time: new Date().getTime() });
 
                 if(res.code === "200") {
                     const list = res.data.chapterList.map(item => {
@@ -198,6 +202,9 @@ export default {
         },
     },
     filters: {
+        /**
+         * 过滤章节状态
+         */
         filterReviewState(status, enumsGetMap) {
             const statusList = enumsGetMap("reviewStatusEnum");
 

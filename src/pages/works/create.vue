@@ -3,7 +3,7 @@
         <page-book-header title="我的作品"></page-book-header>
 
         <div class="create-con common-con">
-            <el-form ref="ruleForm" :model="form" :rules="rules" label-width="120px" status-icon>
+            <el-form ref="ruleForm" :model="form" :rules="rules" label-width="120px" status-icon :disabled="form.reviewStatus != null && form.reviewStatus == 0">
                 <el-form-item label="作品封面" prop="blurryImgUrl">
                     <el-upload
                         v-loading="uploadLoading"
@@ -390,6 +390,9 @@ export default {
          * 删除标签
          */
         deleteTag(tagList,index){
+            if(this.form.reviewStatus != null && this.form.reviewStatus == 0) {
+                return ;
+            }
             tagList.splice(index, 1);
         },
 
@@ -398,6 +401,10 @@ export default {
          * 添加标签
          */
         addTag(tag){
+            if(this.form.reviewStatus != null && this.form.reviewStatus == 0) {
+                return ;
+            }
+
             // const findIndex = this.form.tagList.indexOf(tag);
             const findIndex = this.form.tagList.findIndex(item => item.tagId === tag.tagId);
 

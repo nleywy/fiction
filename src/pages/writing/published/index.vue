@@ -20,7 +20,7 @@
                         </div>
                         <div v-else class="draft-left-leaf">
                             <label for="" class="draft-left-leaf-label">
-                                <span :style="{ color: statusColor[data.reviewState] }">{{ data.reviewState | filterReviewState(enumsGetMap) }}</span>
+                                <span :style="{ color: statusColor[data.reviewState] }">{{ data.reviewState | filterReviewState(enumsGetMap, data.isShield) }}</span>
                                 <span :title="data._label">{{ data._label }}</span>
                             </label>
                             <div class="draft-left-leaf-count">{{ data.createTime.substring(6, 16) }} {{ data.wordCount }}字</div>
@@ -206,8 +206,13 @@ export default {
         /**
          * 过滤章节状态
          */
-        filterReviewState(status, enumsGetMap) {
+        filterReviewState(status, enumsGetMap, isShield) {
             const statusList = enumsGetMap("reviewStatusEnum");
+
+            if(isShield == "1") {
+                return "[已屏蔽]";
+            }
+            
 
             const find = statusList.find(item => item.value == status && item.value != "1");
             if(find) {

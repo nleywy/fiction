@@ -57,17 +57,18 @@ import { v4 as uuidv4 } from "uuid";
 export default {
     data(){
         return {
-            volumeId: null,
+            // volumeId: null,
             // active: 0,
         };
     },
     computed: {
-        ...mapState("writingVolume", [ "appVolumeList", "bookId", "sortNum", "isUpdate", "activeData", "active" ]),
+        ...mapState("writingVolume", [ "appVolumeList", "bookId", "sortNum", "isUpdate", "activeData", "active", "volumeId" ]),
     },
     methods: {
-        ...mapMutations("writingVolume", [ "SET_APP_VOLUME_LIST", "SET_BOOKID", "SET_ACTIVE_DATA", "SET_SORT_NUM", "SET_ACTIVE" ]),
+        ...mapMutations("writingVolume", [ "SET_APP_VOLUME_LIST", "SET_BOOKID", "SET_ACTIVE_DATA", "SET_SORT_NUM", "SET_ACTIVE", "SET_VOLUMEID" ]),
+        ...mapActions("writingVolume", [ "getAppVolumeListByBookId" ]),
         changeVolume(volume, index) {
-            this.volumeId = volume.volumeId;
+            this.SET_VOLUMEID(volume.volumeId);
             this.SET_ACTIVE(index);
 
             if(!volume.volumeId) {
@@ -108,33 +109,33 @@ export default {
          * 根据作品id获取卷宗列表
          * @param { number } bookId 书籍id
          */
-        async getAppVolumeListByBookId(bookId) {
-            const res = await getAppVolumeListByBookId({ bookId: this.bookId, time: uuidv4(), });
+        // async getAppVolumeListByBookId(bookId) {
+        //     // const res = await getAppVolumeListByBookId({ bookId: this.bookId, time: uuidv4(), });
             
-            if(res.code === "200") {
-                const appVolumeList = res.data.appVolumeList;
-                // this.appVolumeList = appVolumeList;
-                this.SET_APP_VOLUME_LIST(appVolumeList);
+        //     // if(res.code === "200") {
+        //     //     const appVolumeList = res.data.appVolumeList;
+        //     //     // this.appVolumeList = appVolumeList;
+        //     //     this.SET_APP_VOLUME_LIST(appVolumeList);
 
-                if(Array.isArray(this.appVolumeList) && this.appVolumeList.length ) {
-                    this.changeVolume(this.appVolumeList[0], 0);
-                }
-            }
-        },
+        //     //     if(Array.isArray(this.appVolumeList) && this.appVolumeList.length ) {
+        //     //         this.changeVolume(this.appVolumeList[0], 0);
+        //     //     }
+        //     // }
+        // },
 
-        /**
-         * 
-         * 根据作品id获取卷宗详情
-         * @param { number } volumeId 卷宗id
-         */
-        async getAppVolumeById() {
-            const res = await getAppVolumeById({ volumeId: this.volumeId });
+        // /**
+        //  * 
+        //  * 根据作品id获取卷宗详情
+        //  * @param { number } volumeId 卷宗id
+        //  */
+        // async getAppVolumeById() {
+        //     const res = await getAppVolumeById({ volumeId: this.volumeId });
             
-            if(res.code === "200") {
-                this.SET_ACTIVE_DATA(res.data.appVolume);
-                this.SET_SORT_NUM(this.activeData.sortNum);
-            }
-        },
+        //     if(res.code === "200") {
+        //         this.SET_ACTIVE_DATA(res.data.appVolume);
+        //         this.SET_SORT_NUM(this.activeData.sortNum);
+        //     }
+        // },
 
         /**
          * 
@@ -216,9 +217,9 @@ export default {
     },
     created(){
         this.SET_BOOKID(this.$route.query.bookId);
-        this.$nextTick().then(() => {
-            this.getAppVolumeListByBookId();
-        });
+        // this.$nextTick().then(() => {
+        //     this.getAppVolumeListByBookId();
+        // });
 
         // Bus.$on('addVolume', this.addVolume);
     }

@@ -16,8 +16,7 @@
     </div>
 </template>
 <script>
-import Bus from '@/tools/bus.js';
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions, mapState } from "vuex";
 import { getAppBookDetailById, } from "@/api/book";
 import { getAppVolumeListByBookId, } from "@/api/volume";
 
@@ -47,7 +46,6 @@ export default {
                 }
             ],
             activity: 'draft',
-            bookId: "",
         };
     },
     watch: {
@@ -55,10 +53,15 @@ export default {
             this.activity = newVal.name;
         }
     },
+    computed: {
+        ...mapState("writingIndex", [ "bookId" ]),
+    },
     methods: {
-        ...mapMutations("writingIndex", [ "SET_APP_BOOK" ]),
+        ...mapMutations("writingIndex", [ "SET_APP_BOOK", "SET_BOOKID" ]),
         ...mapMutations("writingDraft", [ "ADD_DRAFT" ]),
         ...mapMutations("writingVolume", [ "ADD_VOLUME", "SET_APP_VOLUME_LIST" ]),
+        ...mapActions("writingVolume", [ "getAppVolumeListByBookId" ]),
+        ...mapActions("writingDraft", [ "getChapterDraftListByBookId" ]),
         addNewVolume() {
             this.ADD_VOLUME();
             this.changeRouter(this.title[2]);
@@ -100,28 +103,15 @@ export default {
                 this.SET_APP_BOOK(res.data.appBook);
             }
         },
-
-        /**
-         * 
-         * 根据作品id获取卷宗列表
-         * @param { number } bookId 书籍id
-         */
-        async getAppVolumeListByBookId() {
-            const res = await getAppVolumeListByBookId({ bookId: this.bookId });
-            
-            if(res.code === "200") {
-                const appVolumeList = res.data.appVolumeList;
-                this.SET_APP_VOLUME_LIST(appVolumeList);
-            }
-        },
     },
     created(){
-        this.bookId = this.$route.query.bookId;
+        this.SET_BOOKID(this.$route.query.bookId);
         this.activity = this.$route.name;
 
         this.$nextTick().then(() => {
             this.getAppBookDetailById();
             this.getAppVolumeListByBookId();
+            this.getChapterDraftListByBookId();
         });
     }
 }

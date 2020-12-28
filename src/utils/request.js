@@ -4,7 +4,8 @@ import $router from "@/router";
 import { addPending, removePending } from "@/utils/clearPending";
 // import { logout } from "@/api/login";
 import { getToken, removeAll } from '@/utils/auth'
-const baseURL = process.env.NODE_ENV === 'production' ? "http://192.168.110.4/api" : process.env.VUE_APP_API_HOST;
+// const baseURL = process.env.NODE_ENV === 'production' ? "http://192.168.110.4/api" : process.env.VUE_APP_API_HOST;
+const baseURL = process.env.NODE_ENV === 'production' ? "http://47.111.255.205/api" : process.env.VUE_APP_API_HOST;
 let bool = true;
 
 //全局发送post请求的默认头部content-type类型,定义类型为JSON格式，并且字符编码为utf-8

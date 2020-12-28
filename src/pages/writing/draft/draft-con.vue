@@ -120,11 +120,6 @@ export default {
     components: {
         editor
     },
-    // props: {
-    //     draftListaft: Array,
-    //     draftId: [ Number, String, ],
-    //     bookId: [ Number, String ]
-    // },
     data() {
         return {
             appVolumeList: [],
@@ -172,7 +167,6 @@ export default {
     },
     watch: {
         draftId(value) {
-            console.log(value)
             if(value){
                 this.getChapterDraftById(value)
             }else{

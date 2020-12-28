@@ -11,16 +11,7 @@ export default {
     },
     mutations: {
         SET_DRAFT_LISTAFT(state, draftListaft) {
-            const list = [ ...state.draftListaft, ...draftListaft ];
-            const arr = [];
-            state.draftListaft = list.filter(item => {
-                if(arr.includes(item.draftId)) {
-                    return false;
-                }else {
-                    arr.push(item.draftId);
-                    return true;
-                }
-            })
+            state.draftListaft = draftListaft;
         },
         SET_ACTIVE(state, active) {
             state.active = active;
@@ -49,18 +40,36 @@ export default {
         }
     },
     actions: {
-        getChapterDraftListByBookId({ state }) {
-            return new Promise(async (resolve, reject) => {
-                const res = await getChapterDraftListByBookId({ bookId: state.bookId, pageNo: 1, pageSize: 100000 });
+        /**
+         * 
+         * 获取草稿箱内容列表
+         */
+        async getChapterDraftListByBookId({ state, rootState, commit }, draftId) {
+            const res = await getChapterDraftListByBookId({ bookId: rootState.writingIndex.bookId, pageNo: 1, pageSize: 100000 });
 
-                if(res.code === "200") {
-                    const draftListaft = res.data.draftListaft;
-    
-                    resolve(draftListaft);
+            if(res.code !== "200") {
+                return ;
+            }
+
+            const draftListaft = res.data.draftListaft;
+            
+            if(Array.isArray(draftListaft)) {
+                commit("SET_DRAFT_LISTAFT", draftListaft);
+            }
+
+            if(draftListaft.length == 0){
+                commit("ADD_DRAFT");
+            }else{
+                const findIndex = state.draftListaft.findIndex(item => item.draftId === draftId);
+
+                if(findIndex !== -1) {
+                    commit("SET_ACTIVE", findIndex);
+                    commit("SET_DRAFTID", draftId);
+                }else {
+                    commit("SET_ACTIVE", 0);
+                    commit("SET_DRAFTID", state.draftListaft[0].draftId);
                 }
-
-                resolve([]);
-            });
+            }
         }
     },
 }

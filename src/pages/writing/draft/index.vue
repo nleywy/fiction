@@ -14,7 +14,7 @@
             </el-scrollbar>
         </div>
         <div class="draft-con">
-            <draftCon :draftListaft="draftListaft" :draftId='draftId' :bookId='bookId' @changeDraftList="getList" @delDraft="delDraft"></draftCon>
+            <draftCon @changeDraftList="getChapterDraftListByBookId" @delDraft="delDraft"></draftCon>
         </div>
     </div>
 </template>
@@ -38,32 +38,6 @@ export default {
         ...mapActions("writingDraft", [ "getChapterDraftListByBookId" ]),
         /**
          * 
-         * 获取草稿箱内容列表
-         */
-        async getList(draftId = null) {
-            const draftListaft = await this.getChapterDraftListByBookId();
-            
-            if(Array.isArray(draftListaft)) {
-                this.SET_DRAFT_LISTAFT(draftListaft);
-            }
-
-            if(draftListaft.length == 0){
-                this.ADD_DRAFT();
-            }else{
-                const findIndex = this.draftListaft.findIndex(item => item.draftId === draftId);
-
-                if(findIndex !== -1) {
-                    this.SET_ACTIVE(findIndex);
-                    this.SET_DRAFTID(draftId);
-                }else {
-                    this.SET_ACTIVE(0);
-                    console.log(this.draftListaft)
-                    this.SET_DRAFTID(this.draftListaft[0].draftId);
-                }
-            }
-        },
-        /**
-         * 
          * 草稿变化
          */
         changeDraft(draftId, index) {
@@ -76,7 +50,9 @@ export default {
          * 删除草稿
          */
         delDraft() {
-            this.SET_DRAFT_LISTAFT([ ...draftListaft ].splice(this.active, 1));
+            const draftListaft = this.draftListaft.filter((item, index) => index !== this.active);
+            console.log(draftListaft)
+            this.SET_DRAFT_LISTAFT(draftListaft);
 
             if(!this.draftListaft.length) {
                 this.ADD_DRAFT();
@@ -88,7 +64,6 @@ export default {
     },
     created() {
         this.SET_BOOKID(this.$route.query.bookId);
-        this.getList();
     }
 }
 </script>

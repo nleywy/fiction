@@ -1,4 +1,6 @@
 import { Message } from "element-ui";
+import { getAppVolumeListByBookId, getAppVolumeById, addOrUpdateAppVolume, deleteAppVolume } from "@/api/volume";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
     namespaced: true,
@@ -9,20 +11,24 @@ export default {
         sortNum: 0,
         isUpdate: false,
         active: 0,
+        volumeId: 0,
     },
     mutations: {
         SET_APP_VOLUME_LIST(state, appVolumeList) {
-            // state.appVolumeList = appVolumeList;
-            const list = [ ...state.appVolumeList, ...appVolumeList ];
-            const arr = [];
-            state.appVolumeList = list.filter(item => {
-                if(arr.includes(item.volumeId)) {
-                    return false;
-                }else {
-                    arr.push(item.volumeId);
-                    return true;
-                }
-            })
+            state.appVolumeList = appVolumeList;
+            // const list = [ ...state.appVolumeList, ...appVolumeList ];
+            // const arr = [];
+            // state.appVolumeList = list.filter(item => {
+            //     if(arr.includes(item.volumeId)) {
+            //         return false;
+            //     }else {
+            //         arr.push(item.volumeId);
+            //         return true;
+            //     }
+            // })
+        },
+        SET_VOLUMEID(state, volumeId) {
+            state.volumeId = volumeId;
         },
         SET_BOOKID(state, bookId) {
             state.bookId = bookId;
@@ -67,6 +73,46 @@ export default {
         }
     },
     actions: {
+        /**
+         * 
+         * 根据作品id获取卷宗列表
+         * @param { number } bookId 书籍id
+         */
+        async getAppVolumeListByBookId(params) {
+            const { state, commit, dispatch, rootState } = params
+            const res = await getAppVolumeListByBookId({ bookId: rootState.writingIndex.bookId, time: uuidv4(), });
+            
+            if(res.code === "200") {
+                const appVolumeList = res.data.appVolumeList;
+                commit("SET_APP_VOLUME_LIST", appVolumeList);
 
+                if(Array.isArray(state.appVolumeList) && state.appVolumeList.length ) {
+                    const volume = state.appVolumeList[0];
+
+                    commit("SET_VOLUMEID", volume.volumeId);
+                    commit("SET_ACTIVE", 0);
+                    if(!volume.volumeId) {
+                        commit("SET_ACTIVE_DATA", volume);
+                        commit("SET_SORT_NUM", state.activeData.sortNum);
+                    }else {
+                        dispatch("getAppVolumeById")
+                    }
+                }
+            }
+        },
+
+        /**
+         * 
+         * 根据作品id获取卷宗详情
+         * @param { number } volumeId 卷宗id
+         */
+        async getAppVolumeById({ state, commit }) {
+            const res = await getAppVolumeById({ volumeId: state.volumeId });
+            
+            if(res.code === "200") {
+                commit("SET_ACTIVE_DATA", res.data.appVolume);
+                commit("SET_SORT_NUM", state.activeData.sortNum);
+            }
+        },
     },
 }

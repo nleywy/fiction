@@ -59,7 +59,7 @@ import { mapGetters, mapActions } from "vuex";
 import { login, getPhoneCode } from "@/api/authorCms";
 import { mobileValidator } from "@/utils/rules";
 import { setToken, setUserInfo } from "@/utils/auth";
-console.log(process.env.BASE_URL)
+
 export default {
     // name: "login",
     components: {

@@ -286,14 +286,20 @@ export default {
             if(res.code === "200") {
                 if(isCreate){
                     const params = (res.data && res.data.bookId) ? { bookId: res.data.bookId } : { bookId: this.bookId };
-
-                    this.$router.push({
-                        path: "/createWork/success",
-                        query: {
-                            ...params,
-                        },
-                        params,
-                    });
+                    
+                    if(!this.bookId) {
+                        this.$router.push({
+                            path: "/createWork/success",
+                            query: {
+                                ...params,
+                            },
+                            params,
+                        });
+                    }else {
+                        this.$message.success('保存成功');
+                        this.$redirectRouter();
+                        this.getUpdateBookDetail();
+                    }
                 }
             }
         },
@@ -469,12 +475,12 @@ export default {
                 this.form = res.data.appBook;
                 this.bookState = this.form.bookState;
 
-                if(this.bookState == "1"){
-                    this.$message({
-                        message: '资料审核中，请在审核完成后修改',
-                        type: 'warning'
-                    });
-                }
+                // if(this.bookState == "1"){
+                //     this.$message({
+                //         message: '资料审核中，请在审核完成后修改',
+                //         type: 'warning'
+                //     });
+                // }
             }
         },
 

@@ -18,7 +18,6 @@
 <script>
 import { mapMutations, mapActions, mapState } from "vuex";
 import { getAppBookDetailById, } from "@/api/book";
-import { getAppVolumeListByBookId, } from "@/api/volume";
 
 import Breadcrumb from "@/components/breadcrumb"
 

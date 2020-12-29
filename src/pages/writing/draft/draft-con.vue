@@ -190,6 +190,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions("writingVolume", [ "getAppVolumeListByBookId" ]),
         handleEditorBlur() {
             this.saveOrPublishChapters(false, false);
         },
@@ -292,6 +293,7 @@ export default {
                     this.dialogFormVisible = false;
                     if(isPublish){
                         isTips && this.$message.success("发布成功");
+                        this.getAppVolumeListByBookId();
                         this.$router.push({
                             name: "published",
                             query: {
@@ -375,7 +377,7 @@ export default {
          * 根据作品id获取卷宗列表
          * @param { number } bookId 书籍id
          */
-        async getAppVolumeListByBookId(bookId) {
+        async getAppVolumeListByBookIds(bookId) {
             const res = await getAppVolumeListByBookId({ bookId });
             
             if(res.code === "200") {
@@ -399,7 +401,7 @@ export default {
         }
     },
     created() {
-        this.getAppVolumeListByBookId(this.bookId);
+        this.getAppVolumeListByBookIds(this.bookId);
     },
 }
 </script>

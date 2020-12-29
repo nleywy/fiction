@@ -1,8 +1,23 @@
 <template>
     <div style="Editor" v-loading="loading">
-        <Editor
+        <!-- <Editor
             ref="Editor"
             :tinymceScriptSrc="tinymceScriptSrc"
+            :id="editorId"
+            :init="init"
+            :toolbar="toolbar"
+            :plugins="plugins"
+            :output-format="outputFormat"
+            :placeholder="placeholder"
+            v-model="editorContent"
+            :disabled="disabled"
+            @onKeyUp="handleKeyUp"
+            @onFocus="handleFocusIn"
+            @onBlur="handleFocusOut"
+            @hook:mounted="hookMounted"
+        /> -->
+        <Editor
+            ref="Editor"
             :id="editorId"
             :init="init"
             :toolbar="toolbar"
@@ -22,7 +37,13 @@
 </template>
 
 <script>
+import tinymce from 'tinymce/tinymce';
 import Editor from '@tinymce/tinymce-vue';
+import 'tinymce/icons/default';
+import 'tinymce/themes/silver';
+import 'tinymce/skins/content/default/content.min.css';
+import 'tinymce/plugins/nonbreaking';
+import 'tinymce/plugins/paste';
 import { ASSETS_BASE_URL } from "@/config";
 
 export default {
@@ -48,7 +69,7 @@ export default {
             content: "",
             editorContent: "",
             placeholder: "在此输入正文，不满1000字时，设定该章节为免费章节",
-            apikey: "zg1d2xp43sktfw6i580bg4awi1cicuq462z75l45aiayhw8b",
+            // apikey: "zg1d2xp43sktfw6i580bg4awi1cicuq462z75l45aiayhw8b",
             editorId: "Editor",
             init: {
                 content_style: `
@@ -63,10 +84,12 @@ export default {
                         font-weight: 400;
                         color: #7B7B7B;
                         line-height: 30px;
+                        word-break: break-all;
+                        overflow-wrap: break-word;
                     }
                 `,
                 language_url : ASSETS_BASE_URL + "/tinymce/langs/zh_CN.js",
-                content_css : ASSETS_BASE_URL + "/tinymce/css/content.min.css",
+                // content_css : ASSETS_BASE_URL + "/tinymce/css/content.min.css",
                 skin_url: ASSETS_BASE_URL + "/tinymce/css",
                 language:'zh_CN',
                 branding: false,
@@ -86,20 +109,27 @@ export default {
                 },
                 nonbreaking_force_tab: true,
                 paste_as_text: true,
+                setup(editor) {
+                    editor.on("keydown", function(event) {
+                        if(event.key === "Enter") {
+                            if(!editor.getContent().length) {
+                                editor.execCommand('mceInsertContent', true, '<p>　　<br data-mce-bogus="1"></p>');
+                            }
+                            editor.execCommand('mceInsertContent', true, '<p>　　<br data-mce-bogus="1"></p>');
+                            return false;
+                        }
+                    })
+                }
             },
             toolbar: [ //数组写法
-                // 'undo redo | wordcount | fullscreen',
-                // 'undo redo | wordcount | fullscreen',
                 'undo redo',
             ],
             plugins: [
                 "nonbreaking",
                 "paste",
-                // "wordcount",
-                // "fullscreen"
             ],
             outputFormat: "text",
-            tinymceScriptSrc: ASSETS_BASE_URL + "/tinymce/js/tinymce.min.js",
+            // tinymceScriptSrc: ASSETS_BASE_URL + "/tinymce/js/tinymce.min.js",
             ASSETS_BASE_URL,
         }
     },
@@ -167,11 +197,17 @@ export default {
         handleKeyUp(event, editor) {
         },
         handleFocusIn(event, editor) {
+            // console.log(event, editor)
         },
         handleFocusOut(event, editor) {
             // this.$emit("editorBlur") // 关闭自动保存
         }
     },
+    created() {
+        
+    },
+    mounted() {
+    }
 }
 </script>
 

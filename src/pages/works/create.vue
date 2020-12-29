@@ -24,13 +24,13 @@
                         </el-image>
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
-                        <span class="tips">
-                            <div>1. 上传600X800像素、不超过5M的JPG图片；</div>
-                            <div>2. 作者封面应显示作者名和笔名；</div>
-                            <div>3. 建议使用原创图片、不得使用真人照片及他人有版权的图片；以免引起纠纷；</div>
-                            <div>4. 严禁上传色情、暴力、广告宣传或不适合公众观赏的图片，一经发现即作为禁书处理；</div>
-                            <div>5. 封面上传后，将在2个工作日内审核完成；</div>
-                        </span>
+                    <span class="tips">
+                        <div>1. 上传600X800像素、不超过2M的JPG图片；</div>
+                        <div>2. 作者封面应显示作者名和笔名；</div>
+                        <div>3. 建议使用原创图片、不得使用真人照片及他人有版权的图片；以免引起纠纷；</div>
+                        <div>4. 严禁上传色情、暴力、广告宣传或不适合公众观赏的图片，一经发现即作为禁书处理；</div>
+                        <div>5. 封面上传后，将在2个工作日内审核完成；</div>
+                    </span>
                 </el-form-item>
 
                 <el-form-item label="作品名称" prop="bookName">
@@ -280,7 +280,7 @@ export default {
          * @param { string } tagId 书签id 英文,拼接
          * @param { string } notes 作品简介
          */
-        async addOrUpdateAuthorBook(isCreate ) {
+        async addOrUpdateAuthorBook(isCreate) {
             const res = await addOrUpdateAuthorBook({ ...this.form });
 
             if(res.code === "200") {
@@ -312,6 +312,7 @@ export default {
             this.form.tagId = this.form.tagList.reduce((all, current)=>{
                 return all + current.tagId + ',';
             }, "");
+            
 
 
             this.$refs["ruleForm"].validate((valid) => {
@@ -320,7 +321,17 @@ export default {
                         return ;
                     }
 
-                    this.addOrUpdateAuthorBook(isCreate);
+                    if(!isCreate && this.form.bookState >= "3") {
+                        this.$confirm('提交资料后，会在两个工作日内审核完成，审核过过程中无法修改资料。', '提交资料', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            this.addOrUpdateAuthorBook(isCreate);
+                        })
+                    }else {
+                        this.addOrUpdateAuthorBook(isCreate);
+                    }
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -367,7 +378,7 @@ export default {
          */
         beforeAvatarUpload(file) {
             const isJPG = file.type === 'image/jpeg';
-            const isLt5M = file.size / 1024 / 1024 < 5;
+            const isLt5M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {
                 this.$message.error('上传头像图片只能是 JPG 格式!');
@@ -511,11 +522,50 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
     .avatar-uploader {
         width: 150px;
         height: 200px;
         display: inline-block;
+        position: relative;
+
+        
+
+        .avatar {
+            &:hover {
+                &::before {
+                    cursor: pointer;
+                    content: "";
+                    position: absolute;
+                    left: 0px;
+                    bottom: 0px;
+                    z-index: 10;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba($color: #000000, $alpha: 0.7);
+                }
+
+                &::after {
+                    height: 40px;
+                    font-family: element-icons!important;
+                    speak: none;
+                    font-size: 40px;
+                    font-style: normal;
+                    font-weight: 400;
+                    font-variant: normal;
+                    text-transform: none;
+                    vertical-align: baseline;
+                    cursor: pointer;
+                    // content: "\e7c3";
+                    content: "\e77b";
+                    position: absolute;
+                    left: 55px;
+                    bottom: 80px;
+                    z-index: 10;
+                    color: rgba($color: #ffffff, $alpha: 1);
+                }
+            }
+        }
     }
     .avatar-uploader-icon {
         width: 150px;

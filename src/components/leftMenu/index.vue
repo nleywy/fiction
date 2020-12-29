@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { v4 as uuidV4 } from "uuid";
+
 export default {
     name: "leftMenu",
     components: {
@@ -61,11 +63,16 @@ export default {
             this.leftTagsactivity = id;
         },
         changeRouter(id){
-            if(this.leftTagsactivity === id) {
-                return ;
-            }
+            // if(this.leftTagsactivity === id) {
+            //     return ;
+            // }
             this.setLeftTagsactivity(id);
-            this.$router.push({ name: id });
+            this.$router.push({
+                name: id,
+                query: {
+                    time: uuidV4(),
+                }
+            });
         },
     },
     mounted() {

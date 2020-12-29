@@ -28,7 +28,7 @@
 
                 <el-form-item prop="content">
                     <div class="quillCon">
-                        <editor ref="editor" @editorBlur="handleEditorBlur"/>
+                        <editor ref="editor" @editorBlur="handleEditorBlur" @updateContent="updateContent"/>
                     </div>
                 </el-form-item>
 
@@ -132,7 +132,7 @@ export default {
     },
     computed: {
         ...mapState("writingIndex", [ "appBook" ]),
-        ...mapState("writingDraft", [ "draftListaft", "draftId", "bookId" ]),
+        ...mapState("writingDraft", [ "draftListaft", "draftId", "bookId", "active" ]),
         rules() {
             const that = this;
             
@@ -190,10 +190,27 @@ export default {
         },
     },
     methods: {
+        ...mapMutations("writingDraft", [ "SET_DRAFT_LISTAFT" ]),
         ...mapActions("writingVolume", [ "getAppVolumeListByBookId" ]),
+        updateContent(parmas) {
+            // const list = [ ...this.draftListaft ];
+            // list[this.active].content = parmas.text;
+            // list[this.active].chapterContentFormat = parmas.html;
+            // this.SET_DRAFT_LISTAFT(list);
+            this.chapterDraft.content = parmas.text;
+            this.chapterDraft.chapterContentFormat = parmas.html;
+        },
+        /**
+         * 
+         * 编辑器失去焦点
+         */
         handleEditorBlur() {
             this.saveOrPublishChapters(false, false);
         },
+        /**
+         * 
+         * 是否显示弹框
+         */
         showDialog() {
             this.$refs["ruleForm"].validate((valid) => {
                 if (valid) {
@@ -261,8 +278,8 @@ export default {
         async apiSaveOrPublishChapters(isPublish, isTips) {
             let params = {
                 ...this.chapterDraft,
-                content: this.$refs.editor.getContent(),
-                chapterContentFormat: this.$refs.editor.getHtmlContent(),
+                // content: this.$refs.editor.getContent(),
+                // chapterContentFormat: this.$refs.editor.getHtmlContent(),
             };
 
             if(this.draftId) {
@@ -394,7 +411,7 @@ export default {
 
         handleOpen() {
             this.publishType = "1";
-            this.chapterDraft.content = this.$refs.editor.getContent();
+            // this.chapterDraft.content = this.$refs.editor.getContent();
         },
         handleClose() {
             this.publishType = null;

@@ -14,7 +14,7 @@
             </el-scrollbar>
         </div>
         <div class="draft-con">
-            <draftCon @changeDraftList="getChapterDraftListByBookId" @delDraft="delDraft"></draftCon>
+            <draftCon ref="draftCon" @changeDraftList="getChapterDraftListByBookId" @delDraft="delDraft"></draftCon>
         </div>
     </div>
 </template>
@@ -44,6 +44,8 @@ export default {
             this.SET_ACTIVE(index);
             const id = draftId ? draftId : (this.draftId === null ? 0 : null);
             this.SET_DRAFTID(id);
+
+            // this.$refs.draftCon.apiSaveOrPublishChapters(false, false);
         },
         /**
          * 

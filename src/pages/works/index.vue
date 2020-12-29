@@ -75,6 +75,11 @@ export default {
             bookList: null,
         };
     },
+    watch: {
+        $route() {
+            this.getAuthorBookList();
+        }
+    },
     computed: {
         ...mapState("enums", [ "bookStateStatus", "endStateStatus" ]),
         ...mapGetters("enums", [ "enumsGetMap", ]),

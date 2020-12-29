@@ -20,7 +20,10 @@
                         </div>
                         <div v-else class="draft-left-leaf">
                             <label for="" class="draft-left-leaf-label">
-                                <span :style="{ color: statusColor[data.reviewState] }">{{ data.reviewState | filterReviewState(enumsGetMap, data.isShield) }}</span>
+                                <!-- <span :style="{ color: statusColor[data.reviewState] }">{{ data.reviewState | filterReviewState(enumsGetMap, data.isShield) }}</span> -->
+                                <!-- <span v-html="data.reviewState | filterReviewState(enumsGetMap, data.isShield)"></span> -->
+                                <span v-html="filterReviewState(data.reviewState, enumsGetMap, data.isShield)"></span>
+                                
                                 <span :title="data._label">{{ data._label }}</span>
                             </label>
                             <div class="draft-left-leaf-count">{{ data.createTime.substring(6, 16) }} {{ data.wordCount }}字</div>
@@ -201,26 +204,44 @@ export default {
                 .then(list => resolve(list))
                 .catch(list => resolve([]));
         },
-    },
-    filters: {
         /**
          * 过滤章节状态
          */
         filterReviewState(status, enumsGetMap, isShield) {
             const statusList = enumsGetMap("reviewStatusEnum");
 
-            if(isShield == "1") {
-                return "[已屏蔽]";
-            }
-            
+            const find = statusList.find(item => item.value == "0");
 
-            const find = statusList.find(item => item.value == status && item.value != "1");
             if(find) {
-                return `[${find.text}]`;
+                return `<span style="color: #FF8D2B;">[审核中]</span>`;
+            }
+
+            if(isShield == "1") {
+                return `<span style="color: #FF2A28;">[已驳回]</span>`;
             }
 
             return "";
         }
+    },
+    filters: {
+        // /**
+        //  * 过滤章节状态
+        //  */
+        // filterReviewState(status, enumsGetMap, isShield) {
+        //     const statusList = enumsGetMap("reviewStatusEnum");
+
+        //     const find = statusList.find(item => item.value == "0");
+
+        //     if(find) {
+        //         return `<span style="color: #FF8D2B;">[${find.text}]</span>`;
+        //     }
+
+        //     if(isShield == "1") {
+        //         return `<span style="color: #FF2A28;">[已驳回]</span>`;
+        //     }
+
+        //     return "";
+        // }
     },
     created() {
         this.bookId = this.$route.query.bookId;

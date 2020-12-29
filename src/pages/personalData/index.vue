@@ -399,6 +399,42 @@ export default {
                     text-align: center;
                 }
 
+                .avatar {
+                    &:hover {
+                        &::before {
+                            cursor: pointer;
+                            content: "";
+                            position: absolute;
+                            left: 0px;
+                            bottom: 0px;
+                            z-index: 10;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba($color: #000000, $alpha: 0.7);
+                        }
+
+                        &::after {
+                            height: 40px;
+                            font-family: element-icons!important;
+                            speak: none;
+                            font-size: 40px;
+                            font-style: normal;
+                            font-weight: 400;
+                            font-variant: normal;
+                            text-transform: none;
+                            vertical-align: baseline;
+                            cursor: pointer;
+                            // content: "\e7c3";
+                            content: "\e77b";
+                            position: absolute;
+                            left: 50px;
+                            bottom: 50px;
+                            z-index: 10;
+                            color: rgba($color: #ffffff, $alpha: 1);
+                        }
+                    }
+                }
+
                 .el-form-item__label {
                     padding-right: 40px;
                 }

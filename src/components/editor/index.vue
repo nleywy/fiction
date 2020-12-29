@@ -41,7 +41,7 @@ import tinymce from 'tinymce/tinymce';
 import Editor from '@tinymce/tinymce-vue';
 import 'tinymce/icons/default';
 import 'tinymce/themes/silver';
-import 'tinymce/skins/content/default/content.min.css';
+// import 'tinymce/skins/content/default/content.min.css';
 import 'tinymce/plugins/nonbreaking';
 import 'tinymce/plugins/paste';
 import { ASSETS_BASE_URL } from "@/config";
@@ -89,7 +89,7 @@ export default {
                     }
                 `,
                 language_url : ASSETS_BASE_URL + "/tinymce/langs/zh_CN.js",
-                // content_css : ASSETS_BASE_URL + "/tinymce/css/content.min.css",
+                content_css : ASSETS_BASE_URL + "/tinymce/css/content.min.css",
                 skin_url: ASSETS_BASE_URL + "/tinymce/css",
                 language:'zh_CN',
                 branding: false,
@@ -113,9 +113,9 @@ export default {
                     editor.on("keydown", function(event) {
                         if(event.key === "Enter") {
                             if(!editor.getContent().length) {
-                                editor.execCommand('mceInsertContent', true, '<p>　　<br data-mce-bogus="1"></p>');
+                                editor.execCommand('mceInsertContent', true, '<p>&nbsp;&nbsp;&nbsp;&nbsp;<br data-mce-bogus="1"></p>');
                             }
-                            editor.execCommand('mceInsertContent', true, '<p>　　<br data-mce-bogus="1"></p>');
+                            editor.execCommand('mceInsertContent', true, '<p>&nbsp;&nbsp;&nbsp;&nbsp;<br data-mce-bogus="1"></p>');
                             return false;
                         }
                     })
@@ -135,13 +135,27 @@ export default {
     },
     watch: {
         editorContent(newVal) {
+            // if(typeof newVal === "string") {
+            //     // const editorContent = newVal.trim().replaceAll("↵", "").replaceAll("\n", "").replaceAll("　　", "").replaceAll(" ", "");
+            //     // const editorContent = newVal.trim().replace(/↵|\n|　| /g, "").replace(/\n/g, "").replace(/　/g, "").replace(/ /g, "");
+            //     // const editorContent = newVal.trim().replace(/↵|\n|　| |\s/g, "");
+            //     // const editorContent = newVal.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/　　/g, "").replace(/ /g, "");
+            //     const editorContent = newVal.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/<([^>]*)>|&nbsp/g, "").replace(/ /g, "");
+            //     this.wordCount = editorContent.length;
+            // }
+
             if(typeof newVal === "string") {
-                // const editorContent = newVal.trim().replaceAll("↵", "").replaceAll("\n", "").replaceAll("　　", "").replaceAll(" ", "");
-                // const editorContent = newVal.trim().replace(/↵|\n|　| /g, "").replace(/\n/g, "").replace(/　/g, "").replace(/ /g, "");
-                // const editorContent = newVal.trim().replace(/↵|\n|　| |\s/g, "");
-                const editorContent = newVal.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/　　/g, "").replace(/ /g, "");
+                const html = this.$refs.Editor.editor.getContent({ format: "html" })
+                console.log(html)
+                const editorContent = html.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/<([^>]*)>|&nbsp;/g, "").replace(/ /g, "");
+                console.log(editorContent)
                 this.wordCount = editorContent.length;
             }
+
+            this.$emit("updateContent", {
+                text: this.$refs.Editor.editor.getContent({ format: "text" }),
+                html: this.$refs.Editor.editor.getContent({ format: "html" }),
+            })
         }
     },
     computed: {

@@ -138,7 +138,9 @@ export default {
             
             const contentValidator = (rule, value, callback) => {
                 const content = that.$refs.editor.getContent();
-                const length = typeof content === "string" ? content.trim().length : 0;
+                const length = typeof content === "string" ? (content.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/<([^>]*)>|&nbsp;/g, "").replace(/ /g, "")).length : 0;
+
+                console.log(length)
 
                 if(!length) {
                     callback(Error("请输入正文"));
@@ -156,7 +158,14 @@ export default {
                     { required: true, message: "请选择分卷", trigger: 'blur' }
                 ],
                 chapterName: [ 
-                    { required: true, message: "请输入章节号和章节名", trigger: 'blur' }
+                    { required: true, message: "请输入章节号和章节名", trigger: 'blur' },
+                    { validator: (rule, value, callback) => {
+                        if(value.length > 35) {
+                            callback(Error("标题不能超过35个字"));
+                        }else {
+                            callback();
+                        }
+                    }, trigger: 'blur' }
                 ],
                 content: [ 
                     // { required: true, message: "请输入正文", trigger: 'blur' },
@@ -205,7 +214,7 @@ export default {
          * 编辑器失去焦点
          */
         handleEditorBlur() {
-            this.saveOrPublishChapters(false, false);
+            // this.saveOrPublishChapters(false, false);
         },
         /**
          * 
@@ -278,8 +287,8 @@ export default {
         async apiSaveOrPublishChapters(isPublish, isTips) {
             let params = {
                 ...this.chapterDraft,
-                // content: this.$refs.editor.getContent(),
-                // chapterContentFormat: this.$refs.editor.getHtmlContent(),
+                content: this.$refs.editor.getContent(),
+                chapterContentFormat: this.$refs.editor.getHtmlContent(),
             };
 
             if(this.draftId) {

@@ -47,7 +47,7 @@
                 </el-form>
             </section>
 
-            <footer class="footer">版权信息  @ 2020 火文科技 版权所有 </footer>
+            <footer class="footer">Copyright © 2021 杭州火文科技有限公司 All Rights Reserved</footer>
         </section>
 
     </div>
@@ -57,7 +57,7 @@
 import { dirname } from "path";
 import { mapGetters, mapActions } from "vuex";
 import { login, getPhoneCode } from "@/api/authorCms";
-import { mobileValidator } from "@/utils/rules";
+import { mobileValidator, mobile } from "@/utils/rules";
 import { setToken, setUserInfo } from "@/utils/auth";
 
 export default {
@@ -168,10 +168,19 @@ export default {
          * 获取验证码
          */
         getCode() {
-            this.getPhoneCode();
-            --this.numTime;
-            this.timeout();
-            // 请求验证码接口
+            this.$refs["ruleForm"].validate((valid) => {
+                if (valid) {
+                    this.getPhoneCode();
+                    --this.numTime;
+                    this.timeout();
+                    // 请求验证码接口
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+
+            
         },
 
         timeout() {

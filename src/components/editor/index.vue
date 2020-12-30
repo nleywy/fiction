@@ -146,9 +146,7 @@ export default {
 
             if(typeof newVal === "string") {
                 const html = this.$refs.Editor.editor.getContent({ format: "html" })
-                console.log(html)
                 const editorContent = html.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/<([^>]*)>|&nbsp;/g, "").replace(/ /g, "");
-                console.log(editorContent)
                 this.wordCount = editorContent.length;
             }
 

@@ -134,7 +134,7 @@
                     </template>
                     <template v-else>
                         <el-button type="primary" @click="onSubmit(true)" v-if='!bookId'>立即创建</el-button>
-                        <el-button type="primary" @click="onSubmit"  v-else>保存</el-button>
+                        <el-button type="primary" @click="onSubmit(false)"  v-else>保存</el-button>
                         <el-button @click="cancel">取消</el-button>
                     </template>
                 </el-form-item>
@@ -300,6 +300,10 @@ export default {
                         this.$redirectRouter();
                         this.getUpdateBookDetail();
                     }
+                }else {
+                    this.$message.success('保存成功');
+                    this.$redirectRouter();
+                    this.getUpdateBookDetail();
                 }
             }
         },

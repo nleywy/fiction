@@ -210,7 +210,13 @@ export default {
         filterReviewState(status, enumsGetMap, isShield) {
             const statusList = enumsGetMap("reviewStatusEnum");
 
-            const find = statusList.find(item => item.value == "0");
+            // if(status == null) {
+            //     return "";
+            // }
+
+            // const find = statusList.find(item => item.value == "0");
+
+            const find = status == "0" && status != null;
 
             if(find) {
                 return `<span style="color: #FF8D2B;">[审核中]</span>`;

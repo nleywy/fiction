@@ -15,6 +15,7 @@
                                     {{item.bookName}}
                                 </div>
                                 <div class="item__des__status">
+                                    <el-tag class="tag" v-if="item.isShield == '1'" :class="[ `tag-danger` ]" size='small'>已屏蔽</el-tag>
                                     <el-tag class="tag" :class="[ `tag-${bookStateStatus[item.bookState]}` ]" size='small'>{{ item.bookState | filtersBookState(enumsGetMap) }}</el-tag>
                                     <el-tag class="tag" :class="[ `tag-${endStateStatus[item.endState]}` ]" size='small' disabled>{{ item.endState | filtersEndState(enumsGetMap) }}</el-tag>
                                 </div>

@@ -111,7 +111,7 @@ export default {
             
             const contentValidator = (rule, value, callback) => {
                 const content = that.$refs.editor.getContent();
-                const length = content.trim().length;
+                const length = typeof content === "string" ? content.trim().replace(/↵/g, "").replace(/\n/g, "").replace(/<([^>]*)>|&nbsp;/g, "").replace(/ /g, "").length : 0;
 
                 if(!length) {
                     callback(Error("请输入正文"));
@@ -126,10 +126,20 @@ export default {
 
             return {
                 volumeId: [ 
-                    { required: true, message: "请选择分卷", trigger: 'blur' }
+                    { required: true, message: "请选择分卷", trigger: 'blur' },
                 ],
                 chapterName: [ 
-                    { required: true, message: "请输入章节号和章节名", trigger: 'blur' }
+                    { required: true, message: "请输入章节号和章节名", trigger: 'blur' },
+                    {
+                        validator: (rule, value, callback) => {
+                            if(value.length > 35) {
+                                callback(Error("标题不能超过35个字"));
+                            }else {
+                                callback();
+                            }
+                        },
+                        trigger: 'blur'
+                    }
                 ],
                 content: [ 
                     // { required: true, message: "请输入正文", trigger: 'blur' },

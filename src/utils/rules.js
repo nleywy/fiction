@@ -209,7 +209,7 @@ export const addressValidator = (rule, value, callback) => {
 
     const length = value.length;
 
-    if(5 < length && length < 64) {
+    if(5 <= length && length <= 64) {
         callback();
     }else {
         callback(new Error('地址必须在5 - 64个字内'));
@@ -224,7 +224,7 @@ export const realNameValidator = (rule, value, callback) => {
     
     const length = value.length;
 
-    if(2 < length && length < 10) {
+    if(2 <= length && length <= 10) {
         callback();
     }else {
         callback(new Error('真实姓名请使用2-10位汉字或英文'));
